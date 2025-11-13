@@ -1,34 +1,28 @@
-# Ignore everything by default
+# ---- BASIC PYTHON + GENERAL GITIGNORE ----
 
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*.pyo
 
-# Keep these
-!/.gitignore
-!/.nojekyll       #  add this
-!/README.md
-!/index.html
+# Virtual environment
+venv/
+.env/
 
-!/Journal/
-!/Journal/**
+# Node
+node_modules/
 
-!/landing-page/
-/landing-page/*
-!/landing-page/index.html
+# OS crap
+.DS_Store
+Thumbs.db
 
-!/master-plan/
-/master-plan/*
-!/master-plan/research-dashboard.html
-!/master-plan/archive_compressed.zip
+# Logs
+*.log
 
-!/scripts/
-!/scripts/automation/
-!/scripts/utilities/
-/scripts/**
-!/scripts/automation/wingman_dash.py
-!/scripts/automation/wingman_prep.py
-!/scripts/utilities/sync_risk_items.py
-!/scripts/utilities/sync_provider_consensus.py
-!/scripts/utilities/sync_*.py
-!/scripts/utilities/verify_*.py
+# IDE
+.vscode/
+.idea/
 
-!/Toolbox/
-!/Toolbox/**
+# Build artifacts
+dist/
+build/
