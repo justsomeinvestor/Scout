@@ -1,0 +1,128 @@
+{
+  "SPY": {
+    "lastUpdated": "2025-10-16 02:54 ET",
+    "maxPain": "$600",
+    "putCallRatio": "0.00",
+    "ivPercentile": "6%",
+    "totalOI": "0",
+    "keyLevels": [
+      {
+        "strike": "600",
+        "type": "Max Pain",
+        "gamma": "N/A",
+        "oi": "0K"
+      },
+      {
+        "strike": "550",
+        "type": "Call Wall",
+        "gamma": "N/A",
+        "oi": "0K"
+      },
+      {
+        "strike": "500",
+        "type": "Put Wall",
+        "gamma": "N/A",
+        "oi": "0K"
+      },
+      {
+        "strike": "652",
+        "type": "High Gamma",
+        "gamma": "N/A",
+        "oi": "0K"
+      },
+      {
+        "strike": "500",
+        "type": "Put Interest",
+        "gamma": "N/A",
+        "oi": "0K"
+      }
+    ],
+    "currentPrice": 665.17,
+    "expiration": "2025-10-16",
+    "source": "yfinance"
+  },
+  "QQQ": {
+    "lastUpdated": "2025-10-16 02:54 ET",
+    "maxPain": "$545",
+    "putCallRatio": "0.00",
+    "ivPercentile": "12%",
+    "totalOI": "0",
+    "keyLevels": [
+      {
+        "strike": "545",
+        "type": "Max Pain",
+        "gamma": "N/A",
+        "oi": "0K"
+      },
+      {
+        "strike": "530",
+        "type": "Call Wall",
+        "gamma": "N/A",
+        "oi": "0K"
+      },
+      {
+        "strike": "495",
+        "type": "Put Wall",
+        "gamma": "N/A",
+        "oi": "0K"
+      },
+      {
+        "strike": "591",
+        "type": "High Gamma",
+        "gamma": "N/A",
+        "oi": "0K"
+      },
+      {
+        "strike": "495",
+        "type": "Put Interest",
+        "gamma": "N/A",
+        "oi": "0K"
+      }
+    ],
+    "currentPrice": 602.22,
+    "expiration": "2025-10-16",
+    "source": "yfinance"
+  },
+  "NVDA": {
+    "lastUpdated": "2025-10-16 02:54 ET",
+    "maxPain": "$162",
+    "putCallRatio": "0.00",
+    "ivPercentile": "2%",
+    "totalOI": "10,840",
+    "keyLevels": [
+      {
+        "strike": "162",
+        "type": "Max Pain",
+        "gamma": "N/A",
+        "oi": "0K"
+      },
+      {
+        "strike": "5",
+        "type": "Call Wall",
+        "gamma": "N/A",
+        "oi": "0K"
+      },
+      {
+        "strike": "50",
+        "type": "Put Wall",
+        "gamma": "N/A",
+        "oi": "4K"
+      },
+      {
+        "strike": "178",
+        "type": "High Gamma",
+        "gamma": "N/A",
+        "oi": "0K"
+      },
+      {
+        "strike": "50",
+        "type": "Put Interest",
+        "gamma": "N/A",
+        "oi": "4K"
+      }
+    ],
+    "currentPrice": 179.83,
+    "expiration": "2025-10-17",
+    "source": "yfinance"
+  }
+}

@@ -1,0 +1,142 @@
+AI Assistant Operating Guide for Master Plan Updates
+===================================================
+
+Purpose
+-------
+Provide a repeatable task list so the assistant can ingest new research, maintain provider viewpoints, synthesize overall sentiment, and keep the master plan aligned with the latest intelligence.
+
+Workflow Execution
+------------------
+THE WORKFLOW ALWAYS PROCESSES IN THIS ORDER:
+Raw Data → Provider Summaries → Market Overview → Master Plan
+
+**EXECUTION POLICY:**
+- Determine today's date (YYYY-MM-DD format)
+- Run complete workflow: Steps 0 → 8
+- Each run = full refresh of entire data pipeline
+- Never skip steps
+
+**ONLY exceptions:**
+- Scrapers fail → Continue with existing data, note the gap
+- User explicitly requests to stop
+- Critical error prevents continuation
+
+Task Loop
+---------
+
+0. **Run Scrapers** (FIRST STEP - BEFORE ANYTHING ELSE)
+   - **Command:** `python scripts/automation/run_all_scrapers.py`
+   - **Purpose:** Fetch ALL raw data (YouTube videos, RSS articles, X posts)
+   - **Duration:** 5-10 minutes (depending on network and content volume)
+   - **What it does:**
+     * Runs YouTube scraper → fetches latest video transcripts
+     * Runs RSS scraper → fetches latest news articles
+     * Runs X/Twitter scraper → fetches latest social media posts
+   - **Output locations:**
+     * YouTube: `Research/YouTube/{Channel}/YYYY-MM-DD_*.md`
+     * RSS: `Research/RSS/{Provider}/YYYY-MM-DD_*.md`
+     * X: `Research/X/{Category}/x_list_posts_YYYYMMDD*.json`
+   - **Wait for completion** before proceeding to Step 1
+   - **Note:** If any scraper fails, you can still proceed with available data
+
+1. **Refresh Provider Summaries** (ALWAYS include SPY, QQQ, SOL, BTC, GOLD)
+   - Go to C:\Users\Iccanui\Desktop\Investing\Research and read Research\How to use_Research.txt
+   - Follow instructions to update all provider summaries (YouTube, RSS, and Technicals) in their respective folders.
+   - **Gold Tracking**: Monitor gold price, Gold/SPX ratio, real rates (10Y TIPS), central bank demand, GDX miners performance.
+   - **Economic Calendar**: Read Research\Macro\How to use_Economic_Calendar.txt and create/update the `YYYY-MM-DD_Economic_Calendar_Summary.md`.
+
+2. **Process X (Twitter) Data & Update Master Plan** (MANDATORY EVERY RUN)
+    *   Always run the trend analysis for TODAY, even if files already exist.
+    *   Command: `python Research\X\Trends\process_trends.py YYYY-MM-DD`
+        - Do not skip based on presence of prior `*_trending_words.json` or `.processing_log.json` status.
+    *   This generates `YYYY-MM-DD_trending_words.json` and updates `trends_database.json`.
+    *   Using the fresh trend data, (re)create the `YYYY-MM-DD_X_Crypto_Summary.md` and `YYYY-MM-DD_X_Macro_Summary.md` files.
+    *   **CRITICAL:** Fully update the `xsentiment` tab in `master-plan.md` with all new data: `aiInterpretation`, `sentimentScore`, `top_narratives`, and `trending_words`.
+    *   Optional helper: `powershell -ExecutionPolicy Bypass -File scripts/utilities/run_x_trends.ps1 -Date YYYY-MM-DD` to enforce always-refresh and canonical paths.
+
+3.  **Create Consolidated Overview & Curate Media**
+    *   Review all provider summaries (YouTube, RSS, Technicals, and the new X summaries).
+    *   Create or update the dated market overview (`YYYY-MM-DD_Market_Sentiment_Overview.md`) in `Research\`.
+    *   Curate the `media` tab in `master-plan.md` by identifying high-signal items from all providers, following the logic in `master-plan/How to use_Media_Catalysts.txt`.
+
+4.  **Calculate Trading Signals**
+    *   Reference `C:\Users\Iccanui\Desktop\Investing\Trading\signal-system\How to use_Signals.txt`.
+    *   Calculate the composite signal score using the fresh data from all provider summaries, including the now-available X Crypto Summary for the breadth calculation.
+
+5.  **Align the Master Plan**
+    *   Open `master-plan\master-plan.md`.
+    *   Update the remaining sections of the JSON front matter:
+        *   `pageTitle` and `dateBadge`.
+        *   `sentimentCards`, `metrics`, `riskItems`, `quickActions`, `sentimentHistory`, `providerConsensus`.
+        *   Update the `dailyPlanner` object, including the new `signalData` from the previous step.
+        *   Update ALL tab `aiInterpretation` sections with current date:
+            - `macro` tab: Update aiInterpretation.updatedAt and content
+            - `crypto` tab: Update aiInterpretation.updatedAt and content
+            - `tech` tab: Update aiInterpretation.updatedAt and content
+            - `news` tab: Update aiInterpretation.updatedAt and content
+            - `xsentiment` tab: Already updated in Step 2
+            - `technicals` tab: Update aiInterpretation.updatedAt and content
+            - `media` tab: Update aiInterpretation.updatedAt and content
+        *   Update the `economicCalendar` section with today's events
+        *   Update `endOfDay` section with current date and status
+    *   Update the HTML title in `master-plan\research-dashboard.html` to match the new date.
+
+6.  **Data Consistency Verification** (CRITICAL - NEW STEP)
+    *   **This step prevents the "mixed date" problem**
+    *   Verify ALL dates in master-plan.md are consistent:
+        - Search for all instances of "2025-10-" and verify they match TODAY'S date
+        - Check `pageTitle` and `dateBadge` (line ~4-6)
+        - Check ALL tab `updatedAt` timestamps (macro, crypto, tech, news, xsentiment, technicals, media, dailyPlanner)
+        - Check `endOfDay.date` (line ~1145)
+        - Check `endOfDay.ranAt` timestamp
+        - Check markdown body: "EAGLE EYE MACRO OVERVIEW" header date (line ~1220)
+        - Check footer: "Last Updated" and "Next Review" dates (line ~1559)
+    *   **If ANY date mismatches are found, STOP and fix them before proceeding**
+    *   Use grep/search to find all date patterns: `grep -n "2025-10-[0-9][0-9]" master-plan.md`
+
+7.  **Document & Organize**
+    *   Ensure all summaries and overviews have accurate timestamps.
+    *   Update `Journal/Journal.md` with an end-of-day recap, including the new signal score and key actions taken.
+    *   Update `.processing_log.json` with completion timestamps for all providers
+
+8.  **Final Completion Checklist** (Verify before marking workflow complete)
+    *   Run the consistency check command: `grep -n "updatedAt\|date.*2025-10" master-plan/master-plan.md`
+    *   Verify output shows ONLY the current date (no mixed dates)
+    *   Confirm X Sentiment (xsentiment tab) is refreshed today:
+        - `updatedAt` shows today's date/time
+        - `trending_words` categories are non-empty and reflect today's `Research/X/Trends/YYYY-MM-DD_trending_words.json`
+    *   Confirm signal score appears in multiple places with same value:
+        - sentimentCards (line ~8-9)
+        - sentimentHistory last entry (line ~42-47)
+        - dailyPlanner.signalData.composite (line ~1120)
+    *   Check HTML dashboard title matches: `grep "title>" master-plan/research-dashboard.html`
+    *   **If ANY inconsistencies found, return to Step 6**
+
+9.  **Repeat as Needed**
+    *   Re-run the loop for intraday or daily updates.
+
+
+Processing Notes
+----------------
+- The `.processing_log.json` is for REFERENCE ONLY
+- ALWAYS trust file existence checks, not log status
+- X Trends: ALWAYS run Step 2 for TODAY, regardless of existing files or log status
+- If scrapers produce new data mid-workflow, that's expected - use the latest available
+
+
+Future Enhancement: Timestamp-Based Incremental Processing
+----------------------------------------------------------
+**Note:** This is aspirational for when real-time/automated runs are implemented.
+Current implementation uses full refresh every run (see Execution Policy above).
+
+**Concept - Smart Incremental with Timestamps:**
+- Check file timestamps vs. last processing time
+- If new data exists (even 1 minute newer), process it
+- Example: RSS "COMPLETE" at 13:05, new scrape at 14:27 → re-process
+- Processing logs are reference only, never skip based on "COMPLETE" status
+- Enable multiple intraday runs without full re-scraping if data is fresh
+
+Notes
+-----
+- Use the complementary workflow draft at `\RnD\research_automation_workflow.md` for reference.
+- Default naming conventions and storage rules are detailed in `Research\How to use_Research.txt`.

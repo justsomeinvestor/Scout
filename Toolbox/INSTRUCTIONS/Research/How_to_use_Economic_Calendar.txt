@@ -1,0 +1,119 @@
+**Economic Calendar Processing Guide**
+
+Purpose
+-------
+Extract and integrate high-impact economic events from calendar-event-list.csv into the macro analysis workflow.
+
+Data Source
+-----------
+File: Research/Macro/calendar-event-list.csv
+Columns: Id, Start, Name, Impact, Currency
+
+Filtering Rules
+---------------
+1. **Currency**: USD ONLY
+2. **Impact**: HIGH and MEDIUM only (ignore LOW and NONE)
+3. **Timezone**: Convert all times to EST and include timezone stamp
+
+Processing Workflow
+-------------------
+
+When running the master plan workflow (How to use_MP.txt):
+
+1. **Read CSV File**
+   - Load Research/Macro/calendar-event-list.csv
+   - Parse all events for current month
+
+2. **Apply Filters**
+   - Keep only: Currency = "USD"
+   - Keep only: Impact = "HIGH" or Impact = "MEDIUM"
+   - Discard all other events
+
+3. **Timezone Conversion**
+   - Convert Start time to EST
+   - Format: "MMM DD, YYYY HH:MM EST"
+   - Example: "Oct 01, 2025 12:15 EST"
+
+4. **Group Events**
+   - **Today**: Events occurring on current date
+   - **This Week**: Events within next 7 days
+   - **Next Week**: Events 8-14 days out
+   - **Rest of Month**: Events beyond 14 days
+
+5. **Create Macro Overview**
+   - File: Research/Macro/YYYY-MM-DD_Economic_Calendar_Summary.md
+   - Include:
+     * Date range covered
+     * Total HIGH impact events count
+     * Total MEDIUM impact events count
+     * Key events today and this week
+     * Market-moving events to watch
+
+6. **Extract for Dashboard Integration**
+   - Today's events (HIGH/MEDIUM)
+   - This week's critical events (HIGH only)
+   - Format as JSON array for master-plan.md
+
+Output Format for master-plan.md
+----------------------------------
+
+economicCalendar: {
+  "today": [
+    {
+      "time": "12:15 EST",
+      "event": "ADP Employment Change",
+      "impact": "HIGH"
+    },
+    {
+      "time": "14:00 EST",
+      "event": "ISM Manufacturing PMI",
+      "impact": "HIGH"
+    }
+  ],
+  "thisWeek": [
+    {
+      "date": "Oct 04",
+      "time": "08:30 EST",
+      "event": "Nonfarm Payrolls",
+      "impact": "HIGH"
+    }
+  ],
+  "summary": "3 HIGH-impact events this week (employment, manufacturing, Fed speakers). Market volatility expected around NFP Friday."
+}
+
+Impact Level Definitions
+------------------------
+- **HIGH**: Market-moving events (NFP, CPI, FOMC, GDP)
+  - Expect volatility, volume spikes, potential trend changes
+  - Trade with caution around these events
+
+- **MEDIUM**: Sector-specific or secondary indicators
+  - Can move specific assets or confirm trends
+  - Monitor but less systemic risk than HIGH events
+
+Integration Notes
+-----------------
+- Economic calendar refreshed during master plan workflow (Step 3: Gather Provider Data)
+- Data flows: CSV → Macro overview → master-plan.md → research-dashboard.html
+- Calendar displays in Macro tab below provider insights
+- Color coding: RED for HIGH impact, ORANGE for MEDIUM impact
+- Events sorted chronologically within each time bucket
+
+Example Processing
+------------------
+
+Input (from CSV):
+01214b5c-2d19-4626-b1ba-73135512dfec,10/01/2025 12:15:00,ADP Employment Change,HIGH,USD
+
+Output (for master-plan.md):
+{
+  "time": "12:15 EST",
+  "event": "ADP Employment Change",
+  "impact": "HIGH"
+}
+
+Refresh Frequency
+-----------------
+- Daily during market hours
+- Before major trading sessions (pre-market routine)
+- Whenever CSV file is updated with new month's data

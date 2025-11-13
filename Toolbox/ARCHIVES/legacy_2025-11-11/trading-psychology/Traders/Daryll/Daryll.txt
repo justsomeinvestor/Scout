@@ -1,0 +1,136 @@
+Me - Daryll. I am the builder of this system, with AI assistance of course. This is to help you understand who I am. 
+
+My goal is $69 a day or more to cover my costs of living. I am a professional retail trader and investor.
+
+
+Collect of thought on trading and investing from me. Weight - 9
+
+Ranges are very important
+
+
+Always consider if spy and qqq are at resistence and their action on the day so far
+
+
+The fib 127 ext may be a good short area, just for a pullback trade, there will be a reaction
+
+
+
+
+TRUMP
+
+Talked about givng US debt holders some bitcoin to pay off dest
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+======================================================================
+Profile & Intent
+======================================================================
+- Identity: Retail trader/investor building a pro‑grade research + execution system.
+- Objective: Consistent, sustainable income (≥ $69/day) while protecting downside.
+- Focus markets: SPY, QQQ, BTC, ETH (expand later if signal quality supports).
+- Style: Rules‑driven, level‑based execution with discretionary filter from research.
+- Edge: Multi‑source synthesis (YouTube/RSS/Technicals/X) + signal engine + disciplined risk.
+
+Operating Principles (AI, remember these)
+- Actionable first: translate research into 3–5 clear options with entries/stops/targets.
+- Levels > opinions: hard levels drive plans; narratives only adjust size/urgency.
+- Risk always on: define risk before reward; assume volatility expands from lows.
+- Breadth is a governor: weak breadth = smaller size and fewer adds, wait for confirmation.
+- Sentiment is a gauge: use X sentiment as contrarian only at extremes; otherwise neutral.
+- Keep it simple: fewer, higher‑quality trades beat frequent impulses.
+
+Timeframes & Setups I Trade
+- Swing (days–weeks): SPY/QQQ trend or mean‑reversion around 50/200‑DMA; BTC/ETH range break/pullback.
+- Intraday (selective): Only when levels align with higher‑timeframe bias.
+- Preferred setups:
+  1) SPX breakout continuation: above 6,720 → target 6,760 then 7,000 (SPY ~672/676/700).
+  2) SPX pullback buy: 6,612–6,650 zone; invalidation below 6,612 (SPY ~661–665; stop < 661.2 eqv.).
+  3) BTC liquidity sweep: $111–112K sweep and reclaim → target $118K+, stop below $108K.
+  4) ETH value zone: around $4,000 support; confirmation via higher low and volume.
+  5) Volatility hedge: when VIX < ~17 and signal is mixed → initiate/roll VIX calls or BTC straddles.
+
+Risk Management (non‑negotiable)
+- Position sizing: derive from stop distance; size down when breadth weak or vol compressed.
+- Pyramiding: only add after progress + HL/HH structure; never average losers.
+- Max simultaneous core positions: keep focus (CONFIGURE: e.g., 3–5).
+- Hard stops: pre‑set; move to break‑even only after objective progress, not emotion.
+- Daily limits: stop trading after daily max loss or 3 consecutive losers (CONFIGURE values).
+- Hedging: prefer options hedges (VIX calls / put spreads) when composites < 70 and breadth weak.
+
+Signal Engine → Action Map
+- Composite ≥ 85: Extreme Buy — act decisively; full plan with size increase and clear risk.
+- 70–84: Strong Buy — take the setup; standard size; favor continuation entries.
+- 55–69: Moderate Buy — cautious participation; partial size; require clean level and confirmation.
+- 40–54: Weak/Wait — no new core risk; focus on hedges/scouting.
+- < 40: Avoid/Sell — defense first; consider hedges or exits.
+
+Daily Routine (Sessions)
+- Pre‑market: set alerts at key levels; place conditional orders; review scheduled events.
+- Open: avoid chasing first 5–10 min; wait for confirmation against levels.
+- Midday: protect P&L; only A+ setups; review breadth/vol updates.
+- Power hour: act on breakouts/breakdowns into pre‑planned levels; manage exits.
+- After‑hours: journal, update quick actions, prep tomorrow.
+
+Pre‑Trade Checklist
+- What is the higher‑timeframe bias (trend/breadth/vol/sentiment)?
+- Exact entry, stop, target(s); R multiple ≥ 2 where possible.
+- Position size consistent with stop and confidence tier.
+- Conflicts: is there a narrative or breadth warning that reduces size?
+- Event risk in the next 24–48h? If yes, size down or hedge.
+
+In‑Trade Rules
+- Follow plan; if invalidation hits, exit — no negotiation.
+- Trailing only after structural progress (pivot break/HL/HH), not time alone.
+- No add unless fresh signal + improved R/R.
+
+Post‑Trade Review
+- Log: setup type, score tier, reasoning, emotions, adherence to plan, improvement item.
+- Tag errors: impatience, FOMO, revenge trading, over‑sizing, late add, stop moves.
+
+Cognitive Pitfalls (watchouts)
+- Chasing moves after they leave the level.
+- Overconfidence during low‑vol grinds; forgetting mean reversion risk.
+- Confirmation bias from a single provider; require cross‑source confluence.
+
+What I Want From The AI Assistant
+- Condense noise into 3–5 Quick Actions with: type, entry, stop, target, urgency.
+- Keep “Refreshed” timestamps for every summary and overview you use.
+- Call out breadth/vol caveats explicitly and suggest size/hedge adjustments.
+- Prefer Node/Python tools (avoid PowerShell automation unless I request it).
+- Use clear, copy‑ready orders and alerts with symbols/levels.
+
+Core Levels To Anchor (current context)
+- SPX: 6,612 (must hold), 6,650 (support), 6,720 (breakout), 6,760 (major), 7,000 (path).
+- SPY (approx): 661–665 support; 672/676 resistance; 700 stretch.
+- QQQ: 593–597 support (provisional until TradingView QQQ provider lives).
+- BTC: $111–112K sweep/reclaim long; $118–120K resistance; $108K invalidation.
+- ETH: $4,000 support; watch $5,000+ targets on momentum.
+
+When To Stand Down
+- Composite < 40 or severe breadth divergence + event risk.
+- After daily max loss or clear plan violation — pause and review.
+- If levels are unclear/clustered — wait for clarity; trading is optional.
+
+Longer‑Term Orientation
+- Allocation template as default posture (adjust tactically): Equities 60% | Gold 30% | BTC 10%.
+- Liquidity cycle and macro regime guide medium‑term tilt; entries still come from levels.
+
+Notes to Self
+- Let price come to your level — alerts do the work.
+- Size is a function of clarity and context, not conviction alone.
+- Patience compounds edge; protecting the downside keeps me in the game.

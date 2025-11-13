@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investment Thesis Tracker</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked@11.0.0/marked.min.js"></script>
+</head>
+<body>
+    <div class="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="header-title">
+                    <h1>Investment Thesis Tracker</h1>
+                    <p class="subtitle">Compare and analyze your investment opportunities</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-refresh" id="refreshBtn" title="Refresh data">
+                        <span class="icon">⟲</span>
+                        Refresh
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Layout -->
+        <div class="main-layout">
+        <div class="container">
+            <!-- Sidebar / Filter Panel -->
+            <aside class="sidebar">
+                <div class="filter-panel">
+                    <h2>Filters & Controls</h2>
+
+                    <!-- Search -->
+                    <div class="filter-group">
+                        <label for="searchInput">Search</label>
+                        <input
+                            type="text"
+                            id="searchInput"
+                            class="filter-input"
+                            placeholder="Ticker, name, theme..."
+                        >
+                    </div>
+
+                    <!-- Asset Class Filter -->
+                    <div class="filter-group">
+                        <label for="assetClassFilter">Asset Class</label>
+                        <select id="assetClassFilter" class="filter-input">
+                            <option value="">All Assets</option>
+                            <option value="stock">Stocks</option>
+                            <option value="crypto">Crypto</option>
+                        </select>
+                    </div>
+
+                    <!-- Score Range (stocks only) -->
+                    <div class="filter-group" id="scoreFilterGroup" style="display: none;">
+                        <label for="scoreRange">Score Range</label>
+                        <div class="range-input">
+                            <input
+                                type="range"
+                                id="scoreRange"
+                                min="0"
+                                max="100"
+                                value="0"
+                                class="filter-input"
+                            >
+                            <span id="scoreRangeDisplay">All scores</span>
+                        </div>
+                    </div>
+
+                    <!-- Sort -->
+                    <div class="filter-group">
+                        <label for="sortBy">Sort By</label>
+                        <select id="sortBy" class="filter-input">
+                            <option value="score-desc">Score (High → Low)</option>
+                            <option value="score-asc">Score (Low → High)</option>
+                            <option value="date-desc">Date (Newest)</option>
+                            <option value="date-asc">Date (Oldest)</option>
+                            <option value="ticker-asc">Ticker (A → Z)</option>
+                        </select>
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="stats-box">
+                        <h3>Summary</h3>
+                        <div class="stat-item">
+                            <span class="stat-label">Total Tickers</span>
+                            <span class="stat-value" id="totalCount">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Stocks</span>
+                            <span class="stat-value" id="stockCount">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Crypto</span>
+                            <span class="stat-value" id="cryptoCount">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Avg Score</span>
+                            <span class="stat-value" id="avgScore">—</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Last Updated</span>
+                            <span class="stat-value stat-time" id="lastUpdated">—</span>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <!-- View Controls -->
+                <div class="view-controls">
+                    <button class="view-btn active" data-view="grid" title="Grid view">
+                        <span class="icon">⊞</span> Grid
+                    </button>
+                    <button class="view-btn" data-view="table" title="Table view">
+                        <span class="icon">≡</span> Table
+                    </button>
+                    <button class="view-btn" data-view="comparison" title="Comparison view">
+                        <span class="icon">⇔</span> Compare
+                    </button>
+                </div>
+
+                <!-- Grid View -->
+                <section class="view" id="gridView" style="display: block;">
+                    <div class="thesis-grid" id="thesisGrid">
+                        <!-- Cards will be inserted here -->
+                        <div class="loading">Loading thesis data...</div>
+                    </div>
+                </section>
+
+                <!-- Table View -->
+                <section class="view" id="tableView" style="display: none;">
+                    <div class="table-container">
+                        <table class="thesis-table" id="thesisTable">
+                            <thead>
+                                <tr>
+                                    <th data-sort="ticker">Ticker</th>
+                                    <th data-sort="class">Class</th>
+                                    <th data-sort="theme">Theme</th>
+                                    <th data-sort="score">Score</th>
+                                    <th data-sort="date">Updated</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody">
+                                <!-- Rows will be inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Comparison View -->
+                <section class="view" id="comparisonView" style="display: none;">
+                    <div class="comparison-container">
+                        <div class="comparison-selector">
+                            <label>Select tickers to compare (up to 4):</label>
+                            <div class="comparison-checkboxes" id="comparisonCheckboxes">
+                                <!-- Checkboxes will be inserted here -->
+                            </div>
+                            <button class="btn btn-primary" id="compareBtn">Compare Selected</button>
+                        </div>
+                        <div class="comparison-results-container">
+                            <!-- Chart Area -->
+                            <div class="comparison-charts" id="comparisonCharts" style="display: none;">
+                                <h3>Score Comparison</h3>
+                                <canvas id="comparisonRadarChart" width="400" height="400"></canvas>
+                            </div>
+                            <!-- Cards Area -->
+                            <div class="comparison-results" id="comparisonResults" style="display: none;">
+                                <!-- Comparison will be displayed here -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+        <!-- Dashboard Widget Section -->
+        <section class="dashboard-widgets">
+            <div class="analytics-header">
+                <h2>Portfolio Analytics</h2>
+                <p class="analytics-subtitle">Real-time thesis insights</p>
+            </div>
+            <div class="widget-container">
+                <!-- Fundamentals Quality Widget (Stacked Bar) -->
+                <div class="widget" id="fundamentalsWidget">
+                    <div class="widget-header">
+                        <div>
+                            <h3>Score Composition</h3>
+                            <p class="widget-subtitle">Top 8 by overall conviction</p>
+                        </div>
+                        <button class="widget-btn widget-info" title="Shows breakdown of what makes each score">ℹ️</button>
+                    </div>
+                    <div class="widget-content">
+                        <canvas id="fundamentalsChart" width="400" height="140"></canvas>
+                    </div>
+                </div>
+
+                <!-- Risk-Reward Scatter Plot Widget -->
+                <div class="widget" id="riskRewardWidget">
+                    <div class="widget-header">
+                        <div>
+                            <h3>Risk vs Conviction</h3>
+                            <p class="widget-subtitle">Portfolio positioning</p>
+                        </div>
+                        <button class="widget-btn widget-info" title="Find opportunities in underexplored quadrants">ℹ️</button>
+                    </div>
+                    <div class="widget-content">
+                        <canvas id="riskRewardChart" width="400" height="140"></canvas>
+                    </div>
+                </div>
+
+                <!-- Conviction Strength Gauges Widget -->
+                <div class="widget" id="convictionWidget">
+                    <div class="widget-header">
+                        <div>
+                            <h3>Conviction Distribution</h3>
+                            <p class="widget-subtitle">Portfolio strength snapshot</p>
+                        </div>
+                        <button class="widget-btn widget-info" title="Breakdown by conviction level">ℹ️</button>
+                    </div>
+                    <div class="widget-content" id="convictionContent">
+                        <!-- Gauges will be rendered here -->
+                    </div>
+                </div>
+
+                <!-- Portfolio Gaps Widget -->
+                <div class="widget" id="gapsWidget">
+                    <div class="widget-header">
+                        <div>
+                            <h3>Theme Exposure</h3>
+                            <p class="widget-subtitle">Portfolio diversification</p>
+                        </div>
+                        <button class="widget-btn widget-info" title="Check for concentration risk">ℹ️</button>
+                    </div>
+                    <div class="widget-content">
+                        <canvas id="gapsChart" width="400" height="120"></canvas>
+                    </div>
+                </div>
+
+                <!-- Portfolio Stats Widget -->
+                <div class="widget" id="statsWidget">
+                    <div class="widget-header">
+                        <div>
+                            <h3>Portfolio Stats</h3>
+                            <p class="widget-subtitle">Key aggregates</p>
+                        </div>
+                        <button class="widget-btn widget-info" title="Overall portfolio metrics">ℹ️</button>
+                    </div>
+                    <div class="widget-content" id="statsContent">
+                        <!-- Stats will be rendered here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+        </div>
+
+    <!-- Thesis Detail Modal -->
+    <div class="modal" id="thesisModal">
+        <div class="modal-overlay" id="modalOverlay"></div>
+        <div class="modal-content">
+            <button class="modal-close" id="modalClose">&times;</button>
+            <div class="modal-header">
+                <div class="modal-title-section">
+                    <h2 id="modalTicker"></h2>
+                    <span class="modal-class" id="modalClass"></span>
+                </div>
+                <div class="modal-nav">
+                    <button class="modal-nav-btn" id="modalPrev" title="Previous">←</button>
+                    <button class="modal-nav-btn" id="modalNext" title="Next">→</button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="modal-sidebar">
+                    <div class="quick-stats" id="quickStats">
+                        <!-- Stats will be inserted here -->
+                    </div>
+                    <button class="btn btn-secondary" id="openFileBtn">
+                        Open Original File
+                    </button>
+                </div>
+                <div class="modal-main">
+                    <div class="markdown-content" id="markdownContent">
+                        <!-- Markdown content will be rendered here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/utils/formatters.js"></script>
+    <script src="js/utils/analytics.js"></script>
+    <script src="js/data-loader.js"></script>
+    <script src="js/filters.js"></script>
+    <script src="js/sorters.js"></script>
+    <script src="js/components/stock-card.js"></script>
+    <script src="js/components/crypto-card.js"></script>
+    <script src="js/components/comparison.js"></script>
+    <script src="js/components/visualizations.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

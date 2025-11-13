@@ -1,0 +1,184 @@
+AI Assistant Guide for Technical Analysis Updates
+==================================================
+
+Purpose
+-------
+Use web searches to gather real-time technical analysis data, price levels, on-chain metrics, sentiment indicators, and market breadth from multiple sources. Consolidate findings into provider summaries that feed into the master plan.
+
+Workflow
+--------
+
+For each technical data provider listed below:
+
+1. **Web Search** - Use the provided search query to find latest data
+2. **Extract Key Metrics** - Pull the most relevant technical indicators, levels, and signals
+3. **Create Summary** - Write a timestamped summary file: `YYYY-MM-DD_<ProviderName>_Summary.md`
+4. **Save to Folder** - Store in `Research\Technicals\<ProviderName>\`
+
+Technical Data Providers
+-------------------------
+
+### 1. Fear and Greed Index (Crypto)
+**Search Query:** "crypto fear and greed index alternative.me current value"
+**What to Extract:**
+- Current index value (0-100)
+- Classification (Extreme Fear / Fear / Neutral / Greed / Extreme Greed)
+- Recent trend direction
+- Historical context
+
+### 2. TradingView SPX
+**Search Query:** "TradingView S&P 500 SPX technical analysis support resistance levels"
+**What to Extract:**
+- Key support and resistance levels
+- Moving averages (50-day, 200-day)
+- RSI, MACD signals
+- Chart patterns or breakout/breakdown alerts
+- Analyst consensus (bullish/bearish)
+
+### 3. TradingView BTC
+**Search Query:** "TradingView Bitcoin BTC technical analysis key levels indicators"
+**What to Extract:**
+- Support/resistance levels
+- Moving averages
+- Volume analysis
+- On-chain signals if mentioned
+- Pattern recognition (H&S, triangles, channels)
+
+### 3a. TradingView QQQ
+**Search Query:** "TradingView QQQ technical analysis key levels indicators"
+**What to Extract:**
+- Support/resistance levels (intraday + HTF)
+- 50/200-DMA context
+- RSI, MACD signals
+- Breakout/breakdown triggers
+
+### 3b. TradingView SOL (Solana)
+**Search Query:** "TradingView SOL Solana technical analysis key levels indicators"
+**What to Extract:**
+- Support/resistance levels (spot or perpetuals)
+- EMAs/SMAs context
+- RSI, MACD signals
+- Liquidity pockets around round numbers
+
+### 4. CoinGlass
+**Search Query:** "CoinGlass Bitcoin liquidation heatmap funding rates open interest"
+**What to Extract:**
+- Liquidation clusters (major support/resistance from leverage)
+- Funding rates (positive = longs paying shorts, negative = shorts paying longs)
+- Open interest trends
+- Long/short ratio
+
+### 5. FRED Economic Data
+**Search Query:** "FRED Federal Reserve balance sheet liquidity M2 money supply latest"
+**What to Extract:**
+- Fed balance sheet size and trend
+- M2 money supply growth/contraction
+- Reverse repo facility usage
+- Treasury General Account (TGA) levels
+- Net liquidity calculation if available
+
+### 6. On-Chain Analysis
+**Search Query:** "Bitcoin on-chain analysis whale accumulation support levels October 2025"
+**What to Extract:**
+- Whale accumulation zones (strong support)
+- On-chain resistance levels
+- Profit-taking behavior (e.g., dormancy, CDD)
+- Exchange flows (inflows = bearish, outflows = bullish)
+
+### 7. Sentiment Analysis
+**Workflow:**
+1.  **Web Search:** Use the query "crypto stock market sentiment analysis social media trends latest" to get a broad overview of the market sentiment.
+2.  **X Feed Analysis:** Read the latest posts from the JSON files located in the `Research\X\Crypto`, `Research\X\Macro`, and `Research\X\Technicals` directories to get real-time trader sentiment.
+3.  **Synthesize:** Combine the findings from the web search and the X feeds to create a comprehensive sentiment summary.
+
+**What to Extract:**
+- Social media sentiment (Twitter, Reddit trends)
+- Google Trends for "Bitcoin", "stocks", "recession"
+- Retail vs institutional sentiment
+- Contrarian indicators
+- Key themes and quotes from X feeds
+
+### 8. Market Breadth
+**Search Query:** "NYSE advance decline line market breadth new highs new lows"
+**What to Extract:**
+- Advance/Decline line trend
+- New 52-week highs vs lows
+- Percentage of stocks above 200-day MA
+- Sector rotation signals
+
+### 9. Volatility Metrics
+**Search Query:** "VIX index MOVE index Bitcoin implied volatility latest"
+**What to Extract:**
+- VIX (stock market volatility)
+- MOVE index (bond market volatility)
+- Bitcoin/crypto implied volatility
+- Historical percentile context
+
+### 10. DeFi Metrics
+**Search Query:** "DeFi TVL total value locked protocol trends DeFiLlama"
+**What to Extract:**
+- Total Value Locked (TVL) across DeFi
+- Major protocol trends (Aave, Uniswap, etc.)
+- Chain dominance (Ethereum, Solana, etc.)
+- Yield trends and liquidity flows
+
+Summary File Format
+-------------------
+
+Each `YYYY-MM-DD_<ProviderName>_Summary.md` should include:
+
+```markdown
+# [Provider Name] Technical Summary
+**Date:** YYYY-MM-DD
+**Source:** [URL if available]
+
+## Current Reading
+[Main metric value and classification]
+
+## Key Levels/Signals
+- Support: [levels]
+- Resistance: [levels]
+- Indicators: [RSI, MACD, etc.]
+
+## Trend Analysis
+[Short-term, medium-term outlook]
+
+## Actionable Insights
+[What this means for positioning]
+
+## Risk Flags
+[Any warning signals or divergences]
+```
+
+Notes
+-----
+- Update technical summaries daily or whenever significant market moves occur
+- Technical data is most valuable when combined with fundamental analysis (YouTube) and news (RSS)
+- Look for confluence: when multiple technical sources agree on key levels, weight them heavily
+- Divergences between price action and indicators often signal reversals
+- Always note the timestamp - technical data becomes stale quickly
+
+Intraday Refresh Protocol (BTC/SPX)
+-----------------------------------
+Use this when price action makes prior levels stale.
+
+1) Detect staleness
+   - If BTC or SPX moves >1% intraday from prior support/flip/resistance OR cleanly flips resistance → support (e.g., BTC $118K)
+   - If latest TradingView summary (BTC/SPX) is not dated today and price structure shifted
+
+2) Refresh provider summaries
+   - Create today’s file under TradingView BTC/TradingView SPX
+   - Include 24h high/low and updated support (retest zone), flip level, and resistance band
+   - Note changes vs prior day (e.g., “111–112K sweep zone is stale; structure shifted to 116–120K”)
+
+3) Propagate to downstream files (manual edits)
+   - master-plan/master-plan.md (front matter JSON):
+     * dashboard.metrics: update "BTC Support" (and SPX/ETH if applicable)
+     * dashboard.dailyPlanner.keyLevels: set entry/stop/target to today’s levels
+     * dashboard.dailyPlanner.signalData.assets.<ASSET>: update entry/stop/target; tweak module breakdown if regime/vol changed
+   - Research/YYYY-MM-DD_Market_Sentiment_Overview.md: update "BTC support:" line
+   - Research/X/Crypto/YYYY-MM-DD_X_Crypto_Summary.md: update crowdsourced levels to match new ranges
+   - Research/.processing_log.json: bump Technicals timestamps for TradingView BTC/SPX and summary_file paths
+
+4) Re-run Signals (see Trading/signal-system/How to use_Signals.txt)
+   - If levels or vol changed materially, recompute module scores and refresh the composite/tier and per-asset entries in master-plan.md

@@ -1,0 +1,230 @@
+================================================================================
+WINGMAN QUICK COMMANDS CHEAT SHEET
+================================================================================
+
+STATUS: UPDATED October 27, 2025
+PURPOSE: One-page reference for all Wingman commands
+LOCATION: Print this or bookmark for quick reference
+
+================================================================================
+SESSION ACTIVATION
+================================================================================
+
+Primary Trigger:
+  "i know kung fu"          → FULL WINGMAN LOAD (with session continuity)
+
+Alternatives:
+  "Load Wingman"            → Full load
+  "wingman"                 → Full load
+  "Load Wing"               → Full load
+
+================================================================================
+RESEARCH & DASHBOARD WORKFLOWS
+================================================================================
+
+Morning Data Collection:
+  "wingman recon"           → Run all market scrapers (~2 min)
+                            → Gets fresh: stocks, options, sentiment, econ calendar
+                            → Status: Orange notification with progress
+
+Research Analysis:
+  "wingman prep"            → Create research summaries (~30-45 min)
+                            → Creates 16+ markdown summaries
+                            → Calculates composite signal score
+                            → Prerequisite: Must run "wingman recon" first
+                            → Status: Real-time conversation updates
+
+Dashboard Update:
+  "wingman dash"            → Update dashboard with research (~20-60 min)
+                            → Syncs research to master plan
+                            → Updates all dashboard tabs
+                            → Prerequisite: Must complete "wingman prep" first
+                            → Status: Real-time conversation updates
+
+================================================================================
+QUICK ACTION BUTTONS
+================================================================================
+
+Daily Trade Plans:
+  "Create daily trade plans" → Generate bullish/bearish plans
+  or click 📊 Daily Plans button
+                            → Takes: ~30 seconds
+                            → Use: 9:30 AM before trading
+                            → Shows: Entry zones, stops, targets per ticker
+
+Trading Signals:
+  "Generate signals"        → Create quality-scored setups
+  or click 🎲 Signals button
+                            → Takes: ~30 seconds
+                            → Use: After daily plans
+                            → Shows: 0-100 quality scores, tier (EXTREME/STRONG/MODERATE/WEAK)
+
+================================================================================
+TRADING OPERATIONS
+================================================================================
+
+Entry Reporting:
+  "[TICKER] long/short [SIZE] @ [PRICE], stop [STOP], target [TARGET]"
+  Example: "NVDA long 100 @ 189.50, stop 188.00, target 191.50"
+  → Wingman performs threat assessment
+  → Records position if confirmed
+
+Exit Reporting:
+  "Out at [PRICE]"
+  Example: "Out at 191.20"
+  → Wingman calculates P/L
+  → Updates account state
+
+Manual Trade Entry:
+  "wingman log"             → Manual trade logging with all fields
+                            → Use: If entry was outside this conversation
+
+================================================================================
+ANALYSIS & STATUS
+================================================================================
+
+System Status:
+  "wingman, status"         → Show current account state
+  "wingman, signal"         → Show current signal tier and score
+  "wingman, rules"          → Display active trading rules
+  "wingman, cache status"   → Check data freshness
+
+Ticker Analysis:
+  "wingman, analyze [TICKER]"       → Full analysis (time-consuming)
+  "wingman, quick analyze [TICKER]" → Quick summary
+  "wingman, compare [TICKER1] [TICKER2]" → Head-to-head analysis
+
+================================================================================
+END OF DAY
+================================================================================
+
+EOD Review:
+  "EOD review - which plans worked?"    → Manual analysis
+  or
+  "wingman, eod wrap"                   → Automated EOD wrap
+                            → Compiles all trades
+                            → Calculates daily P/L
+                            → Identifies lessons
+                            → Updates journal
+
+================================================================================
+STANDARDIZED COMMAND NAMING
+================================================================================
+
+All Wingman commands now follow "wingman [action]" pattern:
+  - "wingman recon"    ✓ (run all scrapers)
+  - "wingman prep"     ✓ (run research workflow)
+  - "wingman dash"     ✓ (update dashboard)
+
+Legacy note: Earlier versions used "wingmap prep". This has been replaced
+with the more intuitive "wingman prep" across all documentation.
+
+If you accidentally say something close:
+  - "wingman research" → Ask: Did you mean "wingman recon" or "wingman prep"?
+  - "wing prep" → Ask: Did you mean "wingman prep"?
+  - "prepare" → Ask: Did you mean "wingman prep"?
+
+================================================================================
+RECOMMENDED DAILY SEQUENCE
+================================================================================
+
+Morning (9:30 AM ET):
+  1. "wingman recon"              (2 min)   → Fresh market data
+  2. "wingman prep"               (45 min)  → Research summaries
+  3. "wingman dash"               (60 min)  → Update dashboard
+  4. "Create daily trade plans"   (30 sec)  → Trade plans
+  5. "Generate signals"           (30 sec)  → Quality signals
+  └─ Review & pick best setups
+
+During Day (10 AM - 3:30 PM):
+  1. Monitor prices vs plans
+  2. Execute when entry levels hit
+  3. Report: "[TICKER] long/short [SIZE] @ [PRICE], stop [X], target [Y]"
+  4. Log: "Out at [PRICE]" when exiting
+  5. Wingman tracks all entries/exits
+
+After Close (4:00 PM):
+  1. "wingman, eod wrap"          → Automatic compilation
+  OR
+  2. "EOD review - which plans worked?" → Manual discussion
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+If Wingman seems confused:
+  "Did you mean [COMMAND]?" = Wingman is asking for clarification
+  → Confirm the command you intended
+
+If data is stale:
+  "wingman recon"                → Refresh all market data
+
+If you need to reload context:
+  "Load Wingman" or "i know kung fu" → Full reload with session continuity
+
+If a workflow fails:
+  Check error message → Report exact issue → Wingman can retry or skip
+
+================================================================================
+QUICK REFERENCE: WHAT EACH WORKFLOW DOES
+================================================================================
+
+WINGMAN RECON (2 min)
+  Input:  None (automated)
+  Output: Fresh market data in Research/.cache/
+  Use:    Always run this first
+  Repeat: Daily at 9:30 AM, or when data >30 min old
+
+WINGMAN PREP (30-45 min)
+  Input:  Raw data from wingman recon
+  Output: 16+ markdown summaries + signal_YYYY-MM-DD.json
+  Use:    Every morning after recon
+  Action: Manual AI workflow (Claude reads data, creates summaries)
+  Repeat: Once per trading day
+
+WINGMAN DASH (20-60 min)
+  Input:  Research files from wingman prep
+  Output: Updated master-plan.md + refreshed HTML dashboard
+  Use:    After wingman prep complete
+  Action: Python scripts + AI narrative updates
+  Repeat: Once per trading day after research
+
+DAILY PLANS (30 sec)
+  Input:  Dashboard data
+  Output: Bullish/bearish plans per ticker
+  Use:    Before trading to know what to look for
+  Action: Instant generation
+  Repeat: As needed during day
+
+SIGNALS (30 sec)
+  Input:  Research data
+  Output: Quality-scored trading opportunities (0-100)
+  Use:    To validate plan quality before entry
+  Action: Instant generation
+  Repeat: As needed during day
+
+================================================================================
+COMMAND ACTIVATION CHECKLIST
+================================================================================
+
+Before saying a command, verify:
+
+[ ] Wingman is loaded (you've said "i know kung fu" or "Load Wingman")
+[ ] You know what the command will do (check descriptions above)
+[ ] You're ready to wait (know time commitment: 2 min to 60 min)
+[ ] You've run prerequisites (e.g., "recon" before "prep")
+[ ] You're clear on next steps (what happens after command completes)
+
+================================================================================
+LAST UPDATED
+================================================================================
+
+Date: October 27, 2025
+Reason: Standardized all commands to "wingman [action]" pattern
+        Removed "wingmap prep" naming - replaced with "wingman prep"
+        Created unified cheat sheet for quick reference
+
+Version: 1.0
+File: Toolbox/INSTRUCTIONS/Domains/Wingman_Quick_Commands_Cheat_Sheet.txt
+
+================================================================================

@@ -1,0 +1,34 @@
+# Ignore everything by default
+/*
+
+# Keep these
+!/.gitignore
+!/.nojekyll       #  add this
+!/README.md
+!/index.html
+
+!/Journal/
+!/Journal/**
+
+!/landing-page/
+/landing-page/*
+!/landing-page/index.html
+
+!/master-plan/
+/master-plan/*
+!/master-plan/research-dashboard.html
+!/master-plan/archive_compressed.zip
+
+!/scripts/
+!/scripts/automation/
+!/scripts/utilities/
+/scripts/**
+!/scripts/automation/wingman_dash.py
+!/scripts/automation/wingman_prep.py
+!/scripts/utilities/sync_risk_items.py
+!/scripts/utilities/sync_provider_consensus.py
+!/scripts/utilities/sync_*.py
+!/scripts/utilities/verify_*.py
+
+!/Toolbox/
+!/Toolbox/**

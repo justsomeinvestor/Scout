@@ -1,0 +1,579 @@
+{
+  "last_generated": "2025-10-28T15:44:19.039596Z",
+  "tickers": [
+    {
+      "ticker": "AAPL",
+      "asset_class": "stock",
+      "last_updated": "2025-10-01",
+      "file_path": "Tickers\\Stocks\\Thesis\\2025-10-01_AAPL.md",
+      "theme": "Consumer AI + Services flywheel, Vision Pro ecosystem, silicon vertical integration.",
+      "scores": {
+        "fundamentals": 32,
+        "fundamentals_max": 40,
+        "technicals": 18,
+        "technicals_max": 25,
+        "management": 14,
+        "management_max": 15,
+        "risk": 7,
+        "risk_max": 10,
+        "sentiment": 7,
+        "sentiment_max": 10,
+        "total": 78,
+        "total_max": 100
+      },
+      "pillars": [
+        "Services Mix Shift:",
+        "On-Device AI Differentiation:",
+        "Emerging Hardware Catalysts:"
+      ],
+      "catalysts": [],
+      "metrics": [
+        "Services revenue growth >12% y/y, attach rates for Vision Pro productivity bundles, Device install base (currently ~2.3B).",
+        "Gross margin trend (target maintaining 44%+), share of revenue from AI-enabled devices."
+      ],
+      "risks": [
+        "China demand elasticity to premium pricing and regulatory pressure on iPhone usage.",
+        "Services regulation (app store fees, advertising disclosure) could compress high-margin segment.",
+        "Supply-chain concentration in advanced packaging partners (TSMC, ASE) for Apple Silicon."
+      ]
+    },
+    {
+      "ticker": "AMD",
+      "asset_class": "stock",
+      "last_updated": "2025-10-01",
+      "file_path": "Tickers\\Stocks\\Thesis\\2025-10-01_AMD.md",
+      "theme": "AI accelerators (MI300/MI325/MI350), x86 CPUs, adaptive computing.",
+      "scores": {
+        "fundamentals": 30,
+        "fundamentals_max": 40,
+        "technicals": 18,
+        "technicals_max": 25,
+        "management": 13,
+        "management_max": 15,
+        "risk": 6,
+        "risk_max": 10,
+        "sentiment": 7,
+        "sentiment_max": 10,
+        "total": 74,
+        "total_max": 100
+      },
+      "pillars": [
+        "MI325/MI350 Ramp:",
+        "Software Ecosystem Maturation:",
+        "Embedded + FPGA Synergies:"
+      ],
+      "catalysts": [],
+      "metrics": [
+        "AI GPU supply commitments, MI300 family market share (target double-digit exiting 2025).",
+        "Data center segment margin, software ecosystem adoption metrics."
+      ],
+      "risks": [
+        "Execution risk on MI350 tape-out and supply vs demand alignment.",
+        "Pricing pressure if Nvidia or custom silicon leads to margin concessions.",
+        "Dependence on TSMC advanced nodes (5nm/4nm) for GPU production."
+      ]
+    },
+    {
+      "ticker": "AMZN",
+      "asset_class": "stock",
+      "last_updated": "2025-10-01",
+      "file_path": "Tickers\\Stocks\\Thesis\\2025-10-01_AMZN.md",
+      "theme": "AWS AI infrastructure, consumer AI, logistics flywheel.",
+      "scores": {
+        "fundamentals": 32,
+        "fundamentals_max": 40,
+        "technicals": 18,
+        "technicals_max": 25,
+        "management": 14,
+        "management_max": 15,
+        "risk": 7,
+        "risk_max": 10,
+        "sentiment": 7,
+        "sentiment_max": 10,
+        "total": 78,
+        "total_max": 100
+      },
+      "pillars": [
+        "AWS Trainium/Inferentia Push:",
+        "Retail Margin Expansion:",
+        "Consumer AI Integration:"
+      ],
+      "catalysts": [],
+      "metrics": [
+        "AWS operating margin (>30%), capex (AI infrastructure) trends, retail operating income, ad revenue run-rate."
+      ],
+      "risks": [
+        "AI competition from MSFT/GOOGL, customer multi-cloud strategies.",
+        "Regulatory scrutiny on marketplace practices and labor.",
+        "Margin compression if consumer spending slows."
+      ]
+    },
+    {
+      "ticker": "ASML",
+      "asset_class": "stock",
+      "last_updated": "2025-10-01",
+      "file_path": "Tickers\\Stocks\\Thesis\\2025-10-01_ASML.md",
+      "theme": "Lithography monopoly (EUV/High-NA), enabling sub-2nm semiconductor roadmap.",
+      "scores": {
+        "fundamentals": 35,
+        "fundamentals_max": 40,
+        "technicals": 18,
+        "technicals_max": 25,
+        "management": 14,
+        "management_max": 15,
+        "risk": 6,
+        "risk_max": 10,
+        "sentiment": 7,
+        "sentiment_max": 10,
+        "total": 80,
+        "total_max": 100
+      },
+      "pillars": [
+        "High-NA EUV Ramp:",
+        "Service & Installed Base Growth:",
+        "Structural Pricing Power:"
+      ],
+      "catalysts": [],
+      "metrics": [
+        "Backlog (>35B), gross margin (>52%), service revenue growth, High-NA tools shipped vs planned (=10 in FY25)."
+      ],
+      "risks": [
+        "Export restrictions to China reducing DUV shipments.",
+        "Execution risk on High-NA installation schedules.",
+        "Macro capex slowdown if memory recovery stalls."
+      ]
+    },
+    {
+      "ticker": "HOOD",
+      "asset_class": "stock",
+      "last_updated": "2025-10-01",
+      "file_path": "Tickers\\Stocks\\Thesis\\2025-10-01_HOOD.md",
+      "theme": "Retail trading platform, options/crypto engagement, cash management expansion.",
+      "scores": {
+        "fundamentals": 22,
+        "fundamentals_max": 40,
+        "technicals": 16,
+        "technicals_max": 25,
+        "management": 11,
+        "management_max": 15,
+        "risk": 5,
+        "risk_max": 10,
+        "sentiment": 5,
+        "sentiment_max": 10,
+        "total": 59,
+        "total_max": 100
+      },
+      "pillars": [
+        "Product Diversification:",
+        "Net Interest Tailwind:",
+        "Regulatory Normalization:"
+      ],
+      "catalysts": [],
+      "metrics": [],
+      "risks": [
+        "Regulatory shifts in payment for order flow and crypto listing.",
+        "Customer concentration in high-beta traders increases revenue volatility.",
+        "Rate compression or deposit outflows reducing NII."
+      ]
+    },
+    {
+      "ticker": "LLY",
+      "asset_class": "stock",
+      "last_updated": "2025-10-01",
+      "file_path": "Tickers\\Stocks\\Thesis\\2025-10-01_LLY.md",
+      "theme": "GLP-1 obesity/diabetes leadership, pipeline breadth, consumer channel expansion.",
+      "scores": {
+        "fundamentals": 35,
+        "fundamentals_max": 40,
+        "technicals": 17,
+        "technicals_max": 25,
+        "management": 14,
+        "management_max": 15,
+        "risk": 7,
+        "risk_max": 10,
+        "sentiment": 7,
+        "sentiment_max": 10,
+        "total": 80,
+        "total_max": 100
+      },
+      "pillars": [
+        "GLP-1 Market Leadership:",
+        "DTC Channel Expansion:",
+        "Pipeline Diversification:"
+      ],
+      "catalysts": [],
+      "metrics": [
+        "GLP-1 script growth (>45% y/y), gross margin trajectory (>81%), R&D spend efficiency.",
+        "Supply chain cadence, international reimbursement wins."
+      ],
+      "risks": [
+        "Competitive pressure from Novo Nordisk oral GLP-1 and biosimilars mid-term.",
+        "Manufacturing hiccups leading to supply constraints.",
+        "Pricing/reimbursement pressures as payers manage obesity spend."
+      ]
+    },
+    {
+      "ticker": "META",
+      "asset_class": "stock",
+      "last_updated": "2025-10-01",
+      "file_path": "Tickers\\Stocks\\Thesis\\2025-10-01_META.md",
+      "theme": "Consumer AI, social engagement, advertising, custom silicon.",
+      "scores": {
+        "fundamentals": 33,
+        "fundamentals_max": 40,
+        "technicals": 19,
+        "technicals_max": 25,
+        "management": 13,
+        "management_max": 15,
+        "risk": 6,
+        "risk_max": 10,
+        "sentiment": 7,
+        "sentiment_max": 10,
+        "total": 78,
+        "total_max": 100
+      },
+      "pillars": [
+        "Custom Silicon Strategy:",
+        "AI-Driven Engagement & Ads:",
+        "Cost Discipline:"
+      ],
+      "catalysts": [],
+      "metrics": [
+        "Family of apps operating margin (>40%), Capex guidance (AI infrastructure), Reality Labs spend trajectory.",
+        "Daily active people (DAP), Reels monetization progress, AI assistant usage stats."
+      ],
+      "risks": [
+        "Regulatory headwinds on data privacy, app store compliance.",
+        "Competition from TikTok, YouTube for user engagement.",
+        "Execution risk on hardware/silicon initiatives."
+      ]
+    },
+    {
+      "ticker": "MSFT",
+      "asset_class": "stock",
+      "last_updated": "2025-10-01",
+      "file_path": "Tickers\\Stocks\\Thesis\\2025-10-01_MSFT.md",
+      "theme": "Hyperscale AI, enterprise software, Copilot productivity, gaming/cloud ecosystem.",
+      "scores": {
+        "fundamentals": 36,
+        "fundamentals_max": 40,
+        "technicals": 19,
+        "technicals_max": 25,
+        "management": 15,
+        "management_max": 15,
+        "risk": 7,
+        "risk_max": 10,
+        "sentiment": 7,
+        "sentiment_max": 10,
+        "total": 84,
+        "total_max": 100
+      },
+      "pillars": [
+        "AI Capex & Financing:",
+        "Copilot Monetization:",
+        "Azure Leadership:"
+      ],
+      "catalysts": [],
+      "metrics": [
+        "AI attach rates in Microsoft 365, Azure AI consumption, gross margin (cloud + AI capex efficiency), capital intensity trends."
+      ],
+      "risks": [
+        "Capex digestion risk if corporate AI adoption slows.",
+        "Competitive pressure from AWS/GCP or in-house customer chips.",
+        "Regulatory constraints on AI/data usage."
+      ]
+    },
+    {
+      "ticker": "NVDA",
+      "asset_class": "stock",
+      "last_updated": "2025-10-01",
+      "file_path": "Tickers\\Stocks\\Thesis\\2025-10-01_NVDA.md",
+      "theme": "AI infrastructure backbone, accelerated computing, software ecosystem (CUDA + DGX Cloud).",
+      "scores": {
+        "fundamentals": 36,
+        "fundamentals_max": 40,
+        "technicals": 20,
+        "technicals_max": 25,
+        "management": 15,
+        "management_max": 15,
+        "risk": 6,
+        "risk_max": 10,
+        "sentiment": 8,
+        "sentiment_max": 10,
+        "total": 85,
+        "total_max": 100
+      },
+      "pillars": [
+        "Blackwell Upgrade Cycle:",
+        "Platform Lock-In:",
+        "Supply Chain Advantage:"
+      ],
+      "catalysts": [],
+      "metrics": [
+        "Data center revenue mix (>78%), supply-demand balance (lead times trending 14-16 weeks), gross margin sustainability (>74%).",
+        "Networking revenue growth (Spectrum-X attach), software ARR disclosures."
+      ],
+      "risks": [
+        "Export controls tightening on high-end GPUs to China/Middle East.",
+        "Competition from custom silicon (MSFT Maia, AMZN Trainium) could cap hyperscaler wallet share.",
+        "Supply chain disruptions in advanced packaging or HBM supply (SK Hynix, Samsung)."
+      ]
+    },
+    {
+      "ticker": "OKLO",
+      "asset_class": "stock",
+      "last_updated": "2025-10-01",
+      "file_path": "Tickers\\Stocks\\Thesis\\2025-10-01_OKLO.md",
+      "theme": "Advanced nuclear microreactors, clean energy transition, DOE partnerships.",
+      "scores": {
+        "fundamentals": 12,
+        "fundamentals_max": 40,
+        "technicals": 12,
+        "technicals_max": 25,
+        "management": 11,
+        "management_max": 15,
+        "risk": 3,
+        "risk_max": 10,
+        "sentiment": 5,
+        "sentiment_max": 10,
+        "total": 43,
+        "total_max": 100
+      },
+      "pillars": [
+        "DOE Support:",
+        "Aurora Demonstration Progress:",
+        "Strategic Partnerships:"
+      ],
+      "catalysts": [],
+      "metrics": [],
+      "risks": [
+        "Technology execution risk, regulatory delays, capital intensity.",
+        "Public perception/political shifts affecting nuclear policy.",
+        "Dilution risk from capital raises before commercialization."
+      ]
+    },
+    {
+      "ticker": "QQQ",
+      "asset_class": "stock",
+      "last_updated": "2025-10-01",
+      "file_path": "Tickers\\Stocks\\Thesis\\2025-10-01_QQQ.md",
+      "theme": "Mega-cap growth + AI platform aggregation (contains AAPL, MSFT, NVDA, AMZN, META, GOOG).",
+      "scores": {
+        "fundamentals": 0,
+        "fundamentals_max": 40,
+        "technicals": 19,
+        "technicals_max": 25,
+        "management": 12,
+        "management_max": 15,
+        "risk": 7,
+        "risk_max": 10,
+        "sentiment": 6,
+        "sentiment_max": 10,
+        "total": 44,
+        "total_max": 100
+      },
+      "pillars": [
+        "AI Capex Flywheel:",
+        "Relative Strength vs SPX:",
+        "Liquidity & Optionality:"
+      ],
+      "catalysts": [],
+      "metrics": [],
+      "risks": [
+        "Macroeconomic shocks (rates, recession) disproportionately impact high-duration equities.",
+        "Concentration risk (top 10 holdings >55% weight), regulatory scrutiny on big tech.",
+        "Crowd positioning leading to sharp de-risking in risk-off episodes."
+      ]
+    },
+    {
+      "ticker": "SMCI",
+      "asset_class": "stock",
+      "last_updated": "2025-10-01",
+      "file_path": "Tickers\\Stocks\\Thesis\\2025-10-01_SMCI.md",
+      "theme": "AI server design/mfg, liquid cooling, rapid configuration cycles.",
+      "scores": {
+        "fundamentals": 28,
+        "fundamentals_max": 40,
+        "technicals": 20,
+        "technicals_max": 25,
+        "management": 12,
+        "management_max": 15,
+        "risk": 6,
+        "risk_max": 10,
+        "sentiment": 8,
+        "sentiment_max": 10,
+        "total": 74,
+        "total_max": 100
+      },
+      "pillars": [
+        "AI Server Expansion:",
+        "Speed-to-Market Advantage:",
+        "Geographic Diversification:"
+      ],
+      "catalysts": [],
+      "metrics": [
+        "Backlog visibility, inventory turns, gross margin trajectory (>17%).",
+        "Customer concentration and mix (hyperscaler vs enterprise)."
+      ],
+      "risks": [
+        "Supply constraints (HBM, GPUs) could delay deliveries.",
+        "Execution risk scaling manufacturing; quality control essential.",
+        "Competition from OEMs (Dell, HPE) responding aggressively."
+      ]
+    },
+    {
+      "ticker": "SPY",
+      "asset_class": "stock",
+      "last_updated": "2025-10-01",
+      "file_path": "Tickers\\Stocks\\Thesis\\2025-10-01_SPY.md",
+      "theme": "Broad U.S. equity exposure, S&P 500 benchmark, core asset allocation anchor.",
+      "scores": {
+        "fundamentals": 0,
+        "fundamentals_max": 40,
+        "technicals": 18,
+        "technicals_max": 25,
+        "management": 12,
+        "management_max": 15,
+        "risk": 8,
+        "risk_max": 10,
+        "sentiment": 6,
+        "sentiment_max": 10,
+        "total": 44,
+        "total_max": 100
+      },
+      "pillars": [
+        "Macro Backdrop:",
+        "Earnings Momentum:",
+        "Liquidity & Defensive Characteristics:"
+      ],
+      "catalysts": [],
+      "metrics": [],
+      "risks": [
+        "Re-acceleration of inflation forcing renewed tightening, compressing multiples.",
+        "Earnings deterioration from margin pressure or growth slowdown.",
+        "Geopolitical shocks or fiscal stress impacting risk sentiment."
+      ]
+    },
+    {
+      "ticker": "TSLA",
+      "asset_class": "stock",
+      "last_updated": "2025-10-01",
+      "file_path": "Tickers\\Stocks\\Thesis\\2025-10-01_TSLA.md",
+      "theme": "EV leadership, AI autonomous stack, energy storage scale-up.",
+      "scores": {
+        "fundamentals": 28,
+        "fundamentals_max": 40,
+        "technicals": 17,
+        "technicals_max": 25,
+        "management": 13,
+        "management_max": 15,
+        "risk": 5,
+        "risk_max": 10,
+        "sentiment": 6,
+        "sentiment_max": 10,
+        "total": 69,
+        "total_max": 100
+      },
+      "pillars": [
+        "Deliveries Inflection:",
+        "FSD v14 Rollout:",
+        "Energy Storage Momentum:"
+      ],
+      "catalysts": [],
+      "metrics": [
+        "Automotive gross margin ex-credits (>18%), FSD take rate (>25% of U.S. deliveries), energy storage deployments (>20 GWh annualized).",
+        "China weekly registrations, Cybertruck ramp efficiency, AI training compute spend."
+      ],
+      "risks": [
+        "Price cuts pressuring margin if demand softens post-credit expiration.",
+        "Autonomy regulatory hurdles or safety incidents delaying FSD monetization.",
+        "Rising competition in China (BYD, Li Auto) and macro sensitivity to rates."
+      ]
+    },
+    {
+      "ticker": "TSM",
+      "asset_class": "stock",
+      "last_updated": "2025-10-01",
+      "file_path": "Tickers\\Stocks\\Thesis\\2025-10-01_TSM.md",
+      "theme": "Leading-edge foundry, advanced packaging (CoWoS, SoIC), AI supply chain enabler.",
+      "scores": {
+        "fundamentals": 34,
+        "fundamentals_max": 40,
+        "technicals": 17,
+        "technicals_max": 25,
+        "management": 14,
+        "management_max": 15,
+        "risk": 6,
+        "risk_max": 10,
+        "sentiment": 7,
+        "sentiment_max": 10,
+        "total": 78,
+        "total_max": 100
+      },
+      "pillars": [
+        "Advanced Packaging Scale:",
+        "Node Leadership:",
+        "Regional Diversification:"
+      ],
+      "catalysts": [],
+      "metrics": [
+        "Capacity utilization, capex guidance (>USD 32B FY25), gross margin trend (target 53%+), AI revenue mix."
+      ],
+      "risks": [
+        "Geopolitical risk in Taiwan Strait, supply chain shocks.",
+        "Margin pressure from overseas fabs and customer price negotiations.",
+        "Dependency on a handful of mega-customers (AAPL, NVDA, AMD) for leading-node demand."
+      ]
+    },
+    {
+      "ticker": "HYSR",
+      "asset_class": "stock",
+      "last_updated": "2025-10-02",
+      "file_path": "Tickers\\Stocks\\Thesis\\HYSR_Investment_Trading_Thesis_2025-10-02.md",
+      "theme": "",
+      "scores": {
+        "fundamentals": 0,
+        "fundamentals_max": 40,
+        "technicals": 0,
+        "technicals_max": 25,
+        "management": 0,
+        "management_max": 15,
+        "risk": 0,
+        "risk_max": 10,
+        "sentiment": 0,
+        "sentiment_max": 10,
+        "total": 0,
+        "total_max": 100
+      },
+      "pillars": [],
+      "catalysts": [],
+      "metrics": [],
+      "risks": []
+    },
+    {
+      "ticker": "SOL",
+      "asset_class": "crypto",
+      "last_updated": "2025-10-19",
+      "file_path": "Tickers\\Crypto\\Solana_Investment_Thesis_2025-10-19.md",
+      "core_idea": "Solana aims to be the default high-throughput, low-latency settlement layer for *consumer* and *exchange-like* on-chain activity (payments, DEX trading, perps, NFTs, DePIN), while steadily improving resilience (multi-client), validator economics, and institutional access. The bet is that real usage (transactions + active users) and growing validator revenues eventually translate into durable protocol revenues and value accrual to SOL via fee burns, staking yields, and broader capital-market rails (futures/ETFs).",
+      "metrics": {
+        "Fees collected (24h)": "$",
+        "Protocol *revenue* (24h)": "$",
+        "Active addresses (24h)": "~",
+        "Transactions (24h)": "~",
+        "DEX volume (24h)": "$"
+      },
+      "bull_triggers": [
+        "**Bear:** Reliability stalls, user base shrinks, validator economics weaken.",
+        "**Bull:** Firedancer success, CME futures + ETF approval, sustained trading/payment leadership."
+      ],
+      "bear_triggers": [],
+      "risks": [
+        "**Reliability/outages:** Last major outage Feb 2024; small 2025 disruptions observed.",
+        "**Validator concentration/MEV:** Ongoing monitoring needed.",
+        "**Regulation:** Futures/ETF path and stablecoin legislation could sway flows.",
+        "**Competition:** Ethereum L2s, other L1s compete for devs/liquidity."
+      ]
+    }
+  ]
+}

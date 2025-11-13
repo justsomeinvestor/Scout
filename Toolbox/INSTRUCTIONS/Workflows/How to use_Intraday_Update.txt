@@ -1,0 +1,326 @@
+AI Assistant Operating Guide for Intraday Master Plan Updates
+================================================================
+
+Purpose
+-------
+Provide a quick, efficient workflow for updating the master plan with fresh market data DURING TRADING HOURS without running the full morning workflow.
+
+This is a FAST refresh (2-3 minutes) that updates signals and prices while reusing existing provider summaries from the morning.
+
+When to Use This Workflow
+--------------------------
+✅ Use intraday workflow when:
+- Market is open and prices have moved significantly
+- You need updated signals/Fear & Greed without full rescrape
+- Provider summaries from this morning are still relevant (<12 hours old)
+- Quick update needed (2-3 min vs 40+ min for full workflow)
+
+❌ Do NOT use intraday workflow when:
+- It's a new trading day (use full morning workflow instead)
+- Provider summaries are stale (>24 hours old)
+- Major market events require fresh sentiment analysis
+- No morning workflow was run today (no existing summaries to use)
+
+Comparison: Morning vs Intraday
+--------------------------------
+
+| Aspect | Morning Workflow | Intraday Workflow |
+|--------|------------------|-------------------|
+| **When** | Pre-market (6-8am) | During market hours |
+| **Duration** | 30-45 minutes | 2-3 minutes |
+| **Data Collection** | Full scrape (YouTube, RSS, X) | API calls only |
+| **Summaries** | AI creates fresh summaries | Uses existing summaries |
+| **Market Overview** | AI creates fresh overview | Uses existing overview |
+| **Signals** | Fresh calculation | Fresh calculation |
+| **X Sentiment** | Fresh from scraper | Reuses morning's score |
+| **Use Case** | Daily preparation | Quick price refresh |
+| **Token Usage** | High (AI summaries) | Low (no AI writing) |
+
+Quick Start
+-----------
+
+**Command:**
+    python scripts/automation/run_intraday_update.py YYYY-MM-DD
+
+**Example:**
+    python scripts/automation/run_intraday_update.py 2025-10-10
+
+**What happens:**
+1. Fetches fresh API data (Fear & Greed, crypto prices, stock prices) - 30 sec
+2. Calculates signals using existing summaries + fresh data - 5 sec
+3. Updates master plan with new signals and timestamps - 1 sec
+4. Verifies consistency - 1 sec
+
+**Total time:** ~40 seconds of automation
+
+Pre-Flight Checklist
+--------------------
+
+Before running intraday update, verify:
+
+1. **Morning workflow was completed today**
+   - Check provider summaries exist for today's date
+   - Pattern: `Research/YouTube/*/YYYY-MM-DD_*_Summary.md`
+   - Pattern: `Research/RSS/*/YYYY-MM-DD_*_Summary.md`
+   - Pattern: `Research/X/YYYY-MM-DD_X_*_Summary.md`
+
+2. **Market overview exists for today**
+   - File: `Research/YYYY-MM-DD_Market_Sentiment_Overview.md`
+   - If missing, run full morning workflow instead
+
+3. **Master plan is current**
+   - Read `master-plan/master-plan.md` lines 4-6 (pageTitle, dateBadge)
+   - Should match today's date
+
+4. **Determine if intraday update is needed**
+   - Has market moved significantly since morning?
+   - Do you need fresh Fear & Greed / price data?
+   - Are existing signals stale (>2-3 hours old)?
+
+Workflow Steps
+--------------
+
+**AUTOMATED - Just run the command:**
+
+    python scripts/run_intraday_update.py YYYY-MM-DD
+
+The script automatically executes these phases:
+
+**Phase 1: Fetch Market Data (30 sec)**
+- Calls Fear & Greed Index API
+- Calls CoinGecko for crypto prices (BTC, ETH, SOL)
+- Calls Yahoo Finance for stock prices (SPY, QQQ, VIX)
+- Saves to: `Research/.cache/YYYY-MM-DD_market_data.json`
+
+**Phase 2: Calculate Signals (5 sec)**
+- Loads market data from Phase 1
+- Loads EXISTING provider summaries (from morning)
+- Calculates 5 signal components:
+  * Trend (40% weight)
+  * Breadth (25% weight)
+  * Volatility (20% weight)
+  * Technical (10% weight)
+  * Seasonality (5% weight)
+- Applies X sentiment contrarian adjustment (using morning's X sentiment)
+- Saves to: `Research/.cache/signals_YYYY-MM-DD.json`
+
+**Phase 3: Update Master Plan (1 sec)**
+- Updates all dates to target date
+- Updates signal scores
+- Updates tab timestamps
+- Updates X sentiment display
+- Creates backup: `master-plan/master-plan.md.backup`
+- Updates HTML dashboard
+
+**Phase 4: Verify Consistency (1 sec)**
+- Checks all dates match
+- Verifies signal consistency
+- Returns pass/fail
+
+What Gets SKIPPED (and Why)
+----------------------------
+
+The intraday workflow deliberately SKIPS these steps to save time:
+
+❌ **SKIP: Scrapers** (Step 0 of morning workflow)
+   - Why: Uses existing raw data from morning
+   - Time saved: ~5-10 minutes
+   - Trade-off: Won't capture news/videos from last few hours
+
+❌ **SKIP: Provider Summaries** (Step 1 of morning workflow)
+   - Why: Uses existing summaries from morning
+   - Time saved: ~20-30 minutes (AI writing time)
+   - Trade-off: Summaries may miss latest developments
+
+❌ **SKIP: X Trends Processing** (Step 2 of morning workflow)
+   - Why: Uses morning's X sentiment score
+   - Time saved: ~3-4 minutes
+   - Trade-off: X sentiment is 3-8 hours stale (usually acceptable)
+
+❌ **SKIP: Market Overview** (Step 3 of morning workflow)
+   - Why: Uses existing overview from morning
+   - Time saved: ~10-15 minutes (AI synthesis time)
+   - Trade-off: Overview doesn't include latest context
+
+✅ **KEEP: Signal Calculation** (Step 4 of morning workflow)
+   - Why: Signals are price-sensitive and need to be fresh
+   - Fresh inputs: API data (prices, Fear & Greed)
+   - Stale inputs: Provider summaries (acceptable)
+   - Result: Reasonably accurate signals with minimal effort
+
+✅ **KEEP: Master Plan Update** (Step 5 of morning workflow)
+   - Why: Signals need to be reflected in master plan
+   - Updates: Signal scores, timestamps, dates
+
+✅ **KEEP: Verification** (Step 6 of morning workflow)
+   - Why: Always verify consistency
+
+Expected Output
+---------------
+
+**Success output:**
+```
+⚡ INTRADAY UPDATE - QUICK REFRESH
+====================================================================
+ℹ️  Using existing summaries from morning workflow
+ℹ️  Only refreshing: API data + Signals + Master Plan
+====================================================================
+
+📡 PHASE 1: FETCH MARKET DATA
+====================================================================
+[*] Fetching market data for 2025-10-10
+   [OK] Fear & Greed: 64 (Greed)
+   [OK] Crypto prices: BTC $116.8K, ETH $4,009, SOL $206
+   [OK] Stock prices: SPY $653.09, QQQ $589.49
+
+✅ Phase 1 Complete
+
+📈 PHASE 2: CALCULATE SIGNALS
+====================================================================
+[*] Loading data for 2025-10-10
+   [OK] Market data loaded
+   [OK] X Crypto summary loaded
+   [OK] X Macro summary loaded
+   [OK] Market overview loaded
+
+[*] Calculating signal components...
+   Trend:       20.00/40
+   Breadth:     12.50/25
+   Volatility:  12.00/20
+   Technical:    5.00/10
+   Seasonality:  1.00/5
+
+[*] Contrarian adjustment:
+   X Crypto Sentiment: 85/100
+   Breadth adjustment: -2.00
+   Breadth adjusted: 12.50 -> 10.50
+
+[*] Composite score: 48/100 (WEAK)
+
+✅ Phase 2 Complete
+
+📝 PHASE 3: UPDATE MASTER PLAN
+====================================================================
+[OK] Master plan updated successfully!
+
+✅ Phase 3 Complete
+
+🔍 PHASE 4: VERIFY CONSISTENCY
+====================================================================
+✅ VERIFICATION PASSED
+
+🎉 WORKFLOW COMPLETE - ALL CHECKS PASSED
+====================================================================
+```
+
+Troubleshooting
+---------------
+
+**Problem: "Market overview not found"**
+- Cause: Morning workflow Step 3 was not completed
+- Fix: Run full morning workflow first
+- Command: Follow @master-plan/How to use_MP.txt
+
+**Problem: "Provider summaries missing"**
+- Cause: Morning workflow Step 1 was not completed
+- Fix: Run full morning workflow first
+- Cannot proceed with intraday until morning summaries exist
+
+**Problem: "Signals seem inaccurate"**
+- Cause: Stale provider summaries (context has changed significantly)
+- Fix: Run full morning workflow to refresh all summaries
+- When: Major market events, earnings, Fed announcements
+
+**Problem: "X sentiment score seems wrong"**
+- Cause: Using morning's X sentiment (now 6-8 hours old)
+- Fix: If X sentiment shifted dramatically, manually re-run X scraper:
+  * `python Scraper/x_scraper.py`
+  * `python Research/X/Trends/process_trends.py YYYY-MM-DD`
+  * AI creates fresh X summaries
+  * Re-run intraday update
+
+**Problem: "API data missing (Yahoo Finance rate limit)"**
+- Cause: Free tier API limits
+- Impact: Stock data may be empty, signals use crypto data only
+- Fix: Wait a few minutes and retry, or accept crypto-only signals
+
+When to Switch to Full Morning Workflow
+----------------------------------------
+
+Switch from intraday to full morning workflow if:
+
+1. **Provider summaries are stale** (>12 hours old)
+   - Summaries don't reflect current market context
+   - Major news/events have occurred
+
+2. **X sentiment has shifted dramatically**
+   - Market went from fear to greed or vice versa
+   - Social sentiment is driving price action
+
+3. **It's a new trading day**
+   - Always start fresh each morning
+   - Don't rely on yesterday's summaries
+
+4. **Major market event occurred**
+   - Fed announcement
+   - Major earnings
+   - Geopolitical events
+   - Crypto exchange issues
+
+5. **Signals seem off**
+   - Trust your judgment
+   - When in doubt, run full workflow
+
+AI Workflow Integration
+-----------------------
+
+**For AI assistants executing this workflow:**
+
+1. **Read this file** when user directs you to intraday update
+2. **Verify pre-flight checklist** (summaries exist)
+3. **Run command:** `python scripts/run_intraday_update.py YYYY-MM-DD`
+4. **Wait for completion** (should be ~2-3 minutes)
+5. **Verify output** shows all phases completed
+6. **Check master plan** was updated (dates, signals)
+7. **Report to user** with new signal score and any issues
+
+**DO NOT manually recreate summaries** - that defeats the purpose of intraday workflow. If summaries are needed, direct user to full morning workflow instead.
+
+Performance Expectations
+------------------------
+
+| Metric | Target | Typical |
+|--------|--------|---------|
+| Total time | <5 min | 2-3 min |
+| API fetch | <1 min | 30 sec |
+| Signal calc | <30 sec | 5 sec |
+| Master plan update | <10 sec | 1 sec |
+| Token usage | <5K | ~2K |
+| Success rate | >95% | ~98% |
+
+**Comparison to morning workflow:**
+- Time: 2-3 min vs 40+ min (93% faster)
+- Tokens: ~2K vs ~80K (97% reduction)
+- Accuracy: ~95% vs 100% (acceptable trade-off for speed)
+
+Notes
+-----
+- Intraday workflow is designed for SPEED, not COMPREHENSIVENESS
+- Use morning workflow for depth, intraday workflow for speed
+- X sentiment staleness (3-8 hours) is usually acceptable
+- Provider summary staleness (<12 hours) is usually acceptable
+- Always verify output makes sense before trusting signals
+- When in doubt, run full morning workflow
+
+Related Documentation
+---------------------
+- `master-plan/How to use_MP.txt` - Full morning workflow
+- `scripts/README.md` - Scripts documentation
+- `Trading/signal-system/How to use_Signals.txt` - Signal calculation details
+- `RnD/WORKFLOW-QUICK-REFERENCE.md` - Decision guide
+- `RnD/Ideas/HANDOFF-SESSION-3.md` - Implementation details
+
+---
+
+Last Updated: 2025-10-10
+Version: 1.0

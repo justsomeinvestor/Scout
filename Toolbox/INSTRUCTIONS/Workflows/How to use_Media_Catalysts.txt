@@ -1,0 +1,408 @@
+# Media & Catalysts Curation Logic
+
+**Purpose:** Autonomous decision-making framework for curating the Media & Catalysts tab in master-plan.md during workflow execution.
+
+**Last Updated:** 2025-10-03
+
+---
+
+## Core Principle
+
+Only add items that provide **actionable trading intelligence** with clear conviction levels based on data-driven signals from existing system summaries.
+
+---
+
+## 1. INCLUSION CRITERIA (What Makes the Cut)
+
+### 🚀 Upcoming Catalysts
+**Add if:**
+- Macro events from Economic Calendar with HIGH impact (NFP, CPI, FOMC)
+- Earnings clusters (3+ mega-cap names same week)
+- IPOs with >$1B valuation in relevant sectors (AI, crypto, semiconductors)
+- Policy announcements flagged in X Macro with +200% velocity
+- **Conviction threshold:** Must be dateable event with market-moving potential
+
+### 💡 Research Highlights
+**Add if:**
+- Tier 1/2 analyst calls (Jake Wujastyk, Trader Mayne, Raoul Pal) with specific levels/targets
+- Technical setups with entry/stop/target defined
+- Crowdsourced levels from X with 3+ influencers citing same price
+- Sector rotation signals from provider consensus (e.g., 42 Macro sector calls)
+- **Conviction threshold:** Analyst has track record (mentioned in provider summaries) + specific actionable thesis
+
+### 📊 Data Anomalies & Institutional Flows
+**Add if:**
+- Institutional deployments >$100M (like JPM $500M → NMR)
+- X velocity breakouts >+200% (like NFP mentions +250%)
+- Options flow surges mentioned by johnscharts or similar
+- Whale movements from CoinGlass/Whalemap summaries
+- Stablecoin flows or custody announcements (like Walmart OnePay)
+- **Conviction threshold:** Quantifiable flow data + potential copycat/precedent value
+
+### 🎥 Must-Watch Content
+**Add if:**
+- YouTube videos with timestamp-specific insights (not generic market commentary)
+- X threads from Tier 1 influencers with multi-tweet analysis
+- Bloomberg/CNBC interviews with specific forecasts (like Solomon "drawdown" warning)
+- **Conviction threshold:** Contrarian or high-conviction view vs consensus
+
+### ⚠️ Exhaustion Signals
+**Add if:**
+- X velocity reversals <-50% (like ZEC -60% after +1200% spike)
+- Sentiment extremes (X sentiment >90 = euphoria, <25 = capitulation)
+- Hype cycle indicators from X analysis (excessive emojis + >35% extreme sentiment)
+- Breadth divergence warnings from Market Breadth provider
+- **Conviction threshold:** Signal must contradict current positioning (contrarian value)
+
+---
+
+## 2. SOURCE PRIORITY RANKING
+
+When multiple items compete for limited slots, prioritize:
+
+1. **X posts with permalinks** from known analysts (Jake, Trader Mayne, Pomp, Raoul)
+2. **Economic Calendar HIGH-impact events** within 7 days
+3. **RSS articles** with institutional announcements (mergers, partnerships, capital raises)
+4. **YouTube videos** from monitored channels with recent upload (<48 hours)
+5. **Aggregate X trends** (velocity, sentiment) as "Data Anomaly" items
+
+---
+
+## 3. CONVICTION LEVEL ASSIGNMENT
+
+**HIGH:**
+- Event with 99%+ probability (like FOMC Oct 29 with 99% cut probability)
+- Analyst call with specific entry/stop/target AND historical win rate
+- Institutional flow >$500M with price impact precedent
+- X velocity >+300% AND dateable catalyst
+
+**MEDIUM-HIGH:**
+- Institutional announcement without confirmed dollar amount
+- Technical setup from Tier 2 analyst with clear invalidation
+- X velocity +200-300% with emerging narrative
+
+**MEDIUM:**
+- Sector rotation thesis from provider consensus (70-80% agreement)
+- Crowdsourced levels (3-5 influencers citing same price)
+- Exhaustion signal with -50% to -75% velocity reversal
+
+**LOW:**
+- Speculative thesis without clear catalyst timing
+- Emerging narrative with <3 mentions in X data
+- *(Note: Generally don't add LOW conviction items unless filling a gap)*
+
+---
+
+## 4. TAG ASSIGNMENT LOGIC
+
+**Auto-tag based on content keywords:**
+
+- "Fed", "FOMC", "rates" → `macro`
+- "BTC", "ETH", "crypto" → `crypto`
+- "support", "resistance", "breakout" → `technical`
+- "IPO", "earnings", "NFP", "CPI" → `catalyst`
+- "institutional", "$XXM", "custody" → `institutional`
+- "velocity", "sentiment >X%", "extreme" → `sentiment`
+- "exhaustion", "reversal", "-X%" → `exhaustion`
+- "AI", "semiconductors", "tech" → `tech`
+- "China", "geopolitical" → `macro`
+- "setup", "entry", "target" → `setup`
+
+Multiple tags allowed per item (max 4-5 for specificity).
+
+---
+
+## 5. LINK EXTRACTION RULES
+
+### X/Twitter Posts:
+1. Read latest `Research/X/Crypto/x_list_posts_YYYYMMDDHHMMSS.json` or Macro/Technicals equivalent
+2. Search for author or keyword in "text" field
+3. Extract "permalink" field (e.g., "https://x.com/Jake__Wujastyk/status/1973873016007520522")
+4. Use permalink as "link" value
+
+**Example grep command:**
+```bash
+grep -i "Jake.*Wujastyk\|keyword" x_list_posts_*.json | grep -A5 "author"
+```
+
+### RSS Articles:
+1. Read `Research/RSS/[Provider]/YYYY-MM-DD_[Title].md` file
+2. Extract "Original URL" from line 6 of metadata header
+3. Validate URL is not homepage (must contain article path)
+4. Use specific article URL as "link" value
+
+**Example:**
+```
+Line 6: - **Original URL**: https://www.cnbc.com/2025/10/03/specific-article-path.html
+```
+
+### YouTube Videos:
+1. Read `Research/YouTube/[Channel]/YYYY-MM-DD_[VideoID]_[Title].md` file
+2. Extract "Video URL" from line 5 of metadata
+3. OR construct from video ID: `https://youtube.com/watch?v=[VideoID]`
+4. Use video URL as "link" value
+
+### Internal Dashboard References:
+1. If no specific external source exists (aggregate data)
+2. Use internal tab links: `#calendar`, `#crypto-tab`, `#macro-tab`, `#xsentiment-tab`, `#technicals-tab`
+3. Only use as fallback when no external URL available
+
+**CRITICAL:** Never use generic homepage URLs (e.g., https://www.cnbc.com/ or https://x.com/username without status ID)
+
+---
+
+## 6. BLURB WRITING FORMULA
+
+**Structure:** [Context/Setup] + [Specific Insight/Thesis] + [Trading Implication/Action]
+
+**3-Sentence Framework:**
+1. **Setup (1 sentence):** What's happening technically/fundamentally
+2. **Insight (1 sentence):** Why it matters (precedent, pattern, catalyst)
+3. **Action (1 sentence):** What to watch/do (trigger, target, stop)
+
+**Examples:**
+
+❌ **Bad Blurb:**
+"Jake Wujastyk tweeted about $BMNR looking good."
+
+✅ **Good Blurb:**
+"Williams % Range breakout + symmetrical triangle apex + volume shelf = potential 10%+ day. Last two Williams breakouts preceded significant moves. Watch open >$60 as confirmation trigger."
+
+✅ **Good Blurb (Macro):**
+"Chicago Fed President Goolsbee signals caution on pace of rate cuts despite 99% Oct 29 cut probability. Potential hawkish tilt vs dovish consensus. Watch for shift in Fed narrative post-NFP. If labor data strong + hawkish Fed = rate cut repricing risk."
+
+**Writing Guidelines:**
+- Use specific numbers (levels, percentages, dollar amounts)
+- Include precedent or pattern recognition ("Last two times X happened...")
+- End with actionable trigger or implication ("Watch for...", "If X then Y...")
+- Keep total under 150 words (2-3 sentences max)
+- Avoid generic statements ("bullish", "looks good") without specifics
+
+---
+
+## 7. QUANTITY GUIDELINES
+
+**Per Category:**
+- 🚀 Upcoming Catalysts: 3-5 items (next 7-30 days)
+- 💡 Research Highlights: 5-8 items (keep top 8, rotate old ones out after 7 days)
+- 📊 Data Anomalies: 3-5 items (keep fresh, archive after trade happens)
+- 🎥 Must-Watch: 2-4 items (only if timestamp-specific value)
+- ⚠️ Exhaustion Signals: 1-3 items (only when signal active)
+
+**Total Target:** 15-25 items across all categories
+
+**Rotation Logic:**
+- Items >7 days old with no new mentions → archive
+- Items where "trade already happened" → keep as template but mark "[CLOSED]" in title
+- Catalysts that passed → remove unless outcome provides learning value
+- Maintain most recent 5-8 items per category, archive rest
+
+---
+
+## 8. INTEGRATION WITH SYSTEM DATA
+
+### Cross-Reference Before Adding:
+
+**Step 1: Check X Summaries for velocity data**
+- Read `Research/X/Crypto/YYYY-MM-DD_X_Crypto_Summary.md`
+- Read `Research/X/Macro/YYYY-MM-DD_X_Macro_Summary.md`
+- Read `Research/X/Technicals/YYYY-MM-DD_X_Technicals_Summary.md`
+- Extract: Top narratives, velocity percentages, influencer calls, crowdsourced levels
+
+**Step 2: Check Provider Summaries for confirmation**
+- Jake Wujastyk call → verify in `Research/RSS/` or `Research/YouTube/Trader Mayne/`
+- Institutional flow → verify in `Research/X/` or `Research/RSS/CoinDesk/`
+- Technical levels → verify in `Research/Technicals/TradingView BTC/` or `TradingView SPX/`
+
+**Step 3: Check Signal System for context**
+- Read `Research/.processing_log.json` → `signal_calculations.composite_score`
+- If adding bullish item + composite <50 → flag conflict, explain contrarian view in blurb
+- If adding bearish item + composite >70 → flag conflict, explain contrarian view in blurb
+
+**Step 4: Check Economic Calendar for event proximity**
+- Read `Research/Macro/YYYY-MM-DD_Economic_Calendar_Summary.md`
+- Don't add "upcoming catalyst" if event is <24 hours (it's already in "today" section of calendar)
+- Do add if event is 2-7 days out (sweet spot for positioning trades)
+
+---
+
+## 9. CONFLICT RESOLUTION
+
+### When Multiple Items Compete:
+
+**Priority Order:**
+1. Newer date > older date (Oct 3 > Oct 2)
+2. Higher conviction > lower conviction
+3. Specific permalink > generic source
+4. Actionable thesis > commentary
+5. Contrarian signal > consensus view (higher alpha potential)
+
+**Example:**
+- ✅ KEEP: Jake $BMNR Oct 3 with permalink + specific level (Williams breakout + $60 trigger)
+- ❌ ARCHIVE: Jake $BMNR Oct 2 generic mention (volume gap thesis without update)
+
+### Handling Duplicates:
+
+If same analyst + same ticker + same week:
+1. Check if new information adds value
+2. If yes: Update existing item with new permalink + date
+3. If no: Keep existing item, skip new one
+
+**Example:**
+- Existing: "Jake Wujastyk: $BMNR Weekly Shelf Setup (Oct 2)"
+- New: "Jake Wujastyk: $BMNR Breakout - Symmetrical Triangle (Oct 3)"
+- Action: **Replace** old item with new (more specific setup, newer data)
+
+---
+
+## 10. RED FLAGS (Do NOT Add)
+
+**Skip items if:**
+- ❌ No specific thesis (vague bullishness/bearishness without levels or reasoning)
+- ❌ No source link possible (can't extract permalink/URL to verify)
+- ❌ Conflicts with composite signal without explanation (adds confusion, not clarity)
+- ❌ Rehashes existing item without new information (creates duplicate noise)
+- ❌ Low-tier influencer (<1K followers, not in provider list, no track record)
+- ❌ Clickbait without substance ("Bitcoin to $1M by EOY!!!" without thesis)
+- ❌ Already in provider tabs (don't duplicate insights that exist in crypto/macro/technicals tabs)
+- ❌ Generic market commentary ("Markets look volatile" without specific trade setup)
+- ❌ Retroactive analysis ("I called the top" without forward-looking trade)
+
+---
+
+## 11. WORKFLOW INTEGRATION
+
+### When Step 6 (Curate Media & Catalysts) Executes:
+
+**Input Sources:**
+1. Read latest X Crypto/Macro/Technicals summaries
+2. Read latest YouTube provider summaries (past 48 hours)
+3. Read latest RSS provider summaries (past 48 hours)
+4. Read Economic Calendar summary
+5. Read `.processing_log.json` for signal context
+
+**Candidate Identification:**
+6. Apply inclusion criteria to identify candidates:
+   - Scan X summaries for velocity >+200% or <-50%
+   - Scan provider summaries for analyst calls with specific levels
+   - Scan RSS for institutional announcements (>$100M flows, partnerships, IPOs)
+   - Scan Economic Calendar for HIGH-impact events <7 days out
+
+**Curation Process:**
+7. For each candidate:
+   - Extract source link using rules (Section 5)
+   - Assign conviction level using criteria (Section 3)
+   - Write blurb using formula (Section 6)
+   - Tag appropriately using keyword logic (Section 4)
+
+**Prioritization & Selection:**
+8. Rank candidates by priority (date, conviction, actionability)
+9. Add top N items per category (follow quantity guidelines in Section 7)
+10. Archive items >7 days old or where trade closed
+
+**System Updates:**
+11. Update `master-plan/master-plan.md` media tab with new items
+12. Update `Research/.processing_log.json` with media curation timestamp
+13. Note in processing log: count of new items added, sources used, any conflicts flagged
+
+---
+
+## 12. EXAMPLE DECISION TREE
+
+**Scenario:** Found Jake Wujastyk tweet about $BMNR
+
+```
+Q1: Is Jake in provider list?
+    → YES (Tier 1 analyst, appears in X Macro summaries)
+
+Q2: Does tweet have specific thesis?
+    → YES (Williams % Range breakout + symmetrical triangle apex)
+
+Q3: Can I extract permalink?
+    → YES (https://x.com/Jake__Wujastyk/status/1973873016007520522)
+
+Q4: Is there entry/target/stop?
+    → PARTIAL (mentions $60 open as trigger, "potential 10%+ day" target)
+
+Q5: Is this <7 days old?
+    → YES (Oct 3, 2025)
+
+Q6: Does this conflict with system signals?
+    → NO (X Macro 72/100 BULLISH, composite 68/100 MODERATE BUY)
+
+Q7: Is this duplicate of existing item?
+    → NO (Oct 2 item was different setup - volume gap vs triangle breakout)
+
+DECISION: ✅ ADD as Research Highlight, MEDIUM conviction
+
+Blurb: "Williams % Range breakout + symmetrical triangle apex + volume shelf = potential 10%+ day. Last two Williams breakouts preceded significant moves. Watch open >$60 as confirmation trigger."
+
+Tags: ["technical", "smallcap", "breakout", "setup"]
+Link: https://x.com/Jake__Wujastyk/status/1973873016007520522
+```
+
+---
+
+## 13. AUDIT TRAIL
+
+Every decision should be auditable:
+
+**"Why did you add this item?"**
+→ Met inclusion criteria [X], conviction level [Y], source priority [Z]
+
+**"Why didn't you add that item?"**
+→ Failed criterion [red flag type] (e.g., no specific thesis / no link / duplicate / >7 days old)
+
+**"Why is this HIGH conviction?"**
+→ Event probability [%] + precedent [historical pattern] + dateable catalyst [date] + analyst track record
+
+**"Why did you archive that item?"**
+→ >7 days old + no new mentions in latest summaries OR trade already closed OR catalyst passed
+
+---
+
+## 14. QUALITY CONTROL CHECKLIST
+
+Before finalizing media tab updates, verify:
+
+- [ ] All items have specific source links (no generic homepages)
+- [ ] All blurbs follow 3-sentence formula (setup + insight + action)
+- [ ] Conviction levels justified by criteria (not subjective preference)
+- [ ] Tags are accurate and follow keyword logic
+- [ ] No duplicates across categories
+- [ ] Dates are current (<7 days for most items)
+- [ ] Conflicts with signal system are flagged and explained
+- [ ] Quantity guidelines respected (15-25 total items)
+- [ ] Processing log updated with timestamp and item count
+
+---
+
+## 15. CONTINUOUS IMPROVEMENT
+
+**Track Performance:**
+- When item leads to profitable trade → note in journal
+- When item was false signal → analyze why (improve inclusion criteria)
+- When item was too late → adjust timing thresholds
+- When source becomes unreliable → adjust priority ranking
+
+**Monthly Review:**
+- Which categories provided most alpha?
+- Which analysts had highest hit rate?
+- Which velocity thresholds were most predictive?
+- Update criteria based on backtested performance
+
+---
+
+## REFERENCE LINKS
+
+- Master workflow: `master-plan/How to use_MP.txt` (Step 6)
+- X analysis: `Research/X/How to use_X.txt`
+- Signal system: `Trading/signal-system/How to use_Signals.txt`
+- Provider summaries: `Research/How to use_Research.txt`
+- Economic calendar: `Research/Macro/How to use_Economic_Calendar.txt`
+
+---
+
+**END OF DOCUMENTATION**
+
+*This logic creates a rules-based, data-driven, and auditable system for autonomous Media & Catalysts curation during workflow execution.*

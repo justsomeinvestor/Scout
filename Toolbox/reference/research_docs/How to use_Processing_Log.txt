@@ -1,0 +1,199 @@
+Processing Log System - Avoid Redundant Work
+=============================================
+
+Purpose
+-------
+Track what's been processed to avoid re-analyzing the same data and wasting time/tokens.
+
+How It Works
+------------
+
+1. **Before Processing ANY Provider:**
+   - Read .processing_log.json
+   - Check if provider has been processed today
+   - Check source file timestamp vs. last_processed timestamp
+   - If timestamps match → SKIP (already done)
+   - If source is newer → PROCESS (new data available)
+
+2. **After Processing a Provider:**
+   - Update .processing_log.json with:
+     - last_processed timestamp
+     - source file name and size
+     - summary file created
+     - key metrics (sentiment score, top narratives, etc.)
+     - status: COMPLETE
+
+3. **Quick Check Command:**
+   Read .processing_log.json and look for:
+   - Status: COMPLETE = already done, skip unless source file is newer
+   - Status: PENDING = needs processing
+   - last_processed: null = never processed, definitely needs work
+
+Example Workflow
+----------------
+
+SCENARIO 1: X Data Already Processed
+User: "Analyze the X data"
+
+BEFORE (wasteful):
+- Read entire x_post.json (27,787 lines)
+- Analyze sentiment
+- Generate summary
+- Time: 5+ minutes, 15K+ tokens
+
+AFTER (efficient):
+- Read .processing_log.json (1 file, <100 lines)
+- See: X.status = "COMPLETE", last_processed = "2025-10-01T23:30:00Z"
+- Check x_post.json timestamp: modified 2025-10-01T23:30:00Z
+- Timestamps match → SKIP
+- Response: "X data already analyzed today (76/100 BULLISH). Summary: Research/X/2025-10-01_X_Summary.md. Source unchanged, no need to re-process."
+- Time: 10 seconds, 500 tokens
+
+SCENARIO 2: New X Data Available
+User: "Analyze the X data"
+
+- Read .processing_log.json
+- See: X.status = "COMPLETE", last_processed = "2025-10-01T23:30:00Z"
+- Check x_post.json timestamp: modified 2025-10-02T08:15:00Z (NEWER)
+- Source updated → PROCESS
+- Analyze new data, generate summary, update log
+- Time: 5 minutes, 15K tokens (justified - new data)
+
+SCENARIO 3: Provider Never Processed
+User: "Analyze YouTube providers"
+
+- Read .processing_log.json
+- See: YouTube.last_processed = null, status = "PENDING"
+- Never processed → PROCESS
+- Analyze data, generate summaries, update log
+
+Log File Location
+-----------------
+Research/.processing_log.json
+
+Summary Files Referenced
+------------------------
+- X: Research/X/YYYY-MM-DD_X_Summary.md
+- YouTube: Research/YouTube/<ProviderName>/YYYY-MM-DD_<ProviderName>_Summary.md
+- RSS: Research/RSS/<ProviderName>/YYYY-MM-DD_<ProviderName>_Summary.md
+- Technicals: Research/Technicals/<ProviderName>/YYYY-MM-DD_<ProviderName>_Summary.md
+
+Timestamp Check Methods
+-----------------------
+
+METHOD 1: File Modification Time (Best)
+Use Bash to check file modified timestamp:
+  ls -l "path/to/x_post.json" → check timestamp
+  Compare to .processing_log.json last_processed timestamp
+  If file timestamp > last_processed → NEW DATA, process
+  If file timestamp <= last_processed → ALREADY DONE, skip
+
+METHOD 2: File Size Check (Quick approximation)
+  Check source_size_lines in log vs. current file line count
+  wc -l x_post.json → if different → NEW DATA
+  If same → LIKELY SAME (but not guaranteed)
+
+METHOD 3: Manual Override
+  User explicitly says "re-analyze even if processed"
+  → Always process, update log with new timestamp
+
+When to Update Log
+------------------
+
+UPDATE AFTER:
+- Completing X sentiment analysis
+- Completing YouTube provider summary
+- Completing RSS provider summary
+- Completing Technical provider summary
+- Completing Market Sentiment Overview
+- Completing Signal Calculations
+
+DO NOT UPDATE:
+- Reading files (only update after WRITING summaries)
+- Failed analysis (leave status as PENDING or previous state)
+
+Log Entry Structure
+-------------------
+
+{
+  "provider_name": {
+    "last_processed": "ISO 8601 timestamp or null",
+    "source_file": "path/to/source",
+    "source_size_lines": line_count,
+    "summary_file": "path/to/summary.md",
+    "key_metric": value (e.g., sentiment_score, top_narratives),
+    "notes": "Any important context",
+    "status": "COMPLETE" | "PENDING" | "FAILED"
+  }
+}
+
+Best Practices
+--------------
+
+1. **Always Check Log First**
+   - Before analyzing ANY provider, read .processing_log.json
+   - Saves massive amounts of time and tokens
+
+2. **Trust the Log**
+   - If status = COMPLETE and timestamps match, skip confidently
+   - Log is single source of truth
+
+3. **Keep Log Updated**
+   - Update immediately after completing work
+   - Don't batch updates (you'll forget)
+
+4. **Include Context**
+   - Add notes field with key takeaways
+   - Makes it easy to give user quick summary without re-reading full file
+
+5. **Manual Override Available**
+   - If user explicitly asks to re-analyze, honor it
+   - Update log with new timestamp after completion
+
+6. **Staleness Guard (Realtime Levels)**
+   - If intraday price action makes prior levels stale (e.g., BTC flips a key level), treat the provider as PENDING regardless of status
+   - Refresh TradingView BTC/SPX summaries for TODAY and then update:
+     * master-plan/master-plan.md metrics + dailyPlanner.keyLevels + signalData.assets
+     * Research/YYYY-MM-DD_Market_Sentiment_Overview.md key metrics
+     * Research/X/*/_X_*_Summary.md crowdsourced levels
+   - After propagation, set provider status back to COMPLETE with new timestamps
+
+Example Response Patterns
+--------------------------
+
+USER: "Analyze X data"
+
+IF ALREADY PROCESSED:
+"X data already analyzed today (Oct 1, 2025 at 11:30 PM).
+Sentiment: 76/100 (BULLISH).
+Top narratives: Fed 99% cut Oct 29, BTC $116K-$118K, altcoin season.
+Summary: Research/X/2025-10-01_X_Summary.md
+Source file unchanged (27,787 lines). No need to re-process.
+
+Would you like me to:
+1. Show you the existing summary
+2. Re-analyze anyway (if you have new data)
+3. Focus on a specific aspect"
+
+IF NEW DATA:
+"X data has been updated (source modified Oct 2 at 8:15 AM, last processed Oct 1 at 11:30 PM).
+Analyzing new data now...
+[proceed with analysis]"
+
+IF NEVER PROCESSED:
+"X data not yet analyzed. Processing now...
+[proceed with analysis]"
+
+Benefits
+--------
+- Saves 90%+ of tokens when data hasn't changed
+- Saves 90%+ of time on redundant work
+- Provides instant status updates to user
+- Creates audit trail of what's been done
+- Makes it easy to pick up where you left off
+
+Maintenance
+-----------
+- Clear old entries periodically (e.g., delete entries >7 days old)
+- Archive log before major workflow changes
+- Keep log in .gitignore if using version control

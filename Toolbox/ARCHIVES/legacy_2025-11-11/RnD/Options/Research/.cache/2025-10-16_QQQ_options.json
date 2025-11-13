@@ -1,0 +1,45 @@
+{
+  "ticker": "QQQ",
+  "date": "2025-10-16",
+  "lastUpdated": "2025-10-16 02:54 ET",
+  "currentPrice": 602.22,
+  "expiration": "2025-10-16",
+  "maxPain": "$545",
+  "putCallRatio": "0.00",
+  "ivPercentile": "12%",
+  "totalOI": "0",
+  "keyLevels": [
+    {
+      "strike": "545",
+      "type": "Max Pain",
+      "gamma": "N/A",
+      "oi": "0K"
+    },
+    {
+      "strike": "530",
+      "type": "Call Wall",
+      "gamma": "N/A",
+      "oi": "0K"
+    },
+    {
+      "strike": "495",
+      "type": "Put Wall",
+      "gamma": "N/A",
+      "oi": "0K"
+    },
+    {
+      "strike": "591",
+      "type": "High Gamma",
+      "gamma": "N/A",
+      "oi": "0K"
+    },
+    {
+      "strike": "495",
+      "type": "Put Interest",
+      "gamma": "N/A",
+      "oi": "0K"
+    }
+  ],
+  "source": "yfinance",
+  "_fetched_at": "2025-10-16T02:54:24.831947"
+}

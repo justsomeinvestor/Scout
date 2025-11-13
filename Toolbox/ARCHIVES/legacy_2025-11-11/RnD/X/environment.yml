@@ -1,0 +1,11 @@
+name: x-scrape
+channels:
+  - conda-forge
+dependencies:
+  - python>=3.10,<3.12
+  - pip
+  - pandas>=1.5,<3.0
+  # twikit is not published on conda; install via pip
+  - pip:
+      - twikit==2.*
+  - tk

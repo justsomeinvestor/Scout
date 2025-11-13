@@ -1,0 +1,1179 @@
+# API Reference - Unified Data Collection System
+
+**Version:** 2.0.0
+**Base URL:** `http://localhost:3000`
+**Total Endpoints:** 53
+
+---
+
+## Quick Links
+
+- [Self-Documenting API](#self-documenting-api)
+- [Unified System Endpoints](#unified-system-endpoints)
+- [ETF Data Endpoints](#etf-data-endpoints)
+- [Max Pain Endpoints](#max-pain-endpoints)
+- [Chat Message Endpoints](#chat-message-endpoints)
+- [RSS Feed Data Endpoints](#rss-feed-data-endpoints)
+- [YouTube Transcript Endpoints](#youtube-transcript-endpoints)
+- [Feed Configuration Endpoints](#feed-configuration-endpoints)
+- [Response Conventions](#response-conventions)
+- [Error Handling](#error-handling)
+
+---
+
+## Self-Documenting API
+
+The API includes a built-in documentation endpoint that returns the complete API specification as JSON:
+
+```bash
+GET /api/docs
+```
+
+**Use this for:**
+- Automated client generation
+- API exploration tools (Postman, etc.)
+- Integration testing
+- Up-to-date endpoint discovery
+
+---
+
+## Unified System Endpoints
+
+### 1. Get API Documentation
+```
+GET /api/docs
+```
+Returns comprehensive API documentation in JSON format.
+
+**Example:**
+```bash
+curl http://localhost:3000/api/docs
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "version": "2.0.0",
+  "categories": {...}
+}
+```
+
+---
+
+### 2. System Status
+```
+GET /api/status
+```
+Get comprehensive system status across all tables.
+
+**Example:**
+```bash
+curl http://localhost:3000/api/status
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "database": {
+    "path": "data/etf_data.db",
+    "size": "1.23 MB",
+    "tables": ["etf_data", "vix_data", "max_pain_data", "chat_messages"]
+  },
+  "tables": {
+    "etf_data": { "exists": true, "rowCount": 10 },
+    "vix_data": { "exists": true, "rowCount": 5 }
+  },
+  "lastScrape": {
+    "timestamp": "2025-11-08T10:30:00Z",
+    "duration": 45230,
+    "success": true
+  },
+  "health": {
+    "healthy": true,
+    "errors": []
+  }
+}
+```
+
+---
+
+### 3. Summary (All Latest Data)
+```
+GET /api/summary
+```
+Get all latest data from ALL tables in one API call.
+
+**Example:**
+```bash
+curl http://localhost:3000/api/summary
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "timestamp": "2025-11-08T10:45:00Z",
+  "data": {
+    "etf": [...],
+    "vix": {...},
+    "maxPain": [...],
+    "chat": [...]
+  },
+  "counts": {
+    "etf": 2,
+    "vix": 1,
+    "maxPain": 70,
+    "chat": 50
+  }
+}
+```
+
+---
+
+### 4. Scrape History
+```
+GET /api/history?limit=10
+```
+Get scrape history with timestamps.
+
+**Query Parameters:**
+- `limit` (number, optional, default: 10) - Number of history records
+
+**Example:**
+```bash
+curl http://localhost:3000/api/history?limit=5
+```
+
+---
+
+### 5. Export as JSON
+```
+GET /api/export/json?metadata=true
+```
+Export all data as downloadable JSON file.
+
+**Query Parameters:**
+- `metadata` (boolean, optional, default: true) - Include metadata
+
+**Example:**
+```bash
+curl http://localhost:3000/api/export/json -o data_export.json
+```
+
+---
+
+### 6. Export as CSV
+```
+GET /api/export/csv?table=etf_data
+```
+Export data as CSV (per-table or info about all tables).
+
+**Query Parameters:**
+- `table` (string, optional) - Specific table name:
+  - `etf_data`
+  - `vix_data`
+  - `max_pain_data`
+  - `chat_messages`
+  - `rss_articles`
+  - `youtube_transcripts`
+
+**Example (list all tables):**
+```bash
+curl http://localhost:3000/api/export/csv
+```
+
+**Example (specific table):**
+```bash
+curl http://localhost:3000/api/export/csv?table=etf_data -o etf_data.csv
+```
+
+---
+
+### 7. Create Backup
+```
+POST /api/backup
+```
+Create a timestamped database backup.
+
+**Example:**
+```bash
+curl -X POST http://localhost:3000/api/backup
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Database backup created successfully",
+  "backupPath": "data/backups/etf_data_2025-11-08_10-45-00.db",
+  "timestamp": "2025-11-08T10:45:00Z"
+}
+```
+
+---
+
+## ETF Data Endpoints
+
+### 1. Get Latest (All Symbols)
+```
+GET /api/latest
+```
+Get latest data for ALL symbols (SPY, QQQ, VIX).
+
+**Example:**
+```bash
+curl http://localhost:3000/api/latest
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "count": 3,
+  "data": [
+    {
+      "symbol": "SPY",
+      "timestamp": "2025-11-08T10:30:00Z",
+      "current_price": 450.23,
+      "implied_volatility": "12.34%",
+      "historical_volatility": "11.56%"
+    },
+    {...}
+  ]
+}
+```
+
+---
+
+### 2. Get Latest (Specific Symbol)
+```
+GET /api/latest/:symbol
+```
+Get latest data for a specific symbol.
+
+**Path Parameters:**
+- `symbol` (string, required) - SPY, QQQ, or VIX (case-insensitive)
+
+**Example:**
+```bash
+curl http://localhost:3000/api/latest/SPY
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "symbol": "SPY",
+    "timestamp": "2025-11-08T10:30:00Z",
+    "current_price": 450.23,
+    "implied_volatility": "12.34%",
+    "historical_volatility": "11.56%",
+    "iv_percentile": "45.6%",
+    "iv_rank": "0.456",
+    "volume": 123456789,
+    "open_interest": 9876543,
+    "put_call_vol_ratio": 0.87
+  }
+}
+```
+
+**VIX Response (different structure):**
+```json
+{
+  "success": true,
+  "data": {
+    "symbol": "VIX",
+    "timestamp": "2025-11-08T10:30:00Z",
+    "current_price": 15.67,
+    "change": "+0.45",
+    "change_percent": "+2.95%",
+    "previous_close": 15.22,
+    "day_low": 15.10,
+    "day_high": 15.89,
+    "week_52_low": 12.45,
+    "week_52_high": 28.90
+  }
+}
+```
+
+---
+
+### 3. Get Historical Data
+```
+GET /api/historical/:symbol?start=YYYY-MM-DD&end=YYYY-MM-DD
+```
+Get historical data for a symbol with optional date filtering.
+
+**Path Parameters:**
+- `symbol` (string, required) - Symbol name
+
+**Query Parameters:**
+- `start` (string, optional) - Start date (YYYY-MM-DD)
+- `end` (string, optional) - End date (YYYY-MM-DD)
+
+**Example:**
+```bash
+curl "http://localhost:3000/api/historical/SPY?start=2025-01-01&end=2025-01-31"
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "symbol": "SPY",
+  "count": 150,
+  "filters": {
+    "startDate": "2025-01-01",
+    "endDate": "2025-01-31"
+  },
+  "data": [...]
+}
+```
+
+---
+
+### 4. Get All Data
+```
+GET /api/all
+```
+Get ALL data from all symbols (WARNING: large dataset).
+
+**Example:**
+```bash
+curl http://localhost:3000/api/all
+```
+
+---
+
+## Max Pain Endpoints
+
+### 1. Latest Max Pain (All Expirations)
+```
+GET /api/maxpain/:symbol
+```
+Get latest max pain data for all expirations (typically 35+ expirations).
+
+**Path Parameters:**
+- `symbol` (string, required) - SPY or QQQ only
+
+**Example:**
+```bash
+curl http://localhost:3000/api/maxpain/SPY
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "symbol": "SPY",
+  "count": 38,
+  "data": [
+    {
+      "symbol": "SPY",
+      "scrape_timestamp": "2025-11-08T10:35:00Z",
+      "expiration_date": "2025-11-15",
+      "days_until_expiry": 7,
+      "max_pain_price": 448
+    },
+    {...}
+  ]
+}
+```
+
+---
+
+### 2. Weekly Max Pain
+```
+GET /api/maxpain/:symbol/weekly
+```
+Get weekly max pain data (expirations 7 days or less out).
+
+**Example:**
+```bash
+curl http://localhost:3000/api/maxpain/SPY/weekly
+```
+
+---
+
+### 3. Monthly Max Pain
+```
+GET /api/maxpain/:symbol/monthly
+```
+Get monthly max pain data (expirations around 30 days out).
+
+**Example:**
+```bash
+curl http://localhost:3000/api/maxpain/SPY/monthly
+```
+
+---
+
+### 4. Max Pain History
+```
+GET /api/maxpain/:symbol/history?days=7
+```
+Get max pain history across multiple scrapes.
+
+**Path Parameters:**
+- `symbol` (string, required) - SPY or QQQ
+
+**Query Parameters:**
+- `days` (number, optional, default: 7) - Number of days to look back
+
+**Example:**
+```bash
+curl "http://localhost:3000/api/maxpain/SPY/history?days=14"
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "symbol": "SPY",
+  "days": 14,
+  "count": 500,
+  "data": [
+    {
+      "scrape_timestamp": "2025-11-08T10:35:00Z",
+      "expiration_date": "2025-11-15",
+      "max_pain_price": 448
+    },
+    {...}
+  ]
+}
+```
+
+---
+
+### 5. Track Specific Expiration
+```
+GET /api/maxpain/:symbol/expiration/:date
+```
+Track how max pain for a SPECIFIC expiration date changed over time.
+
+**Path Parameters:**
+- `symbol` (string, required) - SPY or QQQ
+- `date` (string, required) - Expiration date (URL encoded, e.g., `Nov%2015%2C%202025`)
+
+**Example:**
+```bash
+curl "http://localhost:3000/api/maxpain/SPY/expiration/Nov%2015%2C%202025"
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "symbol": "SPY",
+  "expirationDate": "Nov 15, 2025",
+  "count": 24,
+  "data": [
+    {
+      "scrape_timestamp": "2025-11-08T10:35:00Z",
+      "days_until_expiry": 7,
+      "max_pain_price": 448
+    },
+    {
+      "scrape_timestamp": "2025-11-08T09:30:00Z",
+      "days_until_expiry": 7,
+      "max_pain_price": 447.5
+    }
+  ]
+}
+```
+
+---
+
+## Chat Message Endpoints
+
+### 1. Latest Chat Messages
+```
+GET /api/chat/latest?limit=100
+```
+Get latest chat messages from WallStreet community.
+
+**Query Parameters:**
+- `limit` (number, optional, default: 100) - Number of messages to return
+
+**Example:**
+```bash
+curl "http://localhost:3000/api/chat/latest?limit=50"
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "count": 50,
+  "data": [
+    {
+      "username": "fetersynergy",
+      "message_text": "SPY looking bullish today",
+      "message_timestamp": "10:40 am",
+      "scrape_timestamp": "2025-11-08T10:40:00Z"
+    },
+    {...}
+  ]
+}
+```
+
+---
+
+### 2. Messages by User (All)
+```
+GET /api/chat/user/:username
+```
+Get all chat messages from a specific user.
+
+**Path Parameters:**
+- `username` (string, required) - Username to search for
+
+**Example:**
+```bash
+curl http://localhost:3000/api/chat/user/fetersynergy
+```
+
+---
+
+### 3. Messages by User (Latest)
+```
+GET /api/chat/user/:username/latest
+```
+Get latest chat messages from a specific user.
+
+**Example:**
+```bash
+curl http://localhost:3000/api/chat/user/fetersynergy/latest
+```
+
+---
+
+### 4. Chat History
+```
+GET /api/chat/history?days=7
+```
+Get chat message history with time filtering.
+
+**Query Parameters:**
+- `days` (number, optional, default: 7) - Number of days to look back
+
+**Example:**
+```bash
+curl "http://localhost:3000/api/chat/history?days=30"
+```
+
+---
+
+## RSS Feed Data Endpoints
+
+### 1. Latest RSS Articles
+```
+GET /api/rss/latest
+```
+Get latest RSS articles from all providers.
+
+**Query Parameters:**
+- `limit` (number, optional, default: 100) - Number of articles to return
+
+**Example:**
+```bash
+curl "http://localhost:3000/api/rss/latest?limit=50"
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "count": 50,
+  "data": [
+    {
+      "id": 1,
+      "provider": "Reuters",
+      "feed_name": "Market News",
+      "title": "Market Update...",
+      "link": "https://...",
+      "published_date": "2025-11-10T10:00:00Z",
+      "scraped_at": "2025-11-10T10:05:00Z"
+    }
+  ]
+}
+```
+
+---
+
+### 2. Articles by Provider
+```
+GET /api/rss/provider/:provider
+```
+Get all articles from a specific provider.
+
+**Path Parameters:**
+- `provider` (string, required) - Provider name (e.g., "Reuters", "Bloomberg")
+
+**Example:**
+```bash
+curl http://localhost:3000/api/rss/provider/Reuters
+```
+
+---
+
+### 3. Get Specific Article
+```
+GET /api/rss/article/:id
+```
+Get a specific article by ID.
+
+**Path Parameters:**
+- `id` (number, required) - Article ID
+
+**Example:**
+```bash
+curl http://localhost:3000/api/rss/article/123
+```
+
+---
+
+### 4. List All Providers
+```
+GET /api/rss/providers
+```
+Get list of all RSS feed providers.
+
+**Example:**
+```bash
+curl http://localhost:3000/api/rss/providers
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "providers": ["Reuters", "Bloomberg", "WSJ", "CNBC"]
+}
+```
+
+---
+
+### 5. RSS Statistics
+```
+GET /api/rss/stats
+```
+Get RSS feed statistics (article counts, last scrape time).
+
+**Example:**
+```bash
+curl http://localhost:3000/api/rss/stats
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "totalArticles": 1250,
+  "lastScrape": "2025-11-10T10:00:00Z",
+  "providerCounts": {
+    "Reuters": 450,
+    "Bloomberg": 400
+  }
+}
+```
+
+---
+
+### 6. Trigger RSS Scrape
+```
+POST /api/rss/scrape
+```
+Manually trigger RSS feed scraper (starts background job).
+
+**Example:**
+```bash
+curl -X POST http://localhost:3000/api/rss/scrape
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "RSS scraper started",
+  "jobId": "rss-scrape-12345"
+}
+```
+
+---
+
+## YouTube Transcript Endpoints
+
+### 1. Latest YouTube Transcripts
+```
+GET /api/youtube/latest
+```
+Get latest YouTube video transcripts from all channels.
+
+**Query Parameters:**
+- `limit` (number, optional, default: 100) - Number of transcripts to return
+
+**Example:**
+```bash
+curl "http://localhost:3000/api/youtube/latest?limit=50"
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "count": 50,
+  "data": [
+    {
+      "video_id": "abc123",
+      "channel_name": "Raoul Pal",
+      "channel_handle": "@RaoulPal",
+      "title": "Market Analysis",
+      "published_date": "2025-11-10T10:00:00Z",
+      "summary": "AI-generated summary...",
+      "url": "https://youtube.com/watch?v=abc123",
+      "scraped_at": "2025-11-10T10:05:00Z"
+    }
+  ]
+}
+```
+
+---
+
+### 2. Transcripts by Channel
+```
+GET /api/youtube/channel/:channelHandle
+```
+Get all transcripts from a specific YouTube channel.
+
+**Path Parameters:**
+- `channelHandle` (string, required) - Channel handle (e.g., "@RaoulPal")
+
+**Example:**
+```bash
+curl http://localhost:3000/api/youtube/channel/@RaoulPal
+```
+
+---
+
+### 3. Get Specific Transcript
+```
+GET /api/youtube/transcript/:videoId
+```
+Get a specific video transcript by video ID.
+
+**Path Parameters:**
+- `videoId` (string, required) - YouTube video ID
+
+**Example:**
+```bash
+curl http://localhost:3000/api/youtube/transcript/abc123
+```
+
+---
+
+### 4. List All Channels
+```
+GET /api/youtube/channels
+```
+Get list of all YouTube channels being scraped.
+
+**Example:**
+```bash
+curl http://localhost:3000/api/youtube/channels
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "channels": [
+    {"handle": "@RaoulPal", "name": "Raoul Pal"},
+    {"handle": "@IntoTheCryptoverse", "name": "Into The Cryptoverse"}
+  ]
+}
+```
+
+---
+
+### 5. YouTube Statistics
+```
+GET /api/youtube/stats
+```
+Get YouTube scraper statistics (transcript counts, last scrape time).
+
+**Example:**
+```bash
+curl http://localhost:3000/api/youtube/stats
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "totalTranscripts": 450,
+  "lastScrape": "2025-11-10T10:00:00Z",
+  "channelCounts": {
+    "@RaoulPal": 120,
+    "@IntoTheCryptoverse": 95
+  }
+}
+```
+
+---
+
+### 6. Trigger YouTube Scrape
+```
+POST /api/youtube/scrape
+```
+Manually trigger YouTube transcript scraper (starts background job).
+
+**Example:**
+```bash
+curl -X POST http://localhost:3000/api/youtube/scrape
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "YouTube scraper started",
+  "jobId": "youtube-scrape-12345"
+}
+```
+
+---
+
+## Feed Configuration Endpoints
+
+### RSS Feed Management
+
+#### Get All RSS Feeds
+```
+GET /api/config/rss
+```
+Get all RSS feed configurations (includes disabled feeds).
+
+**Query Parameters:**
+- `enabled` (boolean, optional) - Filter by enabled status
+
+**Example:**
+```bash
+curl http://localhost:3000/api/config/rss?enabled=true
+```
+
+---
+
+#### Get RSS Feed by ID
+```
+GET /api/config/rss/:id
+```
+Get specific RSS feed configuration.
+
+**Example:**
+```bash
+curl http://localhost:3000/api/config/rss/1
+```
+
+---
+
+#### Create RSS Feed
+```
+POST /api/config/rss
+```
+Create a new RSS feed configuration.
+
+**Request Body:**
+```json
+{
+  "provider": "Reuters",
+  "feed_name": "Market News",
+  "feed_url": "https://example.com/rss",
+  "priority": 1,
+  "enabled": true
+}
+```
+
+---
+
+#### Update RSS Feed
+```
+PUT /api/config/rss/:id
+```
+Update existing RSS feed configuration.
+
+**Request Body:**
+```json
+{
+  "provider": "Reuters",
+  "feed_name": "Updated Name",
+  "feed_url": "https://example.com/rss",
+  "priority": 2,
+  "enabled": false
+}
+```
+
+---
+
+#### Delete RSS Feed
+```
+DELETE /api/config/rss/:id
+```
+Delete RSS feed configuration.
+
+---
+
+#### Toggle RSS Feed
+```
+POST /api/config/rss/:id/toggle
+```
+Toggle enabled/disabled status of RSS feed.
+
+---
+
+### YouTube Channel Management
+
+#### Get All YouTube Channels
+```
+GET /api/config/youtube
+```
+Get all YouTube channel configurations.
+
+**Query Parameters:**
+- `enabled` (boolean, optional) - Filter by enabled status
+
+---
+
+#### Get YouTube Channel by ID
+```
+GET /api/config/youtube/:id
+```
+Get specific YouTube channel configuration.
+
+---
+
+#### Create YouTube Channel
+```
+POST /api/config/youtube
+```
+Create a new YouTube channel configuration.
+
+**Request Body:**
+```json
+{
+  "channel_handle": "@example",
+  "channel_name": "Example Channel",
+  "weight": 1,
+  "category": "Finance",
+  "enabled": true
+}
+```
+
+---
+
+#### Update YouTube Channel
+```
+PUT /api/config/youtube/:id
+```
+Update existing YouTube channel configuration.
+
+---
+
+#### Delete YouTube Channel
+```
+DELETE /api/config/youtube/:id
+```
+Delete YouTube channel configuration.
+
+---
+
+#### Toggle YouTube Channel
+```
+POST /api/config/youtube/:id/toggle
+```
+Toggle enabled/disabled status of YouTube channel.
+
+---
+
+#### Get YouTube Categories
+```
+GET /api/config/youtube/categories
+```
+Get list of available YouTube channel categories.
+
+**Response:**
+```json
+{
+  "success": true,
+  "categories": ["Finance", "Crypto", "Macro", "Trading"]
+}
+```
+
+---
+
+## Health Check
+
+### Simple Health Check
+```
+GET /health
+```
+Simple health check endpoint for monitoring and load balancers.
+
+**Example:**
+```bash
+curl http://localhost:3000/health
+```
+
+**Response:**
+```json
+{
+  "status": "ok",
+  "timestamp": "2025-11-08T10:45:00Z"
+}
+```
+
+---
+
+## Response Conventions
+
+### Success Response Structure
+All successful responses include:
+- `success: true`
+- `count: <number>` for array responses
+- `data: <object|array>` containing the requested data
+
+### Filtered Responses
+Responses with filters include filter information:
+```json
+{
+  "success": true,
+  "filters": {
+    "days": 7,
+    "symbol": "SPY",
+    "startDate": "2025-01-01"
+  },
+  "data": [...]
+}
+```
+
+---
+
+## Error Handling
+
+### Error Response Structure
+```json
+{
+  "success": false,
+  "error": "Error message here"
+}
+```
+
+### HTTP Status Codes
+- `200` - Success
+- `404` - Not found (invalid symbol, endpoint, or ID)
+- `500` - Server error (database error, unexpected failure)
+
+---
+
+## Data Conventions
+
+### Symbol Handling
+- **Case Insensitive:** All symbols are converted to uppercase
+- **ETF Symbols:** SPY, QQQ use ETF table (13 fields)
+- **VIX Special:** VIX uses separate table with different structure (9 fields)
+- **Max Pain Support:** Only SPY and QQQ (not VIX)
+
+### Date Formats
+- **Query Parameters:** YYYY-MM-DD (e.g., `2025-11-08`)
+- **Response Timestamps:** ISO 8601 (e.g., `2025-11-08T10:45:00Z`)
+
+### CORS
+- **Allow-Origin:** `*` (all origins)
+- **Allow-Methods:** GET, POST, OPTIONS
+- **Allow-Headers:** Content-Type
+
+---
+
+## Database Tables
+
+| Table | Description | Symbol Support | Fields |
+|-------|-------------|----------------|--------|
+| `etf_data` | ETF volatility & volume | SPY, QQQ | 13 fields |
+| `vix_data` | VIX price & ranges | VIX only | 9 fields |
+| `max_pain_data` | Options max pain | SPY, QQQ | 6 fields (35+ rows per scrape) |
+| `chat_messages` | Trading chat | N/A | 5 fields |
+| `rss_articles` | News articles | N/A | 8 fields |
+| `youtube_transcripts` | Video summaries | N/A | 11 fields |
+| `rss_feed_config` | RSS feed settings | N/A | 6 fields |
+| `youtube_channel_config` | YouTube channel settings | N/A | 6 fields |
+
+---
+
+## Rate Limiting
+
+**Current Status:** No rate limiting enforced
+
+**Recommendations:**
+- Scraper runs: Max once per hour to avoid upstream rate limits
+- API calls: No enforced limits, but be respectful of server resources
+- Export endpoints: May be slow for large datasets
+
+---
+
+## Future API Endpoints (Not Yet Implemented)
+
+### Potential Additions
+- **RSS Articles:** `GET /api/rss/latest`, `GET /api/rss/provider/:name`
+- **YouTube Transcripts:** `GET /api/youtube/latest`, `GET /api/youtube/channel/:handle`
+- **Search:** Full-text search across chat messages
+- **Alerts:** Webhook notifications for price/volatility thresholds
+- **WebSocket:** Real-time updates for streaming data
+
+---
+
+## Related Documentation
+
+- [YOUTUBE_SCRAPER_ERROR_HANDLING.md](YOUTUBE_SCRAPER_ERROR_HANDLING.md) - YouTube scraper technical details
+- [CLAUDE.md](../CLAUDE.md) - Project overview and development guidelines
+- [CHANGELOG.md](../CHANGELOG.md) - Version history and API changes
+
+---
+
+## Testing the API
+
+### Using curl
+```bash
+# Get latest SPY data
+curl http://localhost:3000/api/latest/SPY
+
+# Get max pain for QQQ
+curl http://localhost:3000/api/maxpain/QQQ
+
+# Export all data as JSON
+curl http://localhost:3000/api/export/json -o export.json
+
+# Get system status
+curl http://localhost:3000/api/status
+```
+
+### Using Postman
+1. Import endpoint: `http://localhost:3000/api/docs`
+2. Use JSON response to generate collection
+3. Test all endpoints interactively
+
+### Using Browser
+1. Navigate to: `http://localhost:3000`
+2. Use web interface to explore data visually
+3. Open DevTools Network tab to see API calls
+
+---
+
+## Contact & Support
+
+For questions about the API:
+- Check the self-documenting endpoint: `GET /api/docs`
+- Review technical documentation in `toolbox/`
+- Check CLAUDE.md for development guidelines

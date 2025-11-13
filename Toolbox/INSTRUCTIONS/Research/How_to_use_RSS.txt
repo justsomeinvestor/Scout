@@ -1,0 +1,94 @@
+# How to use — RSS (AI-Only, No-Archive) — v1.3 (2025-10-06)
+
+**Purpose:** When you (the AI) enter this folder, read what’s here and produce concise overviews.  
+**Do NOT** move, back up, or archive any files as part of this process.
+
+---
+
+## What to do (per Provider)
+1) Open `<Provider>/Feed Data/` and read all article `.md` files in that folder (and subfolders if present).
+2) Think across the set: extract **Key Themes**, **Market/Macro Notes**, **Risks**, **Tickers/Names**, and **Instruments** (ETFs or single names).
+3) Write/refresh exactly **one** overview file **in the provider folder** using this filename:
+   - `YYYY-MM-DD_<Provider>_RSS_Overview.md`
+
+### Provider Overview — Required Structure
+```
+# <Provider> — RSS Overview (YYYY-MM-DD)
+
+## Key Themes
+- <theme 1>
+- <theme 2>
+- <theme 3>
+
+## Market / Macro Notes
+- <bullets linking themes to FX/rates/earnings/sector rotation/geopolitics>
+
+## Risks & Watchouts
+- <policy, data quality, headline reversals, liquidity, etc.>
+
+## Instruments (for the playbook)
+- ETFs: <comma-separated list>
+- Single names: <comma-separated list>
+
+## Metrics (for @master-plan.md)
+- sentiment: <0–100>
+- narratives: [ "theme1", "theme2", ... ]
+- regions: [ "US","EU","EM","APAC" ]
+- tickers: [ "SPY","QQQ","AAPL","NVDA","BTC","ETH", ... ]
+```
+*Keep bullets short and practical. Focus on why it matters and how it could be traded.*
+
+---
+
+## If there are multiple Providers
+After creating all provider overviews for today:
+1) Read every `*_RSS_Overview.md` created **today**.
+2) Create a single roll-up in `Research/RSS/`:
+   - `YYYY-MM-DD_RSS_AllProviders_Overview.md`
+
+### All Providers Overview — Required Structure
+```
+# RSS — All Providers Overview (YYYY-MM-DD)
+
+## Consensus Themes
+- <merged themes across providers with short justification>
+
+## Most Mentioned Tickers
+- <comma-separated list>
+
+## Provider Highlights
+- <Provider A>: top 2–3 themes; notable tickers
+- <Provider B>: top 2–3 themes; notable tickers
+
+## Metrics (for @master-plan.md)
+- narratives: [ "theme1", "theme2", ... ]
+- tickers: [ "SPY","QQQ","AAPL","NVDA", ... ]
+- sentiment: <overall 0–100>
+- regions: [ "US","EU","EM","APAC" ]
+```
+
+---
+
+## Guardrails
+- One overview per provider per day; **refresh in place** if you add insights.
+- Stay concise and neutral; do not paste large quotes.
+- **No archiving, backups, or file moves** are part of this instruction.
+
+---
+
+## Date Filter — *Only process today's files*
+- **Primary rule:** Only read article `.md` files whose **filename starts with today’s date** (`YYYY-MM-DD_`) **or** whose **LastModified date is today**.
+- **If no files match today:** read the **newest date available** (the most recent `YYYY-MM-DD_` prefix across files), and write the overview using **that date** in the filename.
+- The **All Providers Overview** must **only** include provider overviews dated **today** (or the chosen newest date if today has no files).
+
+---
+
+## Provider folders — uniform handling
+- Treat **every immediate subfolder** under `Research/RSS/` as a **Provider** (e.g., `CNBC`, `CoinDesk`, `Federal Reserve`, `Investing.com`, `MarketWatch`, `Robot Wealth`, `Trading With Rayner`).  
+- For **each** provider:
+  - Expect a `Feed Data/` subfolder. If it exists, **process it**; if it doesn't, **skip** that provider silently.
+  - Read only **today’s** `.md` files in `Feed Data/` (see *Date Filter* above). If none, use the **newest date available**.
+  - Write/refresh `YYYY-MM-DD_<Provider>_RSS_Overview.md` in the **provider folder root**.
+  - Use the **provider folder name as-is** in the filename, including spaces or punctuation (e.g., `YYYY-MM-DD_Federal Reserve_RSS_Overview.md`).
+- The **All Providers Overview** should include **all providers** that produced an overview for today (or the chosen newest date).
+

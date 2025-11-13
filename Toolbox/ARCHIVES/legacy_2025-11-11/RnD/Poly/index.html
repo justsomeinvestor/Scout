@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polygon.io API Tester</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Polygon.io API Tester</h1>
+
+    <div class="container">
+        <div class="input-group">
+            <label for="apiKey">API Key:</label>
+            <input type="text" id="apiKey" placeholder="Enter your Polygon.io API key">
+        </div>
+        <div class="input-group">
+            <label for="ticker">Ticker:</label>
+            <input type="text" id="ticker" placeholder="e.g., AAPL">
+        </div>
+        <button id="fetchButton">Fetch Tickers</button>
+    </div>
+
+    <h2>Results</h2>
+    <pre id="results"></pre>
+
+    <script src="script.js"></script>
+</body>
+</html>

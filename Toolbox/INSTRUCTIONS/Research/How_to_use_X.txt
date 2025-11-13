@@ -1,0 +1,833 @@
+X (Twitter) Social Sentiment Analysis Workflow
+=============================================
+
+Purpose
+-------
+Extract actionable intelligence from X/Twitter posts to:
+1. Gauge crowd sentiment (contrarian indicator)
+2. Identify emerging narratives before mainstream
+3. Track influencer conviction and positioning
+4. Spot early project catalysts
+5. Validate technical levels (crowdsourced support/resistance)
+
+Data Source
+-----------
+**NEW STRUCTURE (Oct 2025):**
+- Research/X/Crypto/x_list_posts_*_archived.json - TODAY'S Crypto tweets (READ THIS!)
+- Research/X/Macro/x_list_posts_*_archived.json - TODAY'S Macro tweets (READ THIS!)
+- Research/X/Technicals/x_list_posts_*_archived.json - TODAY'S Technical tweets (READ THIS!)
+
+**IMPORTANT:** Always read the `_archived.json` files for the current date.
+These contain ONLY today's tweets (small, manageable files).
+DO NOT read the accumulating source files - they contain weeks of old data!
+
+Format: JSON array of tweet objects with text, author, timestamp, engagement metrics
+
+**Archival Process:**
+Run `python scripts/archive_x_daily.py YYYY-MM-DD` BEFORE analysis to:
+1. Extract today's tweets from accumulating source files
+2. Create today's archived files (small, focused)
+3. Move historical data to separate archive
+4. Clear source files for tomorrow's scraping
+
+**Output Files:**
+- Research/X/Crypto/YYYY-MM-DD_X_Crypto_Summary.md
+- Research/X/Macro/YYYY-MM-DD_X_Macro_Summary.md
+- Research/X/Technicals/YYYY-MM-DD_X_Technicals_Summary.md
+
+Analysis Workflow
+-----------------
+
+STEP 1: SENTIMENT ANALYSIS
+---------------------------
+Goal: Calculate overall bullish/bearish sentiment score (0-100)
+
+1. Read x_posts.json and extract all tweet texts
+2. Count sentiment indicators:
+
+   BULLISH KEYWORDS/PHRASES:
+   - Keywords: bullish, moon, pump, long, buy, accumulate, breakout, ATH, rally, bounce, support holding
+   - Emojis: 🚀, 💎, 🔥, 📈, 💰, 🌙, ⬆️, 💪, ✅
+   - Phrases: "to the moon", "going up", "buy the dip", "bottom is in", "new ATH"
+
+   BEARISH KEYWORDS/PHRASES:
+   - Keywords: bearish, dump, crash, short, sell, panic, breakdown, capitulation, resistance rejected
+   - Emojis: 💀, 📉, ⬇️, ⚠️, 🩸, 😱, ❌
+   - Phrases: "going down", "sell the rip", "top is in", "death cross", "bear market"
+
+   NEUTRAL:
+   - No strong directional keywords
+
+3. Weight by author influence:
+
+   TIER 1 (10x weight):
+   - LynAldenContact, MarkYusko, RaoulGMI, saylor, APompliano, novogratz
+   - cburniske, AriDavidPaul, BalajisS
+
+   TIER 2 (5x weight):
+   - scottmelker, coinbureau, CryptoCobain, PeterLBrandt, CryptoWizardd
+   - trader1sz, MoonOverlord, aixbt_agent
+
+   TIER 3 (1x weight):
+   - All other accounts
+
+4. Calculate sentiment score:
+
+   Weighted_Bullish = Sum of (bullish_tweets × author_weight)
+   Weighted_Bearish = Sum of (bearish_tweets × author_weight)
+   Total_Weighted = Weighted_Bullish + Weighted_Bearish
+
+   Sentiment_Score = (Weighted_Bullish / Total_Weighted) × 100
+
+   Result: 0-100 score (0 = extreme bearish, 50 = neutral, 100 = extreme bullish)
+
+5. Classify sentiment tier:
+
+   0-24: EXTREME FEAR (capitulation, max contrarian buy signal)
+   25-44: BEARISH (fear building, contrarian setup forming)
+   45-64: MIXED (healthy debate, no clear edge)
+   65-79: BULLISH (normal bull market sentiment)
+   80-100: EXTREME EUPHORIA (approaching top, contrarian sell signal)
+
+6. Calculate signal impact for Breadth module:
+
+   IF Sentiment_Score 80-100 (EXTREME EUPHORIA):
+     Breadth penalty = -5 points (fade the euphoria)
+
+   ELSE IF Sentiment_Score 70-79 (STRONG BULLISH):
+     Breadth adjustment = -2 points (caution, getting frothy)
+
+   ELSE IF Sentiment_Score 45-69 (MIXED to MODERATE BULLISH):
+     Breadth adjustment = 0 to +2 points (neutral to healthy)
+
+   ELSE IF Sentiment_Score 25-44 (BEARISH):
+     Breadth bonus = +4 points (contrarian setup)
+
+   ELSE IF Sentiment_Score 0-24 (EXTREME FEAR):
+     Breadth bonus = +5 points (max contrarian buy signal)
+
+
+STEP 2: TICKER TRACKING & VELOCITY ANALYSIS (NEW - Oct 2025)
+------------------------------------------------------------
+Goal: Track trending tickers and calculate mention velocity for trading edge
+
+**CRYPTO TICKERS (from Research/X/Crypto/):**
+1. Extract all crypto ticker mentions ($BTC, $ETH, $SOL, $ZEC, etc.)
+2. Count absolute mentions over last 24 hours
+3. Compare to baseline (7-day average) to calculate velocity %
+4. Flag categories:
+   - BREAKOUT NARRATIVE: >500% velocity increase
+   - ACCELERATING: +100% to +500% velocity
+   - EMERGING: New tickers with 15+ mentions (previously <5)
+   - COOLING/EXHAUSTION: Negative velocity after spike
+
+**Crypto Example Output:**
+- BTC: 144 mentions (+15% velocity) - "Leadership intact, consolidation above key EMAs"
+- ZEC: 61 mentions (-60% velocity) - "Privacy narrative cooling from spike - EXHAUSTION PATTERN, take profits"
+- ETH: 41 mentions (+25% velocity) - "HTF close >$4.6K flagged as confirmation level"
+- SOL: 28 mentions (+90% velocity) - "Relative strength, ecosystem flows"
+- XPL: 22 mentions (NEW) - "Emerging discussion - watch for follow-through"
+
+**MACRO TICKERS (from Research/X/Macro/):**
+1. Extract all equity/index ticker mentions (SPX, SPY, QQQ, TSLA, NVDA, etc.)
+2. Count absolute mentions over last 24 hours
+3. Compare to baseline (7-day average) to calculate velocity %
+4. Flag categories:
+   - EVENT-DRIVEN SPIKE: >200% velocity (usually macro events like NFP, FOMC)
+   - LEADERSHIP WATCH: >150% velocity on individual stocks
+   - EMERGING SETUP: Small-cap tickers with 2-5 mentions from known analysts
+
+**Macro Example Output:**
+- SPX: 30 mentions (+220% velocity) - "6,612-6,720 range coiling - breakout/breakdown imminent"
+- TSLA: 29 mentions (+180% velocity) - "Relative strength, Oct 10 $460 calls +62%"
+- NVDA: 28 mentions (+160% velocity) - "AI leadership intact - earnings path critical"
+- $JD: 3 mentions (NEW) - "Volume gap thesis active per Jake Wujastyk"
+
+**VELOCITY CALCULATION:**
+```
+Baseline = 7-day average mentions for ticker
+Current = Last 24h mentions
+Velocity = ((Current - Baseline) / Baseline) × 100%
+
+If Velocity > +500%: BREAKOUT NARRATIVE (high conviction)
+If Velocity > +100%: ACCELERATING (momentum building)
+If Velocity 0% to +100%: STEADY (normal trend)
+If Velocity < 0%: COOLING (watch for exhaustion/reversal)
+If Velocity < -50% after spike: EXHAUSTION PATTERN (contrarian sell signal)
+```
+
+**TRADING EDGE FROM VELOCITY:**
+- Velocity reversals = early warning signals (ZEC -60% = take profits)
+- Event-driven spikes = volatility windows (NFP +250% = reduce sizes)
+- Emerging tickers = alpha opportunities ($JD, $BMNR, $XPL)
+- Leadership shifts = market canaries (TSLA/NVDA relative strength)
+
+
+STEP 3: NARRATIVE TRACKING
+---------------------------
+Goal: Identify hot narratives and trending topics
+
+1. Extract theme keywords from high-velocity tickers:
+   - "privacy", "AI", "gaming", "DeFi", "staking", "ETF", "altcoin season"
+   - Count frequency and flag trending themes
+
+6. List top 5 narratives by mention velocity
+
+
+STEP 3: INFLUENCER CONSENSUS
+-----------------------------
+Goal: Track what respected analysts are positioning for
+
+1. Filter tweets by TIER 1 influencers only
+2. Manually review their recent tweets (last 24 hours)
+3. Categorize their stance:
+   - BULLISH: Clear long bias, positive outlook
+   - CAUTIOUS/MIXED: Balanced view, waiting for signals
+   - BEARISH: Defensive positioning, warning signs
+   - NEUTRAL: No clear directional view
+
+4. Document specific takes:
+   - Quote key tweets
+   - Note position changes (if they flipped from bearish → bullish, that's a signal)
+
+Example output:
+BULLISH:
+- Mark Yusko: "Bitcoin in bull market for 15 years"
+- Chris Burniske: High ZEC conviction (3 tweets on privacy narrative)
+
+CAUTIOUS:
+- Lyn Alden: (check for recent tweets)
+
+BEARISH:
+- (none detected)
+
+
+STEP 4: TECHNICAL LEVELS EXTRACTION
+------------------------------------
+Goal: Crowdsource support/resistance levels from traders
+
+1. Search tweets for price level patterns:
+   - $XX,XXX format (e.g., "$108,000")
+   - XXK format (e.g., "108K")
+   - Percentage references (e.g., "2% below 50-DMA")
+
+2. Extract technical terms in same tweet:
+   - "support", "resistance", "entry", "stop", "target"
+   - "breakout", "breakdown", "accumulation", "distribution"
+
+3. Count how many traders mention the same level
+   - If 3+ traders cite "$108K support" → add to key levels
+
+4. Cross-reference with existing TradingView data
+   - Validate crowdsourced levels against technical provider data
+   - Flag consensus levels (both X + TradingView cite same level)
+
+
+STEP 5: PROJECT ALPHA / CATALYSTS
+----------------------------------
+Goal: Spot early project developments before mainstream
+
+1. Search tweets for announcement keywords:
+   - "BREAKING", "LIVE", "LAUNCH", "ANNOUNCES", "INTEGRATION"
+   - "partnership", "acquisition", "funding", "staking", "TGE"
+
+2. Extract ticker + event + date (if mentioned)
+
+Example:
+- $EIGEN: "EigenAI launch (AI profits flow to token)" - Oct 1
+- $BERT: "Staking LIVE (5-12% APR)" - Oct 1
+- Espresso: "ApeChain community call Oct 2, Q4 TGE"
+
+3. Add to "Emerging Catalysts" section
+
+
+STEP 6: HYPE CYCLE INDICATOR
+-----------------------------
+Goal: Measure euphoria/panic levels
+
+1. Calculate hype metrics:
+   - Emoji density = (emoji count / total characters) × 100
+   - Caps lock % = (CAPS characters / total characters) × 100
+   - Exclamation marks per tweet = (! count / tweet count)
+
+2. Score hype level (1-5):
+   1 = DEPRESSION (no emojis, minimal excitement)
+   2 = CAUTIOUS (low emoji/caps usage)
+   3 = NEUTRAL (moderate activity)
+   4 = EUPHORIC (high emoji/caps usage)
+   5 = MANIA (excessive !!!, 🚀🚀🚀, ALL CAPS)
+
+3. Interpretation:
+   - Hype 4-5 = Contrarian sell signal (too much euphoria)
+   - Hype 1-2 = Contrarian buy signal (capitulation)
+   - Hype 3 = Neutral
+
+
+STEP 6.5: TREND TRACKING & WORD FREQUENCY ANALYSIS (NEW)
+--------------------------------------------------------
+Goal: Track trending words/tickers/themes over time to measure narrative momentum and identify early signals
+
+**CRITICAL: This data MUST be updated every workflow run to maintain historical continuity**
+
+A. Extract Top Trending Words by Category:
+
+   Read through BOTH x_list_posts JSON files (Crypto + Macro) and count mentions:
+
+   1. **CRYPTO TICKERS** ($BTC, $ETH, $SOL, $ZEC, $XRP, $ADA, etc.)
+      - Count every mention of crypto ticker symbols
+      - Include variations: BTC, $BTC, #BTC
+      - Track top 20 by mention count
+
+   2. **EQUITY TICKERS** (SPX, SPY, QQQ, $TSLA, $NVDA, $AAPL, etc.)
+      - Count equity/index ticker mentions
+      - Include variations: TSLA, $TSLA, #TSLA
+      - Track top 15 by mention count
+
+   3. **TECH/SECTOR THEMES** (AI, privacy, DeFi, staking, gaming, L2, ZK, etc.)
+      - Count technology/sector keyword mentions
+      - Focus on: AI, privacy, DeFi, NFT, gaming, metaverse, L2, rollup, zkSync, staking, LSD, restaking, RWA, MEV
+      - Track top 15 themes
+
+   4. **MACRO THEMES** (Fed, FOMC, rates, inflation, NFP, CPI, recession, etc.)
+      - Count macro/economic keyword mentions
+      - Focus on: Fed, FOMC, rates, inflation, CPI, PPI, NFP, employment, recession, GDP, yields, bonds, VIX
+      - Track top 15 themes
+
+   5. **SENTIMENT WORDS** (bullish, bearish, breakout, dump, pump, etc.)
+      - Count sentiment indicator words
+      - Focus on: bullish, bearish, moon, dump, pump, crash, rally, breakout, breakdown, FOMO, capitulation
+      - Track top 10 sentiment words
+
+   6. **NARRATIVE PHRASES** (multi-word trends)
+      - Count common phrases: "altcoin season", "rate cut", "all time high", "bear market", "bull market"
+      - Track top 10 phrases
+
+B. Calculate Velocity (Change vs Previous Day):
+
+   Load yesterday's trending words file: Research/X/Trends/YYYY-MM-DD_trending_words.json
+
+   For each word/ticker:
+   ```
+   Velocity_24h = ((Today_Count - Yesterday_Count) / Yesterday_Count) × 100%
+
+   If velocity >+200%: 🔥 HOT (narrative accelerating)
+   If velocity +50% to +200%: ↗️ RISING (gaining momentum)
+   If velocity -50% to +50%: → STABLE (normal)
+   If velocity <-50%: ⚠️ COOLING (exhaustion signal)
+   ```
+
+C. Create Today's Trending Words File:
+
+   Create: Research/X/Trends/YYYY-MM-DD_trending_words.json
+
+   ```json
+   {
+     "timestamp": "2025-10-03T00:45:00Z",
+     "source": "X Crypto + X Macro combined",
+     "total_posts_analyzed": 9240,
+     "categories": {
+       "tickers_crypto": [
+         {"word": "$BTC", "mentions": 144, "rank": 1, "velocity_24h": "+15%", "signal": "↗️ RISING"},
+         {"word": "$ZEC", "mentions": 61, "rank": 4, "velocity_24h": "-60%", "signal": "⚠️ COOLING"}
+       ],
+       "tickers_equities": [
+         {"word": "SPX", "mentions": 30, "rank": 1, "velocity_24h": "+220%", "signal": "🔥 HOT"}
+       ],
+       "tech_themes": [
+         {"word": "AI", "mentions": 67, "rank": 1, "velocity_24h": "+45%", "signal": "↗️ RISING"},
+         {"word": "privacy", "mentions": 52, "rank": 2, "velocity_24h": "-40%", "signal": "⚠️ COOLING"}
+       ],
+       "macro_themes": [
+         {"word": "Fed", "mentions": 89, "rank": 1, "velocity_24h": "+400%", "signal": "🔥 HOT"}
+       ],
+       "sentiment_words": [
+         {"word": "bullish", "mentions": 134, "rank": 1, "velocity_24h": "+18%", "signal": "→ STABLE"}
+       ],
+       "narrative_phrases": [
+         {"phrase": "altcoin season", "mentions": 34, "rank": 1, "velocity_24h": "+320%", "signal": "🔥 HOT"}
+       ]
+     }
+   }
+   ```
+
+D. Update Historical Database:
+
+   Update: Research/X/Trends/trends_database.json
+
+   Add today's snapshot to history array (keep 90 days max):
+   ```json
+   {
+     "last_updated": "2025-10-03T00:45:00Z",
+     "retention_days": 90,
+     "history": [
+       {
+         "date": "2025-10-03",
+         "top_tickers_crypto": ["$BTC", "$ETH", "$SOL", "$ZEC"],
+         "top_tickers_equities": ["SPX", "$TSLA", "$NVDA"],
+         "top_tech_themes": ["AI", "privacy", "staking"],
+         "top_macro_themes": ["Fed", "rates", "employment"],
+         "snapshot_file": "Research/X/Trends/2025-10-03_trending_words.json"
+       }
+     ],
+     "7_day_movers": {
+       "gaining": [
+         {"word": "$SOL", "change_7d": "+156%", "category": "tickers_crypto"},
+         {"word": "Fed", "change_7d": "+210%", "category": "macro_themes"}
+       ],
+       "losing": [
+         {"word": "$ZEC", "change_7d": "-45%", "category": "tickers_crypto"}
+       ]
+     }
+   }
+   ```
+
+E. Identify Trading Signals from Trends:
+
+   **HOT SIGNALS (🔥 Velocity >+200%)**:
+   - Narrative acceleration = event risk or emerging catalyst
+   - Example: "Fed" +400% = macro event imminent (NFP Friday)
+   - Example: "$ZEC" +1200% = parabolic hype (watch for reversal)
+   - Action: Add to Media & Catalysts tab as "Data Anomaly" or "Upcoming Catalyst"
+
+   **COOLING SIGNALS (⚠️ Velocity <-50%)**:
+   - Exhaustion pattern = take profits
+   - Example: "$ZEC" -60% after +1200% = narrative exhaustion
+   - Action: Add to Media & Catalysts tab as "Exhaustion Signal"
+
+   **EMERGING SIGNALS (New words appearing)**:
+   - 0 mentions → 10+ mentions = early alpha opportunity
+   - Example: "$XPL" appears with 22 mentions (was 0)
+   - Action: Add to Media & Catalysts tab as "Research Highlight - Emerging"
+
+F. **CRITICAL: Update master-plan.md with Trending Words**:
+   - Navigate to master-plan/master-plan.md
+   - Find the "xsentiment" tab object (around line 180-300)
+   - Locate the "trending_words" section (after "influencer_consensus")
+   - Replace the entire "trending_words" object with today's data from your analysis in steps A-E above
+   - Keep the same JSON structure: tickers_crypto, tickers_equity, tech_themes, macro_themes, sentiment_words, narrative_phrases
+   - Each item must have: {"word": "...", "mentions": X, "velocity_24h": "±X%", "signal": "emoji LABEL"}
+   - This ensures the dashboard displays live trending data on every refresh
+
+
+STEP 7: GENERATE SUMMARIES (UPDATED - Oct 2025)
+-----------------------------------------------
+Create THREE separate summaries:
+1. Research/X/Crypto/YYYY-MM-DD_X_Crypto_Summary.md
+2. Research/X/Macro/YYYY-MM-DD_X_Macro_Summary.md
+3. Research/X/Technicals/YYYY-MM-DD_X_Technicals_Summary.md
+
+**CRYPTO Template (must include TRENDING TICKERS section):**
+
+---
+# X/Twitter Crypto Summary - [DATE]
+
+**Total Posts Analyzed:** [X]
+
+## Sentiment Analysis
+- Bullish: [X] posts ([X]%)
+- Bearish: [X] posts ([X]%)
+- Neutral: [X] posts ([X]%)
+- **Sentiment Score:** [X]/100
+
+**Signal Impact:** [+/-X] points to Breadth Signals module
+
+---
+
+## Top Trending Tickers (Mention Velocity)
+1. **BTC**: [mentions] mentions ([+/-XX% velocity]) - "[Signal/interpretation]"
+2. **[TICKER]**: [mentions] mentions ([+/-XX% velocity]) - "[Signal/interpretation]"
+[List top 5 crypto tickers by absolute mentions + velocity]
+
+**EMERGING TICKERS (NEW):**
+- **$[TICKER]**: [mentions] mentions (NEW) - "[Signal/thesis from known analyst]"
+
+**Key Levels (Crowdsourced):**
+- BTC $XXX,XXX: [Support/Resistance] ([X] mentions)
+- ETH $X,XXX: [Support/Resistance] ([X] mentions)
+[List consensus levels from 3+ traders]
+
+---
+
+## Top Narratives (Last 24 Hours)
+1. **[Narrative Name]** (↑/↓ XX% mentions)
+   - [Key points with velocity context]
+   - [Trading implication]
+
+[List top 5 narratives]
+
+---
+
+## Influencer Consensus
+
+**Tier 1 Bullish:**
+- [Name]: "[Quote or summary]"
+
+**Tier 2 Cautious/Mixed:**
+- [Name]: "[Quote or summary]"
+
+**Bearish/Contrarian:**
+- [Name]: "[Quote or summary]"
+
+**Overall Read:** [1-2 sentences on consensus]
+
+---
+
+## Velocity Tracking Summary (TRADING EDGE)
+
+**Acceleration Leaders (Opportunity):**
+1. [TICKER]: +XXX% velocity
+2. [TICKER]: +XXX% velocity
+
+**Exhaustion Signals (Take Profits):**
+1. [TICKER]: -XXX% velocity (cooling from spike)
+
+**Pattern Recognition:**
+- [Pattern observed] = [Historical probability/implication]
+
+---
+
+
+**MACRO Template (must include TRENDING TICKERS + EVENT RISK):**
+
+---
+# X/Twitter Macro Summary - [DATE]
+
+**Total Posts Analyzed:** [X]
+
+## Sentiment Analysis
+- Bullish: [X] posts ([X]%)
+- Bearish: [X] posts ([X]%)
+- Neutral: [X] posts ([X]%)
+- **Sentiment Score:** [X]/100
+
+**Signal Impact:** [+/-X] points to Breadth Signals module
+
+---
+
+## Top Trending Tickers (Mention Velocity)
+1. **SPX**: [mentions] mentions ([+/-XX% velocity]) - "[Signal/interpretation with key levels]"
+2. **[TICKER]**: [mentions] mentions ([+/-XX% velocity]) - "[Signal/interpretation]"
+[List top 5 macro tickers by velocity]
+
+**EMERGING TICKERS (Alpha Opportunities):**
+- **$[TICKER]**: [mentions] mentions (NEW) - "[Setup from known analyst like Jake Wujastyk]"
+
+**Key Levels (Crowdsourced):**
+- SPX [level]: [Support/Resistance/Breakout trigger] (consensus)
+- VIX [level]: [Current/Trigger level] (consensus)
+[List consensus levels]
+
+---
+
+## Event Risk (High Velocity)
+- **[EVENT]**: [DATE] ([+XXX% velocity]) - "[Impact description]"
+[List major macro events with velocity spikes like NFP, FOMC]
+
+---
+
+## Top Narratives (Last 24 Hours)
+1. **[Narrative Name]** (↑/↓ XX% mentions)
+   - [Key points with velocity context]
+   - [Trading implication]
+
+[List top 5 narratives]
+
+---
+
+## Influencer Consensus
+
+**Bullish:**
+- [Macro-focused sentiment]
+
+**Cautious/Mixed:**
+- [Acknowledge risks]
+
+**Bearish:**
+- [Contrarian warnings]
+
+**Overall Read:** [1-2 sentences on macro consensus]
+
+---
+
+## Velocity Tracking Summary (TRADING EDGE)
+
+**Acceleration Leaders:**
+1. [Event/Ticker]: +XXX% velocity
+2. [Event/Ticker]: +XXX% velocity
+
+**Pattern Recognition:**
+- [Pattern observed] = [Historical probability/implication]
+- Vol compression + range-bound = explosive move patterns
+
+---
+
+## Technical Levels Mentioned by Traders
+- **[Asset] $XX,XXX**: [support/resistance] ([X] mentions)
+- [List key crowdsourced levels]
+
+---
+
+## Emerging Catalysts (Project Alpha)
+- **[Ticker]**: [Event description] - [Date if known]
+- [List 3-5 early catalysts spotted]
+
+---
+
+## Hype Cycle Indicator: [🔥 rating] ([LEVEL])
+- Emoji density: [High/Medium/Low]
+- Caps lock usage: [Elevated/Normal/Low]
+- Exclamation marks: [Frequent/Moderate/Rare]
+- Assessment: [Interpretation and trading implication]
+
+---
+
+## Signal Integration
+- **Breadth Signals**: [+/-X] points ([reason])
+- **Narrative for Daily Planner**: "[Action item]"
+- **Quick Actions**: "[Specific recommendation]"
+
+---
+
+
+**TECHNICALS Template (Technical Analysis & Trading Insights):**
+
+---
+# X Social Sentiment Summary - [DATE] (Technicals)
+
+## Overview
+Technical analysis insights, chart patterns, and trading setups from X/Twitter technical analysts.
+
+**Total Posts Analyzed:** [X]
+
+---
+
+## Top Chart Patterns & Setups
+1. **[Asset/Ticker]**: [Pattern Name] - [Analyst consensus]
+   - Entry: [Level]
+   - Stop: [Level]
+   - Target: [Level]
+   - Conviction: [High/Medium/Low] ([X] analysts agree)
+
+2. **[Asset/Ticker]**: [Pattern Name] - [Description]
+   [List top 5 technical setups with analyst names]
+
+---
+
+## Key Technical Levels (Crowdsourced)
+**BTC:**
+- Resistance: $XXX,XXX ([X] mentions)
+- Support: $XXX,XXX ([X] mentions)
+- Breakout target: $XXX,XXX
+
+**SPX:**
+- Resistance: X,XXX ([X] mentions)
+- Support: X,XXX ([X] mentions)
+
+[Include ETH, SPY, QQQ if heavily mentioned]
+
+---
+
+## Indicator Signals & Divergences
+**Bullish Signals:**
+- [Indicator]: [Description] ([Analyst name])
+- [Example: "RSI bullish divergence on BTC H4 (CryptoCred, PeterLBrandt)"]
+
+**Bearish Signals:**
+- [Indicator]: [Description] ([Analyst name])
+
+**Neutral/Mixed:**
+- [Indicator]: [Description]
+
+---
+
+## Volume & Flow Analysis
+**Notable Volume Patterns:**
+- [Asset]: [Description of volume pattern] ([Analyst consensus])
+- [Example: "BTC spot volume declining while price holds = compression (3 analysts)"]
+
+**Options Flow (if mentioned):**
+- [Ticker]: [Strike/Expiry] - [Flow description]
+- [Example: "SPY 0DTE calls clustering at X,XXX (unusual activity)"]
+
+---
+
+## Influencer Technical Calls
+**Tier 1 Analysts:**
+- **[Name]**: "[Quote or setup]"
+
+**Tier 2 Analysts:**
+- **[Name]**: "[Quote or setup]"
+
+**Consensus:** [1-2 sentences on technical analyst agreement/disagreement]
+
+---
+
+## Time Frame Analysis
+**Higher Time Frame (HTF - Daily/Weekly):**
+- [Key insights from HTF perspective]
+
+**Lower Time Frame (LTF - H4/H1):**
+- [Key insights from LTF perspective]
+
+**Alignment:** [Are HTF and LTF aligned or conflicting?]
+
+---
+
+## Signal Integration
+- **Key Levels for Daily Planner**: [List critical support/resistance]
+- **Pattern Watch List**: [Patterns forming that need monitoring]
+- **Risk Management**: [Stop levels and invalidation points]
+
+---
+
+
+STEP 8: INTEGRATION INTO WORKFLOW (UPDATED - Oct 2025)
+-------------------------------------------------------
+After generating ALL THREE summaries (Crypto + Macro + Technicals):
+
+**A. Update master-plan.md Macro Tab (lines ~33-83):**
+
+1. Update "🐦 X Social Macro Signals" provider card with:
+   - Macro sentiment score (e.g., "72/100 BULLISH, stable")
+   - TOP TRENDING line with tickers + velocity (e.g., "SPX 6,612-6,720 coiling (+220%), TSLA (+180%), NVDA (+160%)")
+   - EQUITY LEADERSHIP line with specific signals (e.g., "TSLA Oct 10 $460 calls +62%")
+   - Options flow patterns (e.g., "0DTE activity = vol amplifier")
+   - EMERGING TICKERS line (e.g., "$JD volume gap thesis, $BMNR weekly shelf")
+   - Pattern recognition (e.g., "'Tough/bipolar market' = mid-cycle chop, 60% trend resumption")
+   - Vol compression notes (e.g., "VIX 17 multi-year lows + range-bound = explosive move")
+   - Narrative velocity summary line (e.g., "+250% NFP/jobs, +220% SPX, +180% TSLA...")
+
+2. Update aiInterpretation.summary with:
+   - X Macro sentiment score
+   - Top trending tickers with velocity
+   - Emerging ticker alpha
+   - Pattern recognition insights
+
+3. Update aiInterpretation.keyInsight with:
+   - Vol compression + range-bound context
+   - Trending ticker implications
+   - Velocity tracking edge
+
+4. Update aiInterpretation.action with:
+   - Wait for breakout/breakdown levels
+   - Reduce sizes into event risk
+   - Track emerging tickers
+   - Monitor relative strength leaders
+
+
+**B. Update master-plan.md X Sentiment Tab (lines ~425-527):**
+
+1. Update aiInterpretation.summary with:
+   - "CRYPTO XX/100 (TIER), MACRO XX/100 (TIER)"
+   - Crypto trending tickers with mentions (e.g., "BTC 144 mentions, ZEC 61 cooling, ETH 41 ($4.6K watch)")
+   - Macro trending tickers with velocity (e.g., "SPX 30 mentions (6,612-6,720), TSLA 29 (+180%), NVDA 28 (+160%)")
+   - Emerging tickers across both (e.g., "$JD volume gap, $BMNR weekly shelf, $XPL crypto")
+
+2. Update aiInterpretation.keyInsight with:
+   - Narrative velocity = trading edge statement
+   - Crypto leadership status
+   - Macro range-bound + vol compression
+   - Emerging ticker opportunities
+
+3. Update aiInterpretation.action with:
+   - Track velocity reversals (template: ZEC -60%)
+   - Monitor HTF levels
+   - Wait for breakouts
+   - Reduce into events
+   - Watch emerging tickers
+
+4. Update cryptoSentiment and macroSentiment fields
+
+5. Update crypto_trending object:
+   - top_tickers array: [{"ticker": "BTC", "mentions": 144, "velocity": "+15%", "signal": "..."}]
+   - key_levels array: [{"asset": "BTC", "level": "$118K", "type": "Support", "consensus": "..."}]
+
+6. Update macro_trending object:
+   - top_tickers array: [{"ticker": "SPX", "mentions": 30, "velocity": "+220%", "signal": "..."}]
+   - emerging_tickers array: [{"ticker": "$JD", "mentions": 3, "signal": "..."}]
+   - key_levels array: [{"asset": "SPX", "level": "6,720", "type": "Resistance", "consensus": "..."}]
+   - event_risk array: [{"event": "NFP Friday", "date": "Oct 3", "velocity": "+250%", "impact": "..."}]
+
+
+**C. Update master-plan.md Technicals Tab for X/Technicals Summary:**
+
+1. Add new provider card "🐦 X Social Technical Analysis" with:
+   - Total posts analyzed count
+   - Top chart patterns consensus (e.g., "BTC Cup & Handle (3 analysts), SPX Bull Flag (2 analysts)")
+   - Key levels crowdsourced (e.g., "BTC $118K support (5 mentions), SPX 6,720 resistance (7 mentions)")
+   - Indicator signals (e.g., "RSI bullish divergence H4 (CryptoCred, PeterLBrandt)")
+   - Time frame alignment status (e.g., "HTF bullish, LTF consolidating = continuation setup")
+   - Top technical setups with entry/stop/target levels
+   - Volume/flow analysis highlights
+
+2. Update aiInterpretation with:
+   - Summary: Technical analyst consensus from X/Twitter insights
+   - KeyInsight: Pattern recognition edge (e.g., "Cup & Handle + HTF alignment = 70% continuation probability")
+   - Action: Specific technical entry levels and invalidation points from crowd consensus
+
+3. Integration with existing Technical data:
+   - Cross-reference X/Technicals levels with TradingView BTC/SPX summaries
+   - Highlight divergences between social consensus and chart analysis
+   - Use X/Technicals for confirmation of TradingView setups
+
+
+**D. Breadth Signals Calculation (Step 3.5 of master workflow):**
+
+Use CRYPTO sentiment score for Breadth module (not macro):
+- If Crypto Sentiment 0-24 (EXTREME FEAR): +5 points (max contrarian buy)
+- If Crypto Sentiment 25-44 (BEARISH): +4 points (contrarian setup)
+- If Crypto Sentiment 45-79 (MIXED to BULLISH): 0 to +2 points (neutral)
+- If Crypto Sentiment 80-89 (STRONG BULLISH): -2 points (caution, frothy)
+- If Crypto Sentiment 90-100 (EXTREME EUPHORIA): -5 points (fade euphoria)
+
+Rationale: Crypto sentiment more relevant for risk-on/risk-off breadth than macro equity sentiment
+
+
+**D. Dashboard Rendering (research-dashboard.html automatically renders):**
+
+The renderXSentiment() function will automatically display:
+- Crypto vs Macro sentiment cards (side-by-side)
+- Crypto trending tickers with velocity colors
+- Crypto key levels table
+- Macro trending tickers with velocity colors
+- Macro emerging tickers (highlighted in gold)
+- Macro key levels table
+- Macro event risk warnings
+
+No manual HTML updates needed - just update master-plan.md JSON structure
+
+**Technicals Tab:**
+- Extract crowd-sourced levels from "Technical Levels Mentioned by Traders" section
+- Extract BTC Trader's Realized Price from Top Narratives
+- Extract influencer-specific levels (Trader Mayne sweep zones) from Influencer Consensus
+- Extract hype cycle position from Sentiment Breakdown (% extreme bullish)
+- Extract emoji/caps/exclamation indicators from narrative analysis
+- Add to "🐦 X Crowd-Sourced Levels" and "🐦 X Hype Cycle as Vol Predictor" provider cards
+- Update aiInterpretation to reference crowd levels and hype cycle patterns
+
+**Daily Planner Priorities:**
+- HIGH: "WATCH X for institutional announcements" (if pattern established)
+- MEDIUM: "ETH: Watch for HTF close above $X.XK" (use level from Technical Levels section)
+- MEDIUM: "Monitor Fed narrative velocity (currently +X%)" (use velocity from Top Narratives)
+- MEDIUM: Exit watches for exhaustion narratives (declining velocity tickers)
+- LOW: Track TOTAL3, track debates (ETH vs SOL)
+
+**Key Levels:**
+- Add crowd-sourced levels from X to keyLevels array alongside TradingView levels
+- Mark with source attribution (e.g., "CT consensus" or "Trader Mayne H4 sweep")
+
+
+Data Refresh Frequency
+-----------------------
+- Run analysis when x_posts.json is updated (ideally daily)
+- More frequent during high volatility periods
+- Compare sentiment changes over time (inflections = signals)
+
+
+Notes
+-----
+- X sentiment is a CONTRARIAN indicator at extremes (fade euphoria, buy fear)
+- X sentiment is a CONFIRMATION indicator at moderate levels (validates other signals)
+- Influencer consensus > random CT consensus
+- Narrative velocity matters more than absolute mention count (rate of change)
+- Cross-reference X data with other providers (don't trade X data alone)

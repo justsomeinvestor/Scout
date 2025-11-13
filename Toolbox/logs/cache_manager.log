@@ -1,0 +1,4 @@
+2025-10-19 16:11:33,066 - cache_manager - INFO - Cache manager initialized with directory: data/cache
+2025-10-19 16:11:33,067 - api_sources - INFO - API Source Manager initialized
+2025-10-19 16:11:33,067 - analyze_ticker_v2 - INFO - Real data integration initialized
+2025-10-19 16:11:33,286 - api_sources - INFO - Successfully fetched quote for SPY

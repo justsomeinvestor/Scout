@@ -1,0 +1,418 @@
+/**
+ * PLANNERS TAB STYLING
+ * Integrates weekly and daily planner display into dashboard
+ */
+
+/* Main Planners Container */
+.planners-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    background: #0a0e27;
+    border-radius: 8px;
+    min-height: 100vh;
+}
+
+.planners-header {
+    text-align: center;
+    border-bottom: 2px solid #00d4ff;
+    padding-bottom: 15px;
+}
+
+.planners-header h2 {
+    font-size: 28px;
+    color: #ffffff;
+    margin: 0;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+/* Main Content Area */
+.planners-content {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+/* Planner Sections */
+.planner-section {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 8px;
+    padding: 20px;
+    backdrop-filter: blur(10px);
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(0, 212, 255, 0.3);
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+.section-header h3 {
+    font-size: 22px;
+    color: #00d4ff;
+    margin: 0;
+    font-weight: 700;
+}
+
+.section-meta {
+    font-size: 12px;
+    color: #8892b0;
+    font-style: italic;
+}
+
+/* Weekly Section */
+.weekly-section {
+    border-left: 4px solid #00d4ff;
+}
+
+.weekly-planner-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.weekly-card {
+    background: rgba(20, 30, 48, 0.8);
+    border: 1px solid rgba(0, 212, 255, 0.15);
+    border-radius: 6px;
+    padding: 15px;
+    transition: all 0.3s ease;
+}
+
+.weekly-card:hover {
+    background: rgba(20, 30, 48, 1);
+    border-color: rgba(0, 212, 255, 0.4);
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.1);
+}
+
+.weekly-card h4 {
+    font-size: 14px;
+    color: #b8c5d6;
+    margin: 0 0 12px 0;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Trigger Stack */
+.trigger-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.trigger-stack ol {
+    margin: 0;
+    padding-left: 20px;
+    list-style-position: inside;
+}
+
+.trigger-stack li {
+    color: #e6f1ff;
+    font-size: 13px;
+    line-height: 1.6;
+    margin-bottom: 8px;
+    padding-left: 8px;
+}
+
+.trigger-stack li::before {
+    content: "➤ ";
+    color: #ff6b35;
+    font-weight: 700;
+    margin-right: 5px;
+}
+
+/* Economic Calendar */
+.economic-calendar {
+    color: #e6f1ff;
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+.economic-calendar p {
+    margin: 5px 0;
+}
+
+/* Positioning Guide */
+.positioning-guide {
+    color: #b8c5d6;
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+.positioning-guide p {
+    margin: 5px 0;
+}
+
+/* Risk Controls */
+.risk-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.risk-controls p {
+    color: #ff6b35;
+    font-weight: 600;
+    font-size: 12px;
+    margin: 5px 0;
+    background: rgba(255, 107, 53, 0.1);
+    padding: 8px 10px;
+    border-radius: 4px;
+    border-left: 3px solid #ff6b35;
+}
+
+/* Daily Section */
+.daily-section {
+    border-left: 4px solid #ff6b35;
+}
+
+.daily-planner-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.daily-card {
+    background: rgba(20, 30, 48, 0.8);
+    border: 1px solid rgba(255, 107, 53, 0.15);
+    border-radius: 6px;
+    padding: 15px;
+    transition: all 0.3s ease;
+}
+
+.daily-card:hover {
+    background: rgba(20, 30, 48, 1);
+    border-color: rgba(255, 107, 53, 0.4);
+    box-shadow: 0 0 15px rgba(255, 107, 53, 0.1);
+}
+
+.daily-card h4 {
+    font-size: 14px;
+    color: #ff6b35;
+    margin: 0 0 12px 0;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Priorities List */
+.priorities-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.priorities-list ol {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.priorities-list li {
+    color: #e6f1ff;
+    font-size: 13px;
+    line-height: 1.6;
+    margin-bottom: 8px;
+}
+
+/* Key Levels Display */
+.key-levels-display {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.key-levels-display p {
+    color: #b8c5d6;
+    font-size: 12px;
+    margin: 5px 0;
+    padding: 8px;
+    background: rgba(0, 212, 255, 0.05);
+    border-radius: 4px;
+}
+
+/* Daily Risk Display */
+.daily-risk-display {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.daily-risk-display p {
+    color: #ff6b35;
+    font-size: 12px;
+    margin: 5px 0;
+    padding: 8px;
+    background: rgba(255, 107, 53, 0.1);
+    border-radius: 4px;
+}
+
+/* Checklist Display */
+.checklist-display {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.checklist-items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.checklist-items li {
+    color: #b8c5d6;
+    font-size: 12px;
+    padding: 8px 12px;
+    margin-bottom: 6px;
+    background: rgba(0, 212, 255, 0.05);
+    border-radius: 4px;
+    border-left: 3px solid #00d4ff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.checklist-items li:hover {
+    background: rgba(0, 212, 255, 0.15);
+    border-left-color: #ffffff;
+}
+
+.checklist-items li.checked {
+    color: #00d4ff;
+    background: rgba(0, 212, 255, 0.2);
+    border-left-color: #00d4ff;
+}
+
+.checklist-items li::before {
+    content: "○ ";
+    margin-right: 8px;
+    font-weight: 700;
+}
+
+.checklist-items li.checked::before {
+    content: "✓ ";
+    color: #00d4ff;
+}
+
+/* Trades Log */
+.trades-log {
+    background: rgba(0, 212, 255, 0.05);
+    border-radius: 4px;
+    padding: 10px;
+    color: #b8c5d6;
+    font-size: 12px;
+    min-height: 40px;
+}
+
+.trades-log p {
+    margin: 5px 0;
+}
+
+/* EOD Summary */
+.eod-summary {
+    background: rgba(255, 107, 53, 0.05);
+    border-radius: 4px;
+    padding: 10px;
+    color: #b8c5d6;
+    font-size: 12px;
+}
+
+.eod-summary p {
+    margin: 5px 0;
+}
+
+/* Divider */
+.divider {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #00d4ff, transparent);
+    margin: 20px 0;
+}
+
+/* Metric Display */
+.metric-display {
+    background: rgba(0, 212, 255, 0.05);
+    border-radius: 4px;
+    padding: 10px;
+    color: #e6f1ff;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .weekly-planner-content,
+    .daily-planner-content {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .planners-container {
+        padding: 15px;
+    }
+
+    .planners-header h2 {
+        font-size: 20px;
+    }
+
+    .section-header h3 {
+        font-size: 18px;
+    }
+
+    .weekly-card,
+    .daily-card {
+        padding: 12px;
+    }
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.planner-section {
+    animation: fadeIn 0.5s ease-out;
+}
+
+.weekly-card,
+.daily-card {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Loading State */
+.loading {
+    color: #8892b0;
+    font-style: italic;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100px;
+}
+
+.loading::after {
+    content: "⟳";
+    animation: spin 1s linear infinite;
+    margin-left: 8px;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}

@@ -1,0 +1,277 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Journal Parser - Extract Account Data from Daily Journals
+===========================================================
+
+Parses daily journal entries to extract:
+- Cash balance
+- Daily P&L
+- Overall P/L YTD
+- Trade execution details
+- Position updates
+
+This allows the system to automatically track portfolio changes
+based on your daily journal entries.
+
+Usage:
+    python scripts/journal_parser.py
+
+Output:
+    - Updates Journal/account_state.json with latest balance
+    - Extracts historical P&L data
+    - Returns structured account data
+"""
+
+import sys
+import json
+import re
+from datetime import datetime
+from pathlib import Path
+from typing import Dict, Any, List, Optional, Tuple
+
+# Fix Windows console encoding
+if sys.platform == 'win32':
+    try:
+        sys.stdout.reconfigure(encoding='utf-8')
+    except:
+        pass
+
+
+class JournalParser:
+    """
+    Parses daily journal entries to extract account balance and P&L data.
+    """
+
+    def __init__(self):
+        self.journal_file = Path("Journal/Journal.md")
+        self.account_state_file = Path("Journal/account_state.json")
+
+    def parse_journal_entry(self, entry_text: str, date_str: str) -> Dict[str, Any]:
+        """
+        Parse a single journal entry to extract financial data.
+
+        Returns dict with:
+        - date: Entry date
+        - cash_balance: Cash balance if found
+        - daily_pnl: Daily P&L if found
+        - overall_pnl_ytd: Overall P/L YTD if found
+        - trades: List of trades executed
+        """
+        result = {
+            'date': date_str,
+            'cash_balance': None,
+            'daily_pnl': None,
+            'daily_pnl_pct': None,
+            'overall_pnl_ytd': None,
+            'trades': []
+        }
+
+        # Pattern 1: Cash balance in format "Cash & Sweep Vehicle: $22,928.89"
+        cash_match = re.search(r'Cash.*?:\s*\$([0-9,]+\.?\d*)', entry_text, re.IGNORECASE)
+        if cash_match:
+            result['cash_balance'] = float(cash_match.group(1).replace(',', ''))
+
+        # Pattern 2: Overall P/L YTD in format "OVERALL P/L YTD: $2,974.57"
+        overall_pnl_match = re.search(r'OVERALL P[/&]L.*?:\s*\$([0-9,]+\.?\d*)', entry_text, re.IGNORECASE)
+        if overall_pnl_match:
+            result['overall_pnl_ytd'] = float(overall_pnl_match.group(1).replace(',', ''))
+
+        # Pattern 3: Daily P&L in format "Daily P&L: +0.95%" or "Daily P&L: $205.50" or "Daily P&L 0"
+        daily_pnl_match = re.search(r'Daily P&L\s+([+-]?\$?[0-9,]+\.?\d*)(%?)', entry_text, re.IGNORECASE)
+        if daily_pnl_match:
+            pnl_value = daily_pnl_match.group(1).replace('$', '').replace(',', '').replace('+', '')
+            is_percentage = daily_pnl_match.group(2) == '%'
+
+            if is_percentage:
+                result['daily_pnl_pct'] = float(pnl_value)
+            else:
+                result['daily_pnl'] = float(pnl_value)
+
+        # Pattern 4: P&L / Balance line format "P&L / Balance: Daily P&L +0.95%; cash ledger..."
+        pnl_balance_match = re.search(r'P[/&]L.*?Balance.*?([+-]?\d+\.?\d*)%', entry_text, re.IGNORECASE)
+        if pnl_balance_match and not result['daily_pnl_pct']:
+            result['daily_pnl_pct'] = float(pnl_balance_match.group(1))
+
+        # Pattern 5: Extract trades from "Trades/P&L:" section
+        trades_section = re.search(r'Trades[/&]P[/&]L:.*?(?:Captured|Closed|Executed).*?([+-]?\$?[0-9,]+\.?\d*)', entry_text, re.IGNORECASE)
+        if trades_section:
+            # This is a simplified trade extraction
+            result['trades'].append({
+                'description': trades_section.group(0),
+                'raw_text': trades_section.group(0)
+            })
+
+        return result
+
+    def extract_latest_balance(self) -> Tuple[Optional[float], Optional[float], Optional[str]]:
+        """
+        Extract the most recent cash balance and P/L YTD from journal.
+
+        Returns:
+            (cash_balance, overall_pnl_ytd, date_str)
+        """
+        try:
+            with open(self.journal_file, 'r', encoding='utf-8') as f:
+                content = f.read()
+        except FileNotFoundError:
+            print(f"⚠️  Journal file not found: {self.journal_file}")
+            return None, None, None
+
+        # Split into individual entries
+        entries = re.split(r'\n---\n', content)
+
+        # Process entries from most recent to oldest
+        for entry in entries:
+            # Extract date from entry header
+            date_match = re.search(r'\*\*.*?(\d{4}-\d{2}-\d{2})', entry)
+            if not date_match:
+                continue
+
+            date_str = date_match.group(1)
+            parsed = self.parse_journal_entry(entry, date_str)
+
+            # Return the first entry that has balance data
+            if parsed['cash_balance'] is not None or parsed['overall_pnl_ytd'] is not None:
+                return parsed['cash_balance'], parsed['overall_pnl_ytd'], date_str
+
+        return None, None, None
+
+    def get_historical_pnl(self, num_days: int = 30) -> List[Dict[str, Any]]:
+        """
+        Extract historical P&L data from journal entries.
+
+        Args:
+            num_days: Number of recent days to extract
+
+        Returns:
+            List of dicts with date, daily_pnl, daily_pnl_pct
+        """
+        try:
+            with open(self.journal_file, 'r', encoding='utf-8') as f:
+                content = f.read()
+        except FileNotFoundError:
+            return []
+
+        entries = re.split(r'\n---\n', content)
+        history = []
+
+        for entry in entries[:num_days]:  # Limit to most recent entries
+            date_match = re.search(r'\*\*.*?(\d{4}-\d{2}-\d{2})', entry)
+            if not date_match:
+                continue
+
+            date_str = date_match.group(1)
+            parsed = self.parse_journal_entry(entry, date_str)
+
+            if parsed['daily_pnl'] is not None or parsed['daily_pnl_pct'] is not None:
+                history.append({
+                    'date': date_str,
+                    'daily_pnl': parsed['daily_pnl'],
+                    'daily_pnl_pct': parsed['daily_pnl_pct']
+                })
+
+        return history
+
+    def update_account_state(self, cash_balance: float, overall_pnl_ytd: float, date_str: str):
+        """
+        Update account_state.json with latest balance from journal.
+
+        Args:
+            cash_balance: Current cash balance
+            overall_pnl_ytd: Overall P/L year-to-date
+            date_str: Date of the data
+        """
+        try:
+            with open(self.account_state_file, 'r', encoding='utf-8') as f:
+                account_state = json.load(f)
+        except FileNotFoundError:
+            print(f"⚠️  Account state file not found, creating new one")
+            account_state = {
+                "last_updated": date_str,
+                "account": {"total_balance": cash_balance},
+                "positions": {
+                    "cash": {"amount": cash_balance, "percentage": 100.0},
+                    "equities": {"amount": 0, "percentage": 0},
+                    "crypto": {"amount": 0, "percentage": 0},
+                    "hedges": {"total_amount": 0, "percentage": 0}
+                },
+                "constraints": {
+                    "max_equities_pct": 70,
+                    "min_cash_pct": 10,
+                    "max_crypto_pct": 30
+                }
+            }
+
+        # Update account balance
+        account_state['account']['total_balance'] = cash_balance
+        account_state['account']['overall_pnl_ytd'] = overall_pnl_ytd
+        account_state['last_updated'] = date_str
+
+        # If we're 100% cash, update positions
+        # (In future, we can parse actual positions from journal)
+        total_balance = cash_balance
+        account_state['positions']['cash']['amount'] = cash_balance
+        account_state['positions']['cash']['percentage'] = (cash_balance / total_balance * 100) if total_balance > 0 else 0
+
+        # Save updated state
+        with open(self.account_state_file, 'w', encoding='utf-8') as f:
+            json.dump(account_state, f, indent=2)
+
+        print(f"[OK] Updated account state:")
+        print(f"     Cash Balance: ${cash_balance:,.2f}")
+        print(f"     Overall P/L YTD: ${overall_pnl_ytd:,.2f}")
+        print(f"     Date: {date_str}")
+
+    def run(self):
+        """
+        Main execution: Parse journal and update account state.
+        """
+        print(f"\n{'='*60}")
+        print(f"JOURNAL PARSER")
+        print(f"{'='*60}\n")
+
+        print("[*] Parsing journal for latest balance data...\n")
+
+        cash_balance, overall_pnl_ytd, date_str = self.extract_latest_balance()
+
+        if cash_balance is None and overall_pnl_ytd is None:
+            print("⚠️  No balance data found in recent journal entries")
+            print("    Make sure journal entries include:")
+            print("    - Cash balance (e.g., 'Cash & Sweep Vehicle: $22,928.89')")
+            print("    - Overall P/L YTD (e.g., 'OVERALL P/L YTD: $2,974.57')")
+            return
+
+        # Use cash balance if found, otherwise keep existing
+        if cash_balance is not None and overall_pnl_ytd is not None:
+            self.update_account_state(cash_balance, overall_pnl_ytd, date_str)
+        else:
+            print(f"[OK] Found partial data from {date_str}")
+            if cash_balance:
+                print(f"     Cash Balance: ${cash_balance:,.2f}")
+            if overall_pnl_ytd:
+                print(f"     Overall P/L YTD: ${overall_pnl_ytd:,.2f}")
+
+        # Show historical P/L
+        print("\n[*] Recent P/L History:")
+        history = self.get_historical_pnl(num_days=7)
+        if history:
+            for entry in history:
+                pnl_str = f"${entry['daily_pnl']:,.2f}" if entry['daily_pnl'] else f"{entry['daily_pnl_pct']:+.2f}%" if entry['daily_pnl_pct'] else "N/A"
+                print(f"     {entry['date']}: {pnl_str}")
+        else:
+            print("     No P/L data found in recent entries")
+
+        print(f"\n{'='*60}")
+        print("DONE")
+        print(f"{'='*60}\n")
+
+
+def main():
+    """Main entry point"""
+    parser = JournalParser()
+    parser.run()
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,1448 @@
+================================================================================
+⚡ QUICK START GUIDE FOR AI - RESEARCH WORKFLOW
+================================================================================
+
+🚨 **CRITICAL MANDATE: FRESH DATA FROM ALL SOURCES EVERY EXECUTION**
+================================================================================
+This workflow requires FRESH DATA from ALL sources, EVERY SINGLE RUN, WITHOUT EXCEPTION.
+
+**MANDATORY DATA SOURCES (all required, every time):**
+- YouTube transcripts (8 channels) - MANDATORY
+- RSS feeds (5+ providers) - MANDATORY
+- X/Twitter (3 lists + bookmarks) - MANDATORY
+- Technical data (SPY/QQQ options) - MANDATORY
+- Web searches (market data) - MANDATORY
+
+**NO OPTIONAL DATA SOURCES. NO SKIPPING. NO WORKAROUNDS.**
+
+If any scraper FAILS: RETRY ONCE, then STOP and report incomplete collection.
+If data is EMPTY (zero results): That is VALID data - continue with empty summary.
+If data is MISSING (scraper crashed): STOP - do NOT proceed without it.
+
+**CACHING STRATEGY:** System may intelligently cache old data to avoid re-downloading unchanged sources, but PRIMARY OBJECTIVE is FRESH data input in real-time as possible.
+
+================================================================================
+🔴 **DATA QUALITY & FAILURE REPORTING - CRITICAL IMPERATIVE**
+================================================================================
+
+**CONTEXT: LIFE OR DEATH DATA SYSTEM**
+This research data directly feeds investment decisions. These are SERIOUS decisions made on this data.
+Data quality, completeness, and timeliness are EXISTENTIAL to the system's viability.
+
+**ANY DATA COLLECTION FAILURE MUST BE REPORTED IMMEDIATELY:**
+- Scraper crashes or errors → REPORT immediately (do not hide, do not skip)
+- Data sources returning empty unexpectedly → REPORT (may indicate source change/blocking)
+- Network/connectivity issues → REPORT
+- API rate limits or authentication failures → REPORT
+- Missing data files that should exist → REPORT
+
+**FAILURE ESCALATION PROTOCOL:**
+1. If scraper FAILS on first run: Retry ONCE with detailed logging
+2. If STILL FAILING after retry: STOP and report with:
+   - [ ] Which scraper failed (YouTube/RSS/X/Technical/Web searches)
+   - [ ] Error message/exception details
+   - [ ] Time of failure
+   - [ ] Previous successful run timestamp
+   - [ ] Action taken (retry? debug logs?)
+3. DO NOT PROCEED with incomplete data - report to user immediately
+4. DO NOT ATTEMPT WORKAROUNDS - workarounds hide real problems
+
+**WHY THIS MATTERS:**
+- Bad data → Bad signals → Bad trading decisions → Real financial loss
+- Incomplete data set → Biased analysis → Systematic blindspot in decision-making
+- Silent failures → Compounding errors over time
+- You are the FIRST LINE OF DEFENSE for data quality
+
+**REPORTING TEMPLATE (use at end of workflow):**
+```
+DATA COLLECTION SUMMARY
+- YouTube: [✅ Complete / ❌ Failed - details]
+- RSS: [✅ Complete / ❌ Failed - details]
+- X/Twitter: [✅ Complete / ❌ Failed - details]
+- Technical Data: [✅ Complete / ❌ Failed - details]
+- Web Searches: [✅ Complete / ❌ Failed - details]
+
+Total fresh data files created: [X]
+Status: [✅ COMPLETE & VALID / ❌ INCOMPLETE - FAILED]
+```
+
+================================================================================
+
+**IMPORTANT: Today's date for all file operations: YYYY-MM-DD**
+Replace all instances of `YYYY-MM-DD` in this document with today's actual date (e.g., 2025-10-19).
+
+**For AI agents running this workflow:**
+
+1. **Use TodoWrite tool** to track all 5 steps and mark each completed
+2. **STEP 0A: Verify scrapers have completed** - User will run scrapers manually, ASK USER to confirm completion
+3. **STEP 0B: Run web searches in parallel** - Execute 8 searches using WebSearch tool (NOT firecrawl - costs API calls) - 2-3 min
+4. **STEP 0C: Verify all data is present** - Check that scraper outputs + web search data exist before Step 1
+5. **Create 7 technical summaries early** - These are blocking requirements
+6. **Use parallel tool calls** when independent - maximize speed (see Step 1.3 parallel optimization)
+7. **Review signal output** - If trend score = 0 but market shows support, make AI adjustments
+8. **MANDATORY: ALL DATA SOURCES EVERY TIME**
+   - YouTube transcripts: MANDATORY - run scraper EVERY execution
+   - RSS feeds: MANDATORY - run scraper EVERY execution
+   - X/Twitter: MANDATORY - run scraper EVERY execution (including bookmarks)
+   - Technical data: MANDATORY - run scraper EVERY execution
+   - Web searches: MANDATORY - run searches EVERY execution
+   - **NO EXCEPTIONS:** Fresh data from ALL sources, EVERY RUN, WITHOUT FAIL
+   - **CACHING STRATEGY:** System may cache old data to avoid re-downloading unchanged sources, but primary goal is FRESH data input in real-time as possible
+8. **Always report completion** - Use the full report format with all 16 files verified
+
+================================================================================
+🔧 **YAML EDITING GUIDELINES FOR WINGMAN DASH & MASTER-PLAN.MD - CRITICAL**
+================================================================================
+
+When updating master-plan.md or other YAML files, follow these rules STRICTLY
+to prevent indentation errors and syntax failures.
+
+**MANDATORY QUOTING RULES (Prevent YAML parsing errors):**
+
+1. ALWAYS QUOTE values containing special characters:
+   ❌ WRONG:  summary: FOMC Oct 29 (Oct 27: 45.5) dovish expected
+   ✅ RIGHT:  summary: 'FOMC Oct 29 (Oct 27: 45.5) dovish expected'
+
+   Characters that REQUIRE quoting:
+   • Colons with spaces: "Oct 27: 45.5"
+   • Parentheses with content: "(Oct 27: 45.5)" or "(critical)"
+   • Question marks at start: "?Why did this happen"
+   • Hash symbols at start: "#trending"
+   • Ampersands: "Smith & Jones"
+   • Asterisks at start: "*Important"
+   • Square brackets: "[action]"
+   • Curly braces: "{key: value}"
+
+2. ALWAYS QUOTE all aiInterpretation field values by default:
+   ✓ updatedAt: '2025-10-28T04:30:00Z'
+   ✓ summary: 'Your text here with special chars: like this'
+   ✓ keyInsight: 'Your insight with colons: will work'
+   ✓ action: 'Action items (with parens): work fine'
+   ✓ sentiment: 'Bullish (institutional accumulation)'
+   ✓ confidence: 'High (4-source consensus)'
+
+3. SAFE to leave unquoted:
+   ✓ Simple sentences without special chars: "This is a summary"
+   ✓ Pure numbers: 70 or 45.5
+   ✓ ISO dates: 2025-10-28T04:30:00Z
+   ✓ Simple phrases with hyphens: MODERATE-HIGH BULLISH
+
+4. For very long strings (>120 characters), use multiline syntax:
+   summary: |
+     This is a long summary that spans multiple lines.
+     It preserves line breaks and handles special characters safely.
+
+**VALIDATION BEFORE COMPLETING:**
+
+After making dashboard edits, ALWAYS run:
+  python Toolbox/validate_yaml.py
+
+Expected output: ✅ YAML validation passed
+
+If ❌ ERROR appears:
+  1. Note the line number (e.g., "line 130:139")
+  2. Find that line in master-plan.md
+  3. Look for unquoted strings with special characters
+  4. Add single quotes around the value
+  5. Re-run validation
+  6. Repeat until ✅ passes
+
+**REFERENCE CHECKLIST:**
+
+See Toolbox/INSTRUCTIONS/Domains/Wingman_Dash_Checklist.txt for:
+  - Full pre-completion validation checklist
+  - YAML syntax rules with examples
+  - Common errors and fixes
+  - Sign-off procedure
+
+================================================================================
+
+**CRITICAL WORKFLOW SAFEGUARDS (Prevent Blocking Failures):**
+
+**FIX #1: STEP 1 VERIFICATION CHECKPOINT** (Add after Step 1.5 completes)
+- BEFORE proceeding to Step 2, verify ALL MANDATORY summaries exist using Glob patterns
+- **MANDATORY - WORKFLOW FAILS WITHOUT THESE:**
+  - [ ] 4 Technical summaries (TradingView SPX, BTC, QQQ, SOL) → pattern: `Research/Technicals/**/YYYY-MM-DD*Summary.md`
+  - [ ] 7 Technical provider summaries (+ Fear & Greed, Market Breadth, Volatility) → pattern: `Research/Technicals/**/YYYY-MM-DD*Summary.md`
+  - [ ] 2 X summaries minimum (Crypto, Macro) → pattern: `Research/X/YYYY-MM-DD_X_*.md`
+  - [ ] X Bookmarks summary → `Research/X/Bookmarks/YYYY-MM-DD_X_Bookmarks_Summary.md`
+  - [ ] RSS provider summaries (ALL providers) → pattern: `Research/RSS/*/YYYY-MM-DD*Summary.md`
+  - [ ] YouTube channel summaries (ALL channels) → pattern: `Research/YouTube/*/YYYY-MM-DD*Summary.md`
+- **ACTION**: If ANY MANDATORY files missing → STOP and create them. Do NOT skip, do NOT proceed without them.
+- **ERROR HANDLING**: If scraper FAILS (returns error), retry ONCE. If still fails after retry, document failure and STOP workflow - report incomplete data collection
+- **NO WORKAROUNDS**: There is no "skip and proceed anyway" option. All data sources are required EVERY execution.
+
+**FIX #2: TRAD INGVIEW SUMMARY FORMAT REQUIREMENTS** (Ensure parser compatibility)
+- All TradingView summaries MUST include these exact parseable formats:
+  - `**Price:** [number]` or `**Price:** $[number]` (e.g., "Price: 6747.50")
+  - `**50-DMA:** [number]` (e.g., "50-DMA: 6705")
+  - `**200-DMA:** [number]` (e.g., "200-DMA: 6450")
+- These values allow SummaryParser to extract data → enables trend score calculation
+- If values missing → parser returns NONE → trend score = 0 (broken)
+- **VERIFICATION**: After creating/updating technical summaries, search for "Price:" + "50-DMA" + "200-DMA" in file
+- **IF PARSER FAILS**: Manually review market data + apply AI adjustment per Step 4 guidance (workflow lines 498-530)
+
+**FIX #3: MANDATORY DATA COLLECTION - NO EXCEPTIONS**
+- **IF ANY SCRAPER MISSING DATA FOR TODAY:**
+  - Step 1 must NOT proceed until ALL scrapers have been run
+  - If Step 1 receives incomplete data: STOP and investigate scraper failure
+  - Do NOT attempt to "work around" missing data by skipping providers
+  - **Do NOT proceed to Step 2 without:**
+    - [ ] ALL RSS provider summaries (every provider, today's data only)
+    - [ ] ALL YouTube channel summaries (every channel, today's data only)
+    - [ ] ALL X categories (Crypto, Macro, Technicals, Bookmarks)
+    - [ ] ALL technical provider summaries (7 sources)
+  - **Step 2 REQUIRES all Step 1 data** - Cannot create overviews without all provider data
+  - **Step 2 outputs:**
+    - Step 2.1: RSS Overview (FROM complete RSS data)
+    - Step 2.2: YouTube Overview (FROM complete YouTube data)
+    - Step 2.3: Technical Overview (FROM 7 technical summaries)
+    - Step 2.4: X Overview (FROM complete X data)
+    - Step 2.5: Key Themes (FROM all 4 overviews)
+
+**FIX #4: SCRAPER OUTPUT HANDLING (All Sources Mandatory)**
+
+**READ THIS FIRST:** See `Toolbox/INSTRUCTIONS/Research/SCRAPER_STATUS_GUIDE.md` for complete decision tree.
+
+FOOLPROOF RULE: Check the status file first before deciding if something is an error.
+
+- **STATUS FILE LOCATION**: `Research/.cache/scraper_status_YYYY-MM-DD.json`
+  - Created by each scraper automatically on completion
+  - Contains: `ran` (true/false), `items_found` (number), `error` (message if failed)
+  - **Always check this file first** before assuming success or failure
+
+- **SCENARIO A: EMPTY RESULTS are VALID, not failures** ✅
+  - Status file shows: `"ran": true, "items_found": 0, "error": null`
+  - **Meaning**: Scraper ran successfully. No new content published today.
+  - **Action**: Create summary noting "Zero new [content] collected for YYYY-MM-DD"
+  - **Continue workflow**: Empty is valid data; still create the summary file
+  - **Examples**:
+    - YouTube: `"ran": true, "items_found": 0` → No new videos (NORMAL, proceed)
+    - RSS: `"ran": true, "items_found": 0` → No new articles (NORMAL, proceed)
+    - X Bookmarks: `"ran": true, "items_found": 0` → No new posts (NORMAL, proceed)
+  - **KEY**: `items_found=0` with `ran=true` ≠ failure. It means zero content, which is valid.
+
+- **SCENARIO B: SCRAPER CRASHES are FAILURES** ❌
+  - Status file shows: `"ran": false, "error": "[Exception message]"`
+  - **Meaning**: Scraper crashed or failed to complete.
+  - **Action**:
+    1. Read the error message in status file
+    2. If transient (timeout, network): Retry scraper ONCE
+    3. If persistent (permission, auth): Fix issue, then retry
+    4. If still fails: STOP workflow and report incomplete data collection
+  - **Do NOT skip** missing data sources. Do NOT proceed with partial data.
+  - **Example**: YouTube scraper shows `"ran": false, "error": "Connection timeout"` → Retry once. If fails again → STOP.
+
+- **SCENARIO C: SCRAPER MISSING FROM STATUS FILE** ❌
+  - Scraper name not in `Research/.cache/scraper_status_YYYY-MM-DD.json`
+  - **Meaning**: Scraper never completed (crashed mid-execution or never started)
+  - **Action**: STOP and investigate. Do NOT proceed with missing sources.
+
+- **Decision Tree** (Use This):
+  ```
+  1. Check if status file exists for today?
+     NO → ❌ ERROR: No scraping ran
+     YES ↓
+  2. Is scraper entry in status file?
+     NO → ❌ ERROR: Scraper didn't reach completion
+     YES ↓
+  3. Check "ran" field
+     false → ❌ ERROR: Scraper failed (see error message)
+     true ↓
+  4. Check "items_found"
+     0 → ✅ OK: Zero content (NORMAL, proceed)
+     >0 → ✅ OK: Found content (SUCCESS, process)
+  ```
+
+- **Templates for Zero-Content Summaries**: See `Toolbox/TEMPLATES/zero_content_summary_template.md`
+  - Pre-written summaries for YouTube, X, RSS, etc.
+  - Copy and customize for zero-content days
+  - Ensures consistent documentation
+
+- **Key Differences Explained**:
+  | Status | items_found | Meaning | Action |
+  |--------|-------------|---------|--------|
+  | `ran=true` | 0 | No content published | ✅ Create zero-content summary, continue |
+  | `ran=true` | 5+ | Content found | ✅ Process content, create summary |
+  | `ran=false` | 0 | Scraper crashed | ❌ STOP, retry, investigate |
+  | (missing) | N/A | Never completed | ❌ STOP, investigate |
+
+**FIX #5: SIGNAL CALCULATION ROBUSTNESS** (Handle Parser Failures)
+- If signal calculation completes but trend = 0: Likely parser extraction failed
+  - Check if TradingView summaries have parseable price/MA format (Fix #2)
+  - If summaries lack price/MA values → parser returns NONE → trend = 0
+- **AI ADJUSTMENT REQUIRED** (per workflow Step 4, lines 498-530):
+  - If trend = 0 but market evidence shows price near ATH + bullish technicals: Adjust trend +10 to +15
+  - Document reasoning in ai_adjustments array: "Parser failed to extract data. Manual review confirms..." + evidence
+  - Update composite score: new_score = original + adjustment
+- **VERIFICATION**: After signal file created, verify composite >0 (if not, apply adjustment)
+- **WORKFLOW CONTINUES**: Adjusted signals feed into dashboard update; don't block
+
+**Parallel Execution Examples:**
+
+**Example 1: Step 0 - Verify Scrapers + Run Web Searches**
+```
+STEP 0A: Ask user to confirm scrapers completed
+  → "Have you completed running the scrapers?"
+  → Wait for user confirmation
+
+STEP 0B: Run 8 web searches in parallel (2-3 min)
+  Send a SINGLE message with 8 WebSearch tool calls:
+  - WebSearch: "SPY SPX stock market today [DATE] latest news sentiment"
+  - WebSearch: "market volatility trends [DATE] investor sentiment"
+  - WebSearch: "options flow SPY unusual activity [DATE]"
+  - WebSearch: "institutional positioning hedge fund flows [DATE]"
+  - WebSearch: "technical analysis SPY market outlook [DATE]"
+  - WebSearch: "support resistance levels SPX QQQ [DATE]"
+  - WebSearch: "economic data releases Fed policy [DATE]"
+  - WebSearch: "earnings reports market impact [DATE]"
+
+STEP 0C: Verify all data present
+  → Check scraper outputs exist
+  → Check web search data created
+```
+**Result:** User runs scrapers independently, AI handles web searches and verification
+
+**Example 2: Step 1.3 Technical Summaries (Run 4 searches + 4 summaries in parallel)**
+```
+FIRST, send 4 WebSearch tool calls in parallel:
+- WebSearch: "TradingView SPX technical analysis support resistance levels RSI MACD"
+- WebSearch: "TradingView BTC technical analysis support resistance levels RSI MACD"
+- WebSearch: "TradingView QQQ technical analysis support resistance levels RSI MACD"
+- WebSearch: "TradingView SOL technical analysis support resistance levels RSI MACD"
+
+THEN, after results return, create all 4 Write tool calls in parallel:
+- Write: TradingView SPX Summary
+- Write: TradingView BTC Summary
+- Write: TradingView QQQ Summary
+- Write: TradingView SOL Summary
+```
+**Result:** Web searches complete in ~1 minute (parallel) instead of 4 minutes (sequential).
+
+**When to use parallel vs sequential:**
+- **PARALLEL:** Independent tasks (different web searches, reading different files, writing different files)
+- **SEQUENTIAL:** Dependent tasks (must read file BEFORE editing it; must search BEFORE writing results; must run scraper BEFORE analyzing output)
+
+**Remember:** This workflow is research DATA COLLECTION and ANALYSIS. Do NOT:
+- Update master-plan.md directly
+- Modify research-dashboard.html
+- Run scripts/automation/run_workflow.py (that's Master Plan's job)
+
+================================================================================
+STEP 0: GATHER MARKET DATA (MANDATORY - ALWAYS START HERE)
+================================================================================
+
+**IMPORTANT:** You MUST gather fresh market data before doing ANY processing.
+Do NOT skip this step.
+
+**⚡ OPTIMAL EXECUTION: PARALLEL DATA COLLECTION ⚡**
+
+Steps 0A and 0B run INDEPENDENTLY and can execute in PARALLEL to save time.
+Step 0C synchronizes - don't proceed to Step 1 until BOTH are complete.
+
+---
+
+**STEP 0A: Automated Scraper Data Verification**
+
+**🚨 CRITICAL: VERIFY DATA FRESHNESS PROGRAMMATICALLY 🚨**
+
+**YOUR ACTION:**
+1. **Run automated verification script:**
+   ```bash
+   python scripts/utilities/verify_scraper_data.py YYYY-MM-DD
+   ```
+
+2. **Check exit code:**
+   - Exit 0: ✅ All data fresh → Proceed to Step 0B
+   - Exit 2: ❌ Data incomplete/stale → STOP WORKFLOW
+
+3. **If exit code = 2 (data incomplete):**
+   - **STOP IMMEDIATELY** - DO NOT proceed to Step 0B
+   - Report to Pilot which providers are missing data
+   - Ask: "Data verification failed. Retry scrapers or proceed anyway?"
+   - Wait for explicit authorization before continuing
+
+4. **If exit code = 0 (all fresh):**
+   - Report: "✅ Scraper data verification passed - all providers fresh"
+   - Proceed automatically to Step 0B
+
+**WHY THIS IS CRITICAL:**
+- Automated verification prevents human error in data checking
+- Ensures EVERY provider has today's data before analysis
+- Prevents bad trading signals from stale/incomplete data
+- Mission-critical safeguard: Bad data → Bad signals → Real financial loss
+
+**What the User's Scraper Run Creates:**
+1. ✅ YouTube scraper (video transcripts)
+2. ✅ RSS scraper (news articles)
+3. ✅ X/Twitter scraper (social posts in Crypto, Macro, Technicals categories)
+4. ✅ X Bookmarks scraper (bookmarked posts)
+5. ✅ X data archival (extracts today's tweets into _archived.json files)
+6. ✅ Technical data scraper (SPY/QQQ options via Selenium)
+
+**Scraper Output Mapping (Exactly What Gets Created):**
+
+| Scraper | Source | Output Location | Format | Purpose |
+|---------|--------|-----------------|--------|---------|
+| YouTube | youtube_scraper.py | `Research/YouTube/{Channel}/YYYY-MM-DD*.md` | Markdown | Video transcripts |
+| RSS | rss_scraper.py | `Research/RSS/{Provider}/YYYY-MM-DD*.md` | Markdown | News article summaries |
+| X/Twitter Posts | x_scraper.py | `Research/X/{Category}/x_list_posts_YYYYMMDD.json` | JSON | Social posts (Crypto/Macro/Technicals) |
+| X/Twitter Archived | x_scraper.py | `Research/X/{Category}/x_list_posts_YYYYMMDD_archived.json` | JSON | Today's posts archive for analysis |
+| X Bookmarks | bookmarks_scraper.py | `Research/X/Bookmarks/x_bookmarks_posts_YYYYMMDD.json` | JSON | Bookmarked posts from today |
+| Technical Data | fetch_technical_data.py | `Research/.cache/YYYY-MM-DD_technical_data.json` | JSON | SPY/QQQ options (max pain, P/C, IV%) |
+
+**Output Locations (Summary):**
+- YouTube: `Research/YouTube/{Channel}/YYYY-MM-DD*.md`
+- RSS: `Research/RSS/{Provider}/YYYY-MM-DD*.md`
+- X/Twitter Posts: `Research/X/{Category}/x_list_posts_YYYYMMDD.json`
+- X/Twitter Archived: `Research/X/{Category}/x_list_posts_YYYYMMDD_archived.json` (for Step 1.4 analysis)
+- X Bookmarks: `Research/X/Bookmarks/x_bookmarks_posts_YYYYMMDD.json`
+- Technical Data: `Research/.cache/YYYY-MM-DD_technical_data.json`
+
+**Data Sources:**
+- YouTube API (transcripts)
+- RSS feeds (various news providers)
+- X/Twitter (via authenticated session in Chrome profile)
+- Barchart.com (P/C ratios, IV Percentile, Volume, OI) via Selenium
+- OptionCharts.io (Max Pain) via Selenium
+
+**If you need to run scrapers individually:**
+
+- **Technical data only:** `python scripts/processing/fetch_technical_data.py YYYY-MM-DD`
+- **YouTube only:** Run `Scraper/youtube_scraper.py`
+- **RSS only:** Run `Scraper/rss_scraper.py`
+- **X/Twitter only:** Run `Scraper/x_scraper.py`
+- **X Bookmarks only:** Run `Scraper/bookmarks_scraper.py`
+
+---
+
+**STEP 0B: WEB SEARCH FOR MARKET & TECHNICAL DATA (After User Confirms Scrapers Complete)**
+
+**⚡ EXECUTE AFTER USER CONFIRMATION** - Run after user confirms scrapers finished.
+
+Use the `WebSearch` tool to gather real-time market data from the following areas.
+
+**Duration:** 3-4 minutes (when run in parallel)
+**Dependencies:** User must confirm Step 0A scraper completion first
+
+**RECON WORKFLOW: Data Collection, NOT Analysis**
+- These searches COLLECT raw data and store it as markdown files
+- PREP (STEP 1) will READ these files and create summaries
+- NO firecrawl. NO browser automation. WebSearch only.
+
+---
+
+**SECTION B1: General Market Data Searches (8 searches)**
+
+1. **Market Performance & Sentiment**
+   - Query: "SPY SPX stock market today [DATE] latest news sentiment"
+   - Query: "market volatility trends [DATE] investor sentiment"
+
+2. **Options Flow & Positioning**
+   - Query: "options flow SPY unusual activity [DATE]"
+   - Query: "institutional positioning hedge fund flows [DATE]"
+
+3. **Macro & Economic**
+   - Query: "economic data releases Fed policy [DATE]"
+   - Query: "earnings reports market impact [DATE]"
+
+4. **General Technical Support/Resistance**
+   - Query: "support resistance levels SPX QQQ [DATE]"
+   - Query: "technical analysis SPY market outlook [DATE]"
+
+**Output Location:**
+- Save consolidated findings to: `Research/.cache/YYYY-MM-DD_market_data.md`
+
+---
+
+**SECTION B2: Technical Asset Data Collection (7 searches) ⭐ NEW IN RECON**
+
+Instead of fetching technical data in PREP (STEP 1.3), collect it now in RECON for cleaner separation.
+
+**Run EACH of these 7 searches and save results as markdown files:**
+
+**Core Assets (4 searches - MANDATORY):**
+
+1. **SPX Technical Search**
+   - Query: "S&P 500 SPX current price support resistance RSI MACD levels [DATE]"
+   - Save to: `Research/Technicals/2025-10-30_SPX_Technical_Data.md`
+   - Content: Current price, key support/resistance levels, RSI/MACD readings, moving averages, trend
+
+2. **BTC Technical Search**
+   - Query: "Bitcoin BTC current price support resistance RSI MACD levels [DATE]"
+   - Save to: `Research/Technicals/2025-10-30_BTC_Technical_Data.md`
+   - Content: Current price, key support/resistance levels, RSI/MACD readings, moving averages, trend
+
+3. **QQQ Technical Search**
+   - Query: "Nasdaq 100 QQQ current price support resistance RSI MACD levels [DATE]"
+   - Save to: `Research/Technicals/2025-10-30_QQQ_Technical_Data.md`
+   - Content: Current price, key support/resistance levels, RSI/MACD readings, moving averages, trend
+
+4. **SOL Technical Search**
+   - Query: "Solana SOL current price support resistance RSI MACD levels [DATE]"
+   - Save to: `Research/Technicals/2025-10-30_SOL_Technical_Data.md`
+   - Content: Current price, key support/resistance levels, RSI/MACD readings, moving averages, trend
+
+**Additional Technical Providers (3 searches - MANDATORY):**
+
+5. **Fear & Greed Index**
+   - Query: "Fear and Greed Index current reading [DATE] trend"
+   - Save to: `Research/Technicals/2025-10-30_Fear_and_Greed_Technical_Data.md`
+
+6. **Market Breadth**
+   - Query: "market breadth advance decline ratio A/D line [DATE] market participation"
+   - Save to: `Research/Technicals/2025-10-30_Market_Breadth_Technical_Data.md`
+
+7. **Volatility Metrics**
+   - Query: "VIX volatility index current level IV percentile [DATE] trends"
+   - Save to: `Research/Technicals/2025-10-30_Volatility_Metrics_Technical_Data.md`
+
+**EXECUTION OPTIMIZATION:**
+- Run all 15 searches (8 market + 7 technical) in PARALLEL in a single message with 15 WebSearch tool calls
+- This takes ~3-4 minutes instead of ~15 minutes sequential
+
+**Output Format for EACH technical data file:**
+```markdown
+# [Asset] Technical Data - YYYY-MM-DD
+
+## Current Price/Level
+[Current value as of search date/time]
+
+## Support Levels
+[S1, S2, S3 with values]
+
+## Resistance Levels
+[R1, R2, R3 with values]
+
+## Technical Indicators
+- RSI: [value]
+- MACD: [status]
+- Moving Averages: [20/50/200]
+
+## Recent Action
+[Latest price movement/chart pattern]
+
+## Source
+[Search results summary with key data points]
+```
+
+**Purpose:** These files are RAW DATA collected in RECON. In STEP 1.3 (PREP), agents will READ these files and synthesize them into professional technical summaries.
+
+---
+
+**STEP 0C: VERIFY ALL DATA IS PRESENT (Synchronization Point)**
+
+**⏳ CRITICAL GATE: DO NOT PROCEED TO STEP 1 UNTIL VERIFICATION COMPLETE ⏳**
+
+This is the verification point. Both Step 0A (user-run scrapers) and Step 0B (web searches) must have valid outputs before proceeding.
+
+**Verification Checklist (BOTH Step 0A AND 0B):**
+
+**Step 0A Outputs (User-Run Scrapers):**
+- [ ] User confirmed scraper completion
+- [ ] RSS files exist for today (Research/RSS/*/YYYY-MM-DD*.md) - use Glob to verify
+- [ ] YouTube files exist for today (Research/YouTube/*/YYYY-MM-DD*.md) - use Glob to verify
+- [ ] X data files exist for today (Research/X/*/x_list_posts_YYYYMMDD*.json) - use Glob to verify
+- [ ] X archived files exist (Research/X/*/x_list_posts_YYYYMMDD_archived.json) - use Glob to verify
+- [ ] Technical data JSON exists (Research/.cache/YYYY-MM-DD_technical_data.json) - use Read to verify
+
+**Step 0B Outputs (15 WebSearch calls - 8 Market + 7 Technical):**
+
+**SECTION B1: General Market Data (8 searches)**
+- [ ] Web search queries completed (all 8 market searches returned results)
+- [ ] Market data file created (Research/.cache/YYYY-MM-DD_market_data.md)
+- [ ] File contains: SPY/SPX performance, volatility metrics, sentiment indicators, technical levels, options flow, catalysts
+
+**SECTION B2: Technical Data Collection (7 searches) ⭐ NEW**
+- [ ] SPX technical data file created (Research/Technicals/YYYY-MM-DD_SPX_Technical_Data.md)
+- [ ] BTC technical data file created (Research/Technicals/YYYY-MM-DD_BTC_Technical_Data.md)
+- [ ] QQQ technical data file created (Research/Technicals/YYYY-MM-DD_QQQ_Technical_Data.md)
+- [ ] SOL technical data file created (Research/Technicals/YYYY-MM-DD_SOL_Technical_Data.md)
+- [ ] Fear & Greed data file created (Research/Technicals/YYYY-MM-DD_Fear_and_Greed_Technical_Data.md)
+- [ ] Market Breadth data file created (Research/Technicals/YYYY-MM-DD_Market_Breadth_Technical_Data.md)
+- [ ] Volatility Metrics data file created (Research/Technicals/YYYY-MM-DD_Volatility_Metrics_Technical_Data.md)
+
+**ONLY AFTER ALL CHECKBOXES VERIFIED** → Proceed to Step 1
+
+**Expected Total Time for Step 0:**
+- Parallel execution: ~10-20 minutes (limited by slower Step 0A scrapers)
+  - Step 0A (scrapers): 10-20 min
+  - Step 0B (15 web searches in parallel): 3-4 min
+  - **Total: ~13-24 minutes with both running simultaneously**
+- Sequential execution: ~18-28 minutes (10-20 min scrapers + 8-8 min web searches)
+- **Time saved by parallel approach: ~5 minutes**
+
+**Error Handling & Recovery Procedures:**
+
+| Failure Scenario | Retry Action | If Still Fails | Notes |
+|-----------------|--------------|-----------------|-------|
+| WebSearch times out | Retry ONCE with same query | Proceed with available data | Max 2 attempts per query |
+| WebSearch returns empty results | Try alternative query phrasing (e.g., "market sentiment today") | Use domain-specific search (marketwatch.com, yahoo finance) | Try 3 alternative queries |
+| All WebSearch fails | Skip web search component | Create market_data.md from scraped data only | Note missing data in checklist |
+| Scraper crashes (YouTube/RSS) | Run individual scraper again | Proceed with available providers | Document which scrapers failed |
+| Technical scraper fails (Selenium) | Check if website down, retry once | Proceed without options data | Mark technical_data.json as incomplete |
+| JSON parsing errors | Validate JSON format | Create markdown summary instead | Use `jq` tool to validate |
+| No data files created after Step 0 | Verify paths exist, check permissions | Create placeholder files with "No Data" notes | Do NOT stop workflow |
+
+**When recovering from failures:**
+1. Log the failure (what failed, when, what data was lost)
+2. Try ONE retry (not unlimited retries)
+3. If retry fails, proceed with available data
+4. Document gaps in final completion report
+5. **ALWAYS continue workflow** - do not let one scraper failure block the entire process
+
+**📊 STEP 0 COMPLETE** → Proceed to STEP 1 below
+
+================================================================================
+STEP 1: INDIVIDUAL PROVIDER SUMMARIES
+================================================================================
+
+**Goal:** Create a single summary file for each individual data provider (e.g., a summary for MarketWatch, a summary for CNBC, a summary for the 42 Macro YouTube channel, etc.).
+
+**Process:**
+
+### 1.1: RSS Providers
+
+**⚠️ CRITICAL: USE TASK TOOL FOR RSS ARTICLE PROCESSING - AGENT-BASED APPROACH ⚠️**
+
+RSS articles should be processed via agent to maintain consistency with large-scale data processing patterns (similar to X/Twitter analysis in STEP 1.4).
+
+**CORRECT APPROACH:**
+
+1. **List Providers:** Use `Glob` with `Research/RSS/*/` to see all provider folders (e.g., CNBC, MarketWatch, Seeking Alpha, CoinDesk, Federal Reserve).
+
+2. **For EACH RSS provider folder, use Task tool with general-purpose agent** to read all articles and create summary:
+
+```
+Task(
+  subagent_type="general-purpose",
+  description="Summarize RSS articles for [Provider Name]",
+  prompt="Read and summarize all RSS articles for [Provider] on [Date]:
+
+  1. Use Glob to list all article files in Research/RSS/[Provider]/YYYY-MM-DD*.md
+  2. Read EVERY article file for today's date (do not sample or skip)
+  3. For each article, extract:
+     - Title/headline
+     - Key information and findings
+     - Market impact (if any)
+  4. Identify and list common themes across all articles
+  5. Create a comprehensive markdown summary
+
+  Save the summary as: Research/RSS/[Provider]/YYYY-MM-DD_[Provider]_Summary.md
+
+  Required summary format:
+  # RSS [Provider] Summary - [Date]
+
+  ## Total Articles
+  [Number of articles analyzed]
+
+  ## Key Themes
+  [List main topics covered with article counts]
+
+  ## Most Important Articles
+  [Top 5-10 articles with brief summaries]
+
+  ## Market Impact Assessment
+  - Overall Sentiment: [Bullish/Neutral/Bearish]
+  - Key Takeaways for traders
+
+  ## Summary
+  [2-3 paragraph narrative of key findings and market implications]"
+)
+```
+
+3. **Verification:** Use `Glob` to confirm all provider summary files exist (pattern: `Research/RSS/*/YYYY-MM-DD*_Summary.md`) before proceeding to Step 1.2.
+
+**Provider Folders to Process:**
+- CNBC
+- MarketWatch
+- CoinDesk
+- Federal Reserve (if data exists)
+- [Check Glob output in step 1 for any additional providers]
+
+**NOTE:** Seeking Alpha has been removed from the workflow. It provided only metadata without article content, which did not add actionable value to the research process.
+
+**NOTE ON RSS ISSUES:** If articles only contain headlines, the agent will summarize headlines as key information. This is expected behavior when full article content is not available.
+
+**WHY THIS APPROACH:**
+- Consistency with X/Twitter processing (agent-based for large datasets)
+- More efficient than sequential individual file reads
+- Handles variable article counts per provider
+- Agent can verify completeness and quality
+
+### 1.2: YouTube Providers
+
+1.  **List Channels:** Use `Glob` with `Research/YouTube/*/` to see all channel folders.
+2.  **For each channel folder:**
+    a. **List Transcripts:** Use `Glob` with `Research/YouTube/<ChannelName>/YYYY-MM-DD*.md` to find any new transcript files for today's date.
+    b. **Read & Summarize:** If new transcripts exist, use `Read` tool to read them, summarize the content, and save it inside the *same channel folder* as `YYYY-MM-DD_<ChannelName>_Summary.md` using the `Write` tool.
+    c. **Handle Failures:** If the scraper failed for a channel (as noted in the Step 0 output), skip it and note the failure.
+
+**Verification Step:** Before creating a "No Data Available" summary for the entire category, be certain that no files exist. Use `Glob` to check each individual provider folder to get a definitive list of its contents. If, after checking every folder, no files for the current date are found, then and only then should you create a placeholder summary noting the failure.
+
+### 1.3: Technical Provider Summaries (READ Raw Data from RECON, then SUMMARIZE)
+
+**⚠️ CRITICAL: ALWAYS CREATE THESE 7 TECHNICAL SUMMARIES:**
+
+In RECON (STEP 0B), technical data was COLLECTED and stored as markdown files.
+Now in PREP (STEP 1.3), you READ those files and CREATE PROFESSIONAL SUMMARIES.
+
+**Core Assets (4 mandatory summaries):**
+1. **SPX** - S&P 500 equity index
+2. **BTC** - Bitcoin crypto benchmark
+3. **QQQ** - Nasdaq 100 tech index
+4. **SOL** - Solana crypto altcoin
+
+**Additional Providers (3 mandatory summaries):**
+5. **Fear & Greed Index** - Market sentiment indicator
+6. **Market Breadth** - Advance/decline ratios, participation
+7. **Volatility Metrics** - VIX, IV percentiles, trends
+
+**WORKFLOW (Agent-Based Reading, NOT Web Searches):**
+
+✅ **DO THIS:** Use Task tool with agent to READ the technical data files collected in STEP 0B
+❌ **DO NOT DO THIS:** Run new WebSearch queries (data already collected)
+
+**Process for EACH of the 7 technical providers:**
+
+1. **Read Raw Technical Data File** - Agent reads: `Research/Technicals/YYYY-MM-DD_[Asset]_Technical_Data.md` (collected in RECON)
+2. **Synthesize Into Summary** - Agent creates professional analysis/summary
+3. **Save Summary File** - Save as: `Research/Technicals/YYYY-MM-DD_[Asset]_Summary.md`
+
+**Example Agent Task for 4 Core Assets:**
+```
+Task(
+  subagent_type="general-purpose",
+  description="Create technical summaries from RECON data",
+  prompt="Create technical summaries by reading the raw data files from RECON:
+
+  1. Read Research/Technicals/YYYY-MM-DD_SPX_Technical_Data.md
+  2. Read Research/Technicals/YYYY-MM-DD_BTC_Technical_Data.md
+  3. Read Research/Technicals/YYYY-MM-DD_QQQ_Technical_Data.md
+  4. Read Research/Technicals/YYYY-MM-DD_SOL_Technical_Data.md
+
+  For EACH file, create a professional summary:
+
+  Required summary format:
+  # [Asset] Technical Summary - YYYY-MM-DD
+
+  ## Current Price/Level
+  [Price and date]
+
+  ## Support/Resistance Levels
+  [Structured S1/S2/S3 and R1/R2/R3]
+
+  ## Technical Indicators
+  - RSI: [reading and interpretation]
+  - MACD: [status and implications]
+  - Moving Averages: [20/50/200 alignment]
+
+  ## Chart Pattern & Trend
+  [Pattern recognition and trend assessment]
+
+  ## Trading Setup
+  [Key levels for entry/exit, risk/reward]
+
+  ## Summary
+  [2-3 paragraph technical narrative]
+
+  Save each summary as: Research/Technicals/YYYY-MM-DD_[Asset]_Summary.md"
+)
+```
+
+**Example Agent Task for Additional Providers:**
+```
+Task(
+  subagent_type="general-purpose",
+  description="Create summaries for Fear & Greed, Breadth, Volatility",
+  prompt="Create summaries by reading raw data files:
+
+  1. Read Research/Technicals/YYYY-MM-DD_Fear_and_Greed_Technical_Data.md
+  2. Read Research/Technicals/YYYY-MM-DD_Market_Breadth_Technical_Data.md
+  3. Read Research/Technicals/YYYY-MM-DD_Volatility_Metrics_Technical_Data.md
+
+  For each, create a summary file with:
+  - Current value/status
+  - Trend interpretation
+  - Market implications
+  - 2-3 paragraph narrative
+
+  Save as: Research/Technicals/YYYY-MM-DD_[Provider]_Summary.md"
+)
+```
+
+**KEY DIFFERENCE: RECON vs PREP**
+- **RECON (STEP 0B):** Collects raw technical data via WebSearch → stores as markdown files
+- **PREP (STEP 1.3):** Reads those files → synthesizes into professional summaries (NO new searches)
+
+**Verification:**
+- All 7 summary files exist: `Research/Technicals/YYYY-MM-DD_*_Summary.md`
+- Before proceeding to Step 1.4, verify with: `Glob "Research/Technicals/YYYY-MM-DD*_Summary.md"`
+   - On-Chain metrics (blockchain activity)
+   - Other specialized indicators
+   - These enhance analysis but are NOT blocking for workflow
+
+**Verification Checklist (MANDATORY):**
+
+Before proceeding to Step 1.4, verify ALL required technical summaries exist using `Glob`:
+
+**CORE ASSETS (4 REQUIRED):**
+```
+Research/Technicals/TradingView SPX/YYYY-MM-DD_TradingView SPX_Summary.md
+Research/Technicals/TradingView BTC/YYYY-MM-DD_TradingView BTC_Summary.md
+Research/Technicals/TradingView QQQ/YYYY-MM-DD_TradingView QQQ_Summary.md
+Research/Technicals/TradingView SOL/YYYY-MM-DD_TradingView SOL_Summary.md
+```
+
+**ADDITIONAL REQUIRED PROVIDERS (3 REQUIRED):**
+```
+Research/Technicals/Fear & Greed Index/YYYY-MM-DD_Fear & Greed Index_Summary.md
+Research/Technicals/Market Breadth/YYYY-MM-DD_Market Breadth_Summary.md
+Research/Technicals/Volatility Metrics/YYYY-MM-DD_Volatility Metrics_Summary.md
+```
+
+**TOTAL: 7 required technical summaries before Step 1.4**
+
+Use Glob pattern: `Research/Technicals/**/YYYY-MM-DD*Summary.md` to verify all 7 exist.
+
+**If ANY of these 7 files are missing:**
+- STOP and create them before proceeding
+- The signal calculation workflow (Steps 4-8) will FAIL without these files
+- These 7 summaries are prerequisites, not optional enhancements
+
+### 1.4: X (Twitter) Social Sentiment
+
+**⚠️ CRITICAL: USE TASK TOOL FOR X DATA ANALYSIS - DO NOT READ DIRECTLY ⚠️**
+
+X data files are MASSIVE (500-800+ posts per file, 80,000+ tokens). Direct reading with `Read` tool will fail due to token limits.
+
+**CORRECT APPROACH (MANDATORY):**
+
+1. **Use Task tool with general-purpose agent** to analyze ALL X data:
+
+```
+Task(
+  subagent_type="general-purpose",
+  description="Analyze X/Twitter posts comprehensively",
+  prompt="Create comprehensive X/Twitter summaries by reading ALL posts from these files:
+
+  1. Research/X/Crypto/x_list_posts_YYYYMMDD_archived.json (typically 400-500 posts)
+  2. Research/X/Technicals/x_list_posts_YYYYMMDD_archived.json (typically 90-100 posts)
+  3. Research/X/Macro/x_list_posts_YYYYMMDD*.json (use latest file, typically 200+ posts)
+  4. Research/X/Bookmarks/x_list_posts_YYYYMMDD*.json (typically 1-10 posts)
+
+  For EACH category, you MUST:
+  1. Read the COMPLETE JSON file (all posts, not a sample)
+  2. Analyze sentiment (bullish/bearish/neutral counts)
+  3. Identify most discussed tickers (with mention counts)
+  4. Extract key themes and narratives
+  5. Note high-engagement posts
+  6. Create a comprehensive markdown summary
+
+  Save each summary to: Research/X/YYYY-MM-DD_X_[Category]_Summary.md
+
+  This is MANDATORY - read ALL posts, do not sample."
+)
+```
+
+2. **Agent will create 4 summary files:**
+   - `Research/X/YYYY-MM-DD_X_Crypto_Summary.md`
+   - `Research/X/YYYY-MM-DD_X_Technicals_Summary.md`
+   - `Research/X/YYYY-MM-DD_X_Macro_Summary.md`
+   - `Research/X/YYYY-MM-DD_X_Bookmarks_Summary.md`
+
+3. **Required Format for Each Summary:**
+```markdown
+# X/Twitter [Category] Summary - [Date]
+
+**Total Posts Analyzed:** [number]
+
+## Sentiment Analysis
+- Bullish: X posts (X%)
+- Bearish: X posts (X%)
+- Neutral: X posts (X%)
+- **Sentiment Score:** X/100
+
+## Most Discussed Tickers
+[List top 10+ tickers with mention counts]
+
+## Key Themes
+[List dominant themes with descriptions]
+
+## Notable Posts
+[5-10 high-impact posts with context]
+
+## Summary
+[2-3 paragraph narrative]
+```
+
+4. **Verification:** Use `Glob` to confirm all 4 summary files exist before proceeding to Step 2
+
+**DO NOT:**
+- ❌ Try to read JSON files directly with Read tool
+- ❌ Read in chunks sequentially (too slow, incomplete)
+- ❌ Sample posts (must analyze ALL posts)
+- ❌ Create summaries without using Task tool
+
+**WHY THIS MATTERS:**
+- X data is typically 700-800 total posts across 4 files
+- Files can be 80,000+ tokens (exceeds Read tool limits)
+- Task tool agent can handle full dataset efficiently
+- Comprehensive analysis is MANDATORY per user requirements
+
+================================================================================
+STEP 2: CATEGORY OVERVIEWS (ROLL-UP)
+================================================================================
+
+**Goal:** Create a single overview file for each main data category (RSS, YouTube, Technical, X).
+
+**⚡ OPTIMIZATION: USE TASK TOOL IN PARALLEL FOR ALL 4 CATEGORY OVERVIEWS ⚡**
+
+Category overviews consolidate multiple provider summaries. Running them in parallel saves significant time (~8-10 minutes).
+
+================================================================================
+🎯 **CRITICAL: EXECUTIVE SUMMARY REQUIREMENT (TOKEN OPTIMIZATION)**
+================================================================================
+
+**ALL CATEGORY OVERVIEWS MUST INCLUDE A 50-LINE EXECUTIVE SUMMARY AT THE TOP.**
+
+**Template:** Use `Toolbox/TEMPLATES/category_overview_template.md` as your guide.
+
+**EXECUTIVE SUMMARY RULES (MANDATORY):**
+
+1. **Lines 1-50 ONLY:** Executive summary MUST fit in first 50 lines
+2. **Self-contained:** Must contain ALL key insights (STEP 3 reads ONLY this section)
+3. **Data-driven:** Include specific numbers, levels, percentages
+4. **Actionable:** Clear trading implications
+5. **Structured:** Follow template format exactly
+
+**WHY THIS MATTERS:**
+- STEP 3 (Market Sentiment) reads ONLY the executive summary (lines 1-50)
+- This optimization reduces token consumption by 85-90% (40K → 4-6K tokens)
+- Full detailed analysis goes in lines 51+ (for deep dives)
+
+**SIZE GUIDELINES:**
+
+- **Executive Summary:** 50 lines max (MANDATORY - lines 1-50)
+- **Detailed Analysis:** 100-250 lines (OPTIONAL - lines 51+)
+- **Total File Size:** 150-300 lines (TARGET) | 400 lines (MAXIMUM)
+
+**EMPHASIS: SYNTHESIZE INSIGHTS, DON'T REPLICATE RAW DATA**
+
+Category overviews should:
+✅ Synthesize cross-provider insights
+✅ Identify consensus and divergence
+✅ Highlight key themes
+✅ Provide actionable summaries
+
+Category overviews should NOT:
+❌ Duplicate provider summary data
+❌ Include detailed price tables (reference provider summaries instead)
+❌ List every data point (focus on key insights)
+❌ Replicate calculations (summarize conclusions only)
+❌ Exceed 400 lines total (prevents token bloat)
+
+**GOOD EXAMPLE:**
+"All 4 providers agree AI infrastructure spending is bullish (CNBC 8/10, MW 7/10, SA 8/10, consensus 7.7/10)"
+
+**BAD EXAMPLE:**
+[Copying entire 50-row price table from CNBC provider summary]
+
+**QUALITY CHECKLIST (Verify Before Saving):**
+- [ ] Executive summary ≤ 50 lines
+- [ ] All required fields populated (sentiment score, top 3 bullish/bearish, levels, catalysts)
+- [ ] Sentiment score is specific (X/10)
+- [ ] Critical levels include specific numbers
+- [ ] Consensus vs divergence identified clearly
+- [ ] Recommended action is actionable
+- [ ] Total file size ≤ 400 lines
+- [ ] Detailed analysis references providers (doesn't duplicate)
+
+================================================================================
+
+**RECOMMENDED APPROACH:**
+
+Send a **single message** with **4 Task tool calls** (one for each category overview):
+
+### 2.1: Create RSS Category Overview (Parallel Task 1)
+
+```
+Task(
+  subagent_type="general-purpose",
+  description="Create RSS category overview",
+  prompt="Create an RSS Category Overview by consolidating all RSS provider summaries.
+
+  Read these files:
+  - Research/RSS/MarketWatch/YYYY-MM-DD_MarketWatch_Summary.md
+  - Research/RSS/CNBC/YYYY-MM-DD_CNBC_Summary.md
+  - Research/RSS/Seeking Alpha/YYYY-MM-DD_Seeking Alpha_Summary.md
+  - Research/RSS/CoinDesk/YYYY-MM-DD_CoinDesk_Summary.md
+  - Research/RSS/Federal Reserve/YYYY-MM-DD_Federal Reserve_Summary.md
+
+  Consolidate: sentiment, common themes, unique insights, conflicts
+  Save to: Research/YYYY-MM-DD_RSS_Category_Overview.md"
+)
+```
+
+### 2.2: Create YouTube Category Overview (Parallel Task 2)
+
+```
+Task(
+  subagent_type="general-purpose",
+  description="Create YouTube category overview",
+  prompt="Create YouTube Category Overview by analyzing all YouTube video transcripts.
+
+  Read all files: Research/YouTube/*/YYYY-MM-DD*.md
+
+  Synthesize: key messages, common themes, diverging opinions, sentiment
+  Save to: Research/YYYY-MM-DD_YouTube_Category_Overview.md"
+)
+```
+
+### 2.3: Create Technical Category Overview (Parallel Task 3)
+
+```
+Task(
+  subagent_type="general-purpose",
+  description="Create Technical category overview",
+  prompt="Create Technical Category Overview by consolidating all 7 technical summaries.
+
+  Read files:
+  - Research/Technicals/TradingView SPX/YYYY-MM-DD_TradingView SPX_Summary.md
+  - Research/Technicals/TradingView BTC/YYYY-MM-DD_TradingView BTC_Summary.md
+  - Research/Technicals/TradingView QQQ/YYYY-MM-DD_TradingView QQQ_Summary.md
+  - Research/Technicals/TradingView SOL/YYYY-MM-DD_TradingView SOL_Summary.md
+  - Research/Technicals/Fear & Greed Index/YYYY-MM-DD_Fear & Greed Index_Summary.md
+  - Research/Technicals/Market Breadth/YYYY-MM-DD_Market Breadth_Summary.md
+  - Research/Technicals/Volatility Metrics/YYYY-MM-DD_Volatility Metrics_Summary.md
+
+  Consolidate: technical signals, support/resistance, market health, warnings
+  Save to: Research/YYYY-MM-DD_Technical_Category_Overview.md"
+)
+```
+
+### 2.4: Create X/Twitter Category Overview (Parallel Task 4)
+
+```
+Task(
+  subagent_type="general-purpose",
+  description="Create X/Twitter category overview",
+  prompt="Create X/Twitter Category Overview by consolidating all 4 X summaries.
+
+  Read files:
+  - Research/X/YYYY-MM-DD_X_Crypto_Summary.md
+  - Research/X/YYYY-MM-DD_X_Technicals_Summary.md
+  - Research/X/YYYY-MM-DD_X_Macro_Summary.md
+  - Research/X/YYYY-MM-DD_X_Bookmarks_Summary.md
+
+  Consolidate: sentiment by category, cross-category tickers, key themes, divergences
+  Save to: Research/YYYY-MM-DD_X_Category_Overview.md"
+)
+```
+
+**RESULT:** All 4 category overviews created simultaneously in ~2-3 minutes (vs ~8-10 minutes sequential)
+
+### 2.5: Create Key Themes Document
+
+1.  **Read ALL Category Overviews:** Use `Glob` or `Read` tool to load:
+    - `Research/RSS/YYYY-MM-DD_RSS_Overview.md` (from Step 2.1)
+    - `Research/YouTube/YYYY-MM-DD_YouTube_Overview.md` (from Step 2.2)
+    - `Research/Technicals/YYYY-MM-DD_Technical_Overview.md` (from Step 2.3)
+    - `Research/X/YYYY-MM-DD_X_Overview.md` (from Step 2.4)
+
+2.  **Identify Cross-Provider Themes:**
+    - What themes appear in 3+ sources? (High consensus)
+    - What are the dominant narratives (bullish vs bearish)?
+    - What catalysts are everyone watching?
+    - What key levels/events are mentioned repeatedly?
+    - What disagreements exist between sources?
+
+3.  **Structure & Save:** Create a prioritized list of themes by importance:
+    - Severity/Impact rating (CRITICAL, HIGH, MEDIUM, LOW)
+    - Sources mentioning it (which providers agree?)
+    - Timeline (near-term vs medium-term)
+    - Trading implications
+
+    Save as: `Research/.cache/YYYY-MM-DD_key_themes.md`
+
+**Reference Example:** See `Research/.cache/2025-10-17_key_themes.md` for format
+
+================================================================================
+STEP 3: FINAL MARKET SENTIMENT OVERVIEW
+================================================================================
+
+**Goal:** Create the final, top-level market overview for the day.
+
+**🚀 TOKEN OPTIMIZATION: READ ONLY EXECUTIVE SUMMARIES (LINES 1-50)**
+
+All category overviews now have standardized 50-line executive summaries. Read ONLY these sections (not full files) to save 85-90% tokens.
+
+**Sources to review:**
+- `Research/RSS/YYYY-MM-DD_RSS_Overview.md` (from Step 2.1) - **Read limit=50**
+- `Research/YouTube/YYYY-MM-DD_YouTube_Overview.md` (from Step 2.2) - **Read limit=50**
+- `Research/Technicals/YYYY-MM-DD_Technical_Overview.md` (from Step 2.3) - **Read limit=50**
+- `Research/X/YYYY-MM-DD_X_Overview.md` (from Step 2.4) - **Read limit=50**
+- `Research/.cache/YYYY-MM-DD_key_themes.md` (from Step 2.5) - **Read full file**
+
+**HOW TO READ CATEGORY OVERVIEWS:**
+
+```python
+# OPTIMIZED: Read only executive summaries (lines 1-50)
+# This reduces token consumption by 85-90% with zero quality loss
+Read(file_path="Research/RSS/YYYY-MM-DD_RSS_Overview.md", limit=50)
+Read(file_path="Research/YouTube/YYYY-MM-DD_YouTube_Overview.md", limit=50)
+Read(file_path="Research/X/YYYY-MM-DD_X_Overview.md", limit=50)
+Read(file_path="Research/Technicals/YYYY-MM-DD_Technical_Overview.md", limit=50)
+
+# Key themes file: read full file (usually < 200 lines)
+Read(file_path="Research/.cache/YYYY-MM-DD_key_themes.md")
+```
+
+**WHY THIS WORKS:**
+
+Executive summaries contain ALL key insights needed for market sentiment:
+- Overall sentiment and conviction levels
+- Top 3 bullish/bearish signals
+- Key levels and technical zones
+- Upcoming catalysts (next 48-72 hours)
+- Consensus vs divergence analysis
+- Recommended trading actions
+
+**This is sufficient for 95% of market sentiment synthesis.**
+
+**IF YOU NEED DEEPER ANALYSIS:**
+1. Try to answer from executive summary first
+2. If truly needed, do targeted read of specific section:
+   ```python
+   # Example: Read lines 100-150 of Technical Overview
+   Read(file_path="Research/Technicals/YYYY-MM-DD_Technical_Overview.md", offset=100, limit=50)
+   ```
+3. Document why executive summary was insufficient (feedback for improvement)
+
+**EXPECTED TOKEN USAGE:**
+- **Before optimization:** 2,836 lines × ~14 tokens/line = ~40,000 tokens
+- **After optimization:** 200 lines × ~14 tokens/line = ~4,000 tokens
+- **Savings: 36,000 tokens (90% reduction in STEP 3)**
+
+**File to create:**
+`Research/.cache/YYYY-MM-DD_Market_Sentiment_Overview.md`
+
+**Note:** Saved to `.cache` folder (not root) for consistency with other daily artifacts
+
+**Overview should include:**
+1.  **Executive Summary** (2-3 sentences: overall market tone)
+2.  **Cross-Provider Consensus** (common themes across sources)
+3.  **Key Levels to Watch** (SPX, BTC, QQQ, major levels)
+4.  **Major Catalysts** (events, data, earnings this week)
+5.  **Aggregate Sentiment Score** (0-100 qualitative assessment)
+6.  **Risk Level** (LOW/MEDIUM/HIGH based on volatility and positioning)
+
+**Format:**
+```markdown
+# Market Sentiment Overview - [Date]
+
+## Executive Summary
+[2-3 sentences]
+
+## Cross-Provider Consensus
+### Bulls Say:
+- [Common bullish themes]
+
+### Bears Say:
+- [Common bearish themes]
+
+## Key Levels to Watch
+- SPX: [levels]
+- BTC: [levels]
+- QQQ: [levels]
+
+## Major Catalysts This Week
+- [Events, data, earnings]
+
+## Sentiment Score: [0-100]
+[Brief justification]
+
+## Risk Level: [LOW/MEDIUM/HIGH]
+[Brief justification]
+```
+
+================================================================================
+STEP 4: CALCULATE TRADING SIGNALS
+================================================================================
+
+**Goal:** Transform the research data into quantitative trading signals.
+
+**What This Does:**
+The signal calculator analyzes all your research summaries and market data to produce a composite signal score (0-100) that indicates the strength of the current dip-buying opportunity.
+
+**Process:**
+
+1. **Run Signal Calculator**
+
+   Execute the signal calculation script:
+   ```bash
+   python scripts/processing/calculate_signals.py YYYY-MM-DD
+   ```
+
+2. **What Gets Analyzed:**
+
+   The calculator automatically reads:
+   - Technical summaries (TradingView SPX, BTC, QQQ, SOL)
+   - Market breadth data
+   - Volatility metrics (VIX, IV percentiles)
+   - X sentiment summaries (Crypto, Macro)
+   - Market data from APIs (if available)
+
+3. **Signal Components:**
+
+   Five weighted components create the composite score:
+   - **Trend (40%)**: Position relative to moving averages, dip-buy scoring
+   - **Breadth (25%)**: Market participation, contrarian-adjusted by X sentiment
+   - **Volatility (20%)**: VIX levels, implied volatility (higher = better dip-buy)
+   - **Technical (10%)**: RSI oversold conditions
+   - **Seasonality (5%)**: Historical monthly patterns
+
+4. **Output:**
+
+   Creates: `Research/.cache/signals_YYYY-MM-DD.json`
+
+   Contains:
+   - Composite score (0-100)
+   - Tier classification (WEAK/MODERATE/STRONG/EXTREME)
+   - Component breakdown with explanations
+   - X sentiment scores with contrarian adjustments
+
+5. **Review Signals:**
+
+   After calculation completes, review the output:
+   - Use `Read` tool to load: `Research/.cache/signals_YYYY-MM-DD.json`
+   - Review composite score, tier, and component breakdown
+   - Verify accuracy against your research data
+
+6. **Optional AI Adjustments:**
+
+   **When to Make Adjustments:** Only adjust if the signal score contradicts clear market evidence from your research data.
+
+   **Adjustment Criteria (Decision Tree):**
+
+   | Component | When to Adjust | Example Reasoning | Typical Range |
+   |-----------|---------------|--------------------|---------------|
+   | **Trend** | Price held support but calc=0 | Buyers defending level despite weak stats | +5 to +15 |
+   | **Breadth** | Multiple sources bullish, calc low | Data sources limited by availability | +5 to +10 |
+   | **Volatility** | VIX spiked higher, calc outdated | Real-time volatility > data vintage | +3 to +8 |
+   | **Technical** | Multiple indicators agree, calc=0 | Oversold RSI + support holding | +5 to +12 |
+   | **Seasonality** | Major catalyst this week | Fed announcement, earnings, data release | +2 to +8 |
+
+   **How to Document Adjustments:**
+   - Edit `Research/.cache/signals_YYYY-MM-DD.json` directly
+   - Add entries to the "ai_adjustments" array:
+     ```json
+     "ai_adjustments": [
+       {
+         "component": "Trend",
+         "original_score": 12.5,
+         "adjusted_score": 24.0,
+         "reasoning": "Support held at 5650 with 3 attempts. Buyers clearly present. Script may have missed recent price action."
+       }
+     ]
+     ```
+   - Updated composite = original + sum of adjustments
+   - **Max total adjustments: ±15 points** (prevents over-correction)
+
+   **RED FLAGS - Do NOT Adjust For:**
+   - Personal prediction about tomorrow's market (stick to data evidence)
+   - Feeling that "it should be higher" without data backing (provide research citations)
+   - Adjusting because signal doesn't match your bias (that's the whole point - objectivity)
+
+**Verification:**
+
+Before proceeding to Step 5, confirm:
+- [ ] Signal calculation completed successfully
+- [ ] Composite score is between 0-100
+- [ ] All component scores are present
+- [ ] Tier classification assigned (WEAK/MODERATE/STRONG/EXTREME)
+- [ ] X sentiment scores extracted
+- [ ] JSON file is valid (no syntax errors)
+
+**Example Output Summary:**
+```
+Composite Score: 72.5/100
+Tier: STRONG
+Breakdown:
+  Trend: 32.00/40
+  Breadth: 19.50/25
+  Volatility: 14.00/20
+  Technical: 5.00/10
+  Seasonality: 2.00/5
+```
+
+================================================================================
+STEP 5: FINALIZE RESEARCH WORKFLOW
+================================================================================
+
+**Goal:** Complete the research workflow and prepare handoff to dashboard.
+
+**📋 Final Completion Checklist:**
+
+Before reporting completion, verify ALL steps completed:
+
+**Step 0: Data Collection**
+- [ ] Automated technical data scraper executed (fetch_technical_data.py)
+- [ ] Technical data saved to Research/.cache/YYYY-MM-DD_technical_data.json
+- [ ] SPY options data verified (max pain, P/C ratios, IV percentile)
+- [ ] QQQ options data verified (max pain, P/C ratios, IV percentile)
+- [ ] Web searches executed (market performance, volatility, options flow, technicals)
+- [ ] Market data saved to Research/.cache/YYYY-MM-DD_market_data.md (standard format)
+
+**Step 1: Provider Summaries**
+- [ ] Technical summaries created (TradingView SPX, BTC, QQQ, SOL - REQUIRED)
+- [ ] Additional technical providers (Fear & Greed, Market Breadth, etc. - optional)
+- [ ] X sentiment summaries (if applicable)
+
+**Step 2: Category Overviews**
+- [ ] RSS Overview created (Step 2.1)
+- [ ] YouTube Overview created (Step 2.2)
+- [ ] Technical Overview created (Step 2.3)
+- [ ] X/Twitter Overview created (Step 2.4)
+- [ ] Key themes identified and documented (Step 2.5)
+- [ ] Research/.cache/YYYY-MM-DD_key_themes.md created
+
+**Step 3: Market Sentiment Overview**
+- [ ] Final market overview created: Research/.cache/YYYY-MM-DD_Market_Sentiment_Overview.md
+- [ ] Executive summary, cross-provider consensus, key levels, catalysts included
+- [ ] Sentiment score and risk level assigned
+
+**Step 4: Signal Calculation**
+- [ ] Trading signals calculated: Research/.cache/signals_YYYY-MM-DD.json
+- [ ] Composite score, tier, and component breakdown present
+- [ ] AI review completed (adjustments made if needed)
+
+**📊 Output Files to Verify:**
+
+Use Glob to verify all created files exist (pattern matching):
+```
+Research/**/YYYY-MM-DD*.md
+Research/**/YYYY-MM-DD*.json
+```
+
+Minimum required files (16 total):
+
+**Data Collection:**
+1. `Research/.cache/YYYY-MM-DD_market_data.md` (from Step 0B web searches - standard format)
+2. `Research/.cache/YYYY-MM-DD_technical_data.json` (from Step 0A automated scraper)
+
+**Provider Summaries (Step 1):**
+3. `Research/Technicals/TradingView SPX/YYYY-MM-DD_TradingView SPX_Summary.md`
+4. `Research/Technicals/TradingView BTC/YYYY-MM-DD_TradingView BTC_Summary.md`
+5. `Research/Technicals/TradingView QQQ/YYYY-MM-DD_TradingView QQQ_Summary.md`
+6. `Research/Technicals/TradingView SOL/YYYY-MM-DD_TradingView SOL_Summary.md`
+7. `Research/X/YYYY-MM-DD_X_Crypto_Summary.md` (from Step 1.4)
+8. `Research/X/YYYY-MM-DD_X_Macro_Summary.md` (from Step 1.4)
+9. `Research/X/Bookmarks/YYYY-MM-DD_X_Bookmarks_Summary.md` (from Step 1.5)
+
+**Category Overviews (Step 2):**
+10. `Research/RSS/YYYY-MM-DD_RSS_Overview.md` (Step 2.1)
+11. `Research/YouTube/YYYY-MM-DD_YouTube_Overview.md` (Step 2.2)
+12. `Research/Technicals/YYYY-MM-DD_Technical_Overview.md` (Step 2.3)
+13. `Research/X/YYYY-MM-DD_X_Overview.md` (Step 2.4)
+14. `Research/.cache/YYYY-MM-DD_key_themes.md` (Step 2.5)
+
+**Final Output (Step 3-4):**
+15. `Research/.cache/YYYY-MM-DD_Market_Sentiment_Overview.md` (Step 3)
+16. `Research/.cache/signals_YYYY-MM-DD.json` (Step 4)
+
+**📞 Report Completion:**
+
+When all steps complete, report with this structure:
+
+```
+🎯 RESEARCH WORKFLOW COMPLETE FOR [DATE]
+
+✅ STEP 0: Data Collection
+  - Automated technical data collected (or noted if unavailable)
+  - Market data gathered via web search
+
+✅ STEP 1: Provider Summaries (4 REQUIRED + Optional)
+  - TradingView SPX Summary
+  - TradingView BTC Summary
+  - TradingView QQQ Summary
+  - TradingView SOL Summary
+  - X Crypto Sentiment Summary
+  - X Macro Sentiment Summary
+  - X Bookmarks Summary
+
+✅ STEP 2: Category Overviews
+  - RSS Overview
+  - YouTube Overview
+  - Technical Overview
+  - X/Twitter Overview
+  - Key Themes identified
+
+✅ STEP 3: Market Sentiment Overview
+  - Executive summary created
+  - Sentiment score assigned (0-100)
+  - Risk level assessed
+
+✅ STEP 4: Trading Signals
+  - Composite score calculated: [XX/100]
+  - Tier assigned: [WEAK/MODERATE/STRONG/EXTREME]
+  - AI adjustments applied (if any): [List]
+
+📊 Output Files Created (16 minimum):
+- Research/.cache/YYYY-MM-DD_Market_Sentiment_Overview.md
+- Research/.cache/YYYY-MM-DD_market_data.md (standard markdown format)
+- Research/.cache/YYYY-MM-DD_technical_data.json
+- Research/.cache/YYYY-MM-DD_key_themes.md
+- Research/.cache/signals_YYYY-MM-DD.json
+- Research/Technicals/TradingView SPX/YYYY-MM-DD_TradingView SPX_Summary.md
+- Research/Technicals/TradingView BTC/YYYY-MM-DD_TradingView BTC_Summary.md
+- Research/Technicals/TradingView QQQ/YYYY-MM-DD_TradingView QQQ_Summary.md
+- Research/Technicals/TradingView SOL/YYYY-MM-DD_TradingView SOL_Summary.md
+- Research/X/YYYY-MM-DD_X_Crypto_Summary.md
+- Research/X/YYYY-MM-DD_X_Macro_Summary.md
+- Research/X/Bookmarks/YYYY-MM-DD_X_Bookmarks_Summary.md
+- Research/RSS/YYYY-MM-DD_RSS_Overview.md
+- Research/YouTube/YYYY-MM-DD_YouTube_Overview.md
+- Research/X/YYYY-MM-DD_X_Overview.md
+- Research/Technicals/YYYY-MM-DD_Technical_Overview.md
+
+⚠️  Issues Encountered: [None or describe issues and workarounds]
+
+🚀 Status: ✅ WORKFLOW COMPLETE - READY FOR MASTER PLAN HANDOFF
+```
+
+**🎯 Research workflow complete!**
+
+The dashboard update workflow (run_workflow.py) will now:
+- Read your research summaries and signals
+- Update master-plan.md with latest data
+- Update research-dashboard.html for visualization
+- Verify consistency across all systems
+
+================================================================================
+⚠️  RESEARCH WORKFLOW ENDS HERE - DO NOT UPDATE DASHBOARD ⚠️
+================================================================================
+
+**CRITICAL: The Research workflow does NOT update the HTML dashboard.**
+
+This workflow is ONLY responsible for:
+- Data collection (scrapers, web searches)
+- Creating markdown summaries and analysis files
+- Calculating trading signals (signals_YYYY-MM-DD.json)
+
+**DO NOT run any of these scripts as part of the Research workflow:**
+- ❌ scripts/automation/run_workflow.py
+- ❌ scripts/automation/update_master_plan.py
+- ❌ Any script that touches master-plan/research-dashboard.html
+
+**HANDOFF TO MASTER PLAN WORKFLOW:**
+After completing Steps 0-5 above, your work is done. Report completion to the user and inform them that the next step is to execute the Master Plan workflow:
+
+**Command to hand off:**
+"Research workflow complete. Please execute: @master-plan/How to use_MP_CLAUDE_ONLY.txt"
+
+The Master Plan workflow will handle:
+- Running scripts/automation/run_workflow.py
+- Updating master-plan.md with your research data
+- Updating research-dashboard.html for visualization
+- Verifying consistency across all systems

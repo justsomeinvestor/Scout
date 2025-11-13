@@ -1,0 +1,94 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Data (large files, should not be committed)
+data/
+*.db
+*.sqlite
+*.sqlite3
+*.jsonl
+*.csv
+*.parquet
+
+# Models (large ML model files)
+scanner/ml/models/*.pkl
+scanner/ml/models/*.joblib
+scanner/ml/models/*.h5
+scanner/ml/models/*.pt
+
+# Cache
+*.cache
+cache/
+.cache/
+*.log
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+*.ipynb
+
+# Streamlit
+.streamlit/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Temporary files
+*.tmp
+*.temp
+temp/
+tmp/
+
+# Scraper status logs (generated daily)
+scraper_status_*.json
+
+# Keep structure but ignore contents of certain folders
+data/alerts/*
+data/bars/*
+data/cache/*
+data/models/*
+data/reports/*
+!data/alerts/.gitkeep
+!data/bars/.gitkeep
+!data/cache/.gitkeep
+!data/models/.gitkeep
+!data/reports/.gitkeep

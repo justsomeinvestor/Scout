@@ -1,0 +1,1280 @@
+Claude Dashboard Update Workflow - Steps 6-9 (Master Plan Synchronization)
+========================================================================
+
+**AI Assistant:** Claude (Dashboard & Visualization)
+**Prerequisites:** Research workflow MUST be complete before using this workflow
+**Duration:** 20-30 minutes for Steps 6-9 (additional 30-40 min after Research workflow)
+**Purpose:** Sync research outputs to master plan, update visualization dashboard, verify consistency
+**When to Use:** Only AFTER Research/How_to_use_Research.txt workflow is 100% complete
+
+==========================================
+WHEN TO USE THIS WORKFLOW
+==========================================
+
+✅ **Use this workflow when:**
+- Research workflow has been completed (Steps 0-5)
+- Trading signals have been calculated
+- Market Sentiment Overview exists for today
+- User says: "Research is done. Update the dashboard."
+
+❌ **DO NOT use this workflow if:**
+- Research workflow not complete (use Research/How_to_use_Research.txt first)
+- Trading signals not calculated
+- Market overview doesn't exist
+- Starting from scratch
+
+==========================================
+⚡ QUICK START FOR AI AGENTS
+==========================================
+
+**Before running this workflow:**
+
+1. **Verify Research workflow is 100% COMPLETE**
+   - Check: Did user say "Research is done" or "Update the dashboard"?
+   - Check file timestamps: All should be TODAY's date
+   - Check: signals_YYYY-MM-DD.json exists (most critical file)
+
+2. **Use TodoWrite** to track Steps 6-9 progress
+   - Mark each step as you complete it
+   - This helps catch gaps early
+
+3. **Critical rule:** If ANY required file is missing → STOP and inform user
+   - Do NOT attempt to run workflow with incomplete research data
+   - Tell user to complete: `Research/How_to_use_Research.txt` first
+
+4. **Expected execution time:** 20-30 minutes (after research workflow completes)
+
+==========================================
+PREREQUISITES CHECKLIST (MANDATORY)
+==========================================
+
+**Before running Step 6.1, verify ALL these files exist for TODAY:**
+
+(Note: YYYY-MM-DD = today's actual date, e.g., 2025-10-18)
+
+**CRITICAL FILES (workflow WILL FAIL without these):**
+- [ ] ⭐ Trading Signals: `Research/.cache/signals_YYYY-MM-DD.json`
+- [ ] ⭐ Market Sentiment Overview: `Research/.cache/YYYY-MM-DD_Market_Sentiment_Overview.md`
+- [ ] ⭐ Technical Summaries (all 4): TradingView SPX, BTC, QQQ, SOL
+
+**IMPORTANT FILES (workflow degraded without these):**
+- [ ] Market Data: `Research/.cache/YYYY-MM-DD_market_data.json` or `.md`
+- [ ] Key Themes: `Research/.cache/YYYY-MM-DD_key_themes.md`
+- [ ] X Crypto Summary: `Research/X/YYYY-MM-DD_X_Crypto_Summary.md`
+- [ ] X Macro Summary: `Research/X/YYYY-MM-DD_X_Macro_Summary.md`
+
+**OPTIONAL (nice-to-have, workflow still works):**
+- [ ] X Trends: `Research/X/Trends/YYYY-MM-DD_trending_words.json`
+- [ ] RSS Overview: `Research/RSS/YYYY-MM-DD_RSS_Overview.md`
+- [ ] YouTube Overview: `Research/YouTube/YYYY-MM-DD_YouTube_Overview.md`
+
+**Quick Verification Command (run this first):**
+```cmd
+# Check if signals exist (most critical file)
+dir "Research\.cache\signals_YYYY-MM-DD.json"
+# If this returns nothing → STOP and tell user to complete research workflow
+```
+
+**If critical files missing:** STOP immediately
+```
+❌ CANNOT PROCEED - Missing files indicate research workflow incomplete
+📌 User action: Complete Research/How_to_use_Research.txt first
+💡 Tell user: "Research workflow not complete. Please finish Research workflow before running dashboard update."
+```
+
+**If all exist:** Proceed to Step 6 below ✅
+
+
+
+==========================================
+STEP 6: UPDATE MASTER PLAN & DASHBOARD
+==========================================
+
+**Purpose:** Read research outputs and update master plan YAML + HTML dashboard
+
+**Time:** 15-20 minutes
+
+**⚠️ IMPORTANT:** Signals should ALREADY be calculated from the research workflow.
+This step READS the signals and updates the dashboard, it does NOT calculate them.
+
+### 6.1 Run Dashboard Update Workflow
+
+**⚠️ BEFORE RUNNING:** Verify prerequisites checklist above is complete!
+
+**Command (replace 2025-10-18 with TODAY's date):**
+```bash
+python scripts/automation/run_workflow.py 2025-10-18 --skip-fetch --skip-signals
+```
+
+**What the --skip flags mean:**
+- `--skip-fetch`: Don't re-fetch market data (already done in research workflow)
+- `--skip-signals`: Don't recalculate signals (already done in research workflow)
+- Together: This makes the dashboard update FAST (15-20 min instead of 45+ min)
+
+**What this workflow DOES (in sequence):**
+
+| Phase | Name | Status | Duration | Output |
+|-------|------|--------|----------|--------|
+| 0 | Parse Journal | RUNS | 1 min | Account balance, P/L |
+| 1 | Fetch Market Data | SKIPPED | - | Already done |
+| 2 | Calculate Signals | SKIPPED | - | Already done |
+| 3 | Update Master Plan | RUNS | 5-7 min | Signal data synced |
+| 3.75 | X Sentiment Tab Sync | RUNS | 2 min | Social tab automated |
+| 3.8 | Social Tab Automation | RUNS | 2 min | 100% automated updates |
+| 3.5 | Media & Catalysts | RUNS | 3 min | AI curation |
+| 4 | Verify Consistency | RUNS | 2 min | Date/signal checks |
+| 4.5 | Timestamp Verification | RUNS | 1 min | Reports stale sections |
+| 5 | AI Portfolio Advisor | RUNS | 2 min | Recommendations |
+| - | Create Backup | RUNS | 1 min | .backup file |
+| **TOTAL** | | | **20-25 min** | Dashboard updated |
+
+**What gets updated:**
+- `master-plan/master-plan.md` (YAML front matter + markdown sections)
+- `master-plan/research-dashboard.html` (HTML dashboard title)
+- `Journal/account_state.json` (balance tracking from journal)
+- `Research/.processing_log.json` (audit trail)
+
+### 6.2 Verify Signal Integration
+
+**Signals should already exist** from research workflow Step 4.
+
+**Check signal file:**
+```cmd
+type Research\.cache\signals_2025-10-17.json
+```
+
+**Expected content:**
+- Composite score (0-100)
+- Tier (EXTREME/STRONG/MODERATE/WEAK/AVOID)
+- Component breakdown with detailed scores
+- X sentiment adjustments
+
+**Signal Tiers:**
+- **85-100 (EXTREME):** Rare, highest conviction setup
+- **70-84 (STRONG):** High probability setup, full size
+- **55-69 (MODERATE):** Standard setup, reduced size
+- **40-54 (WEAK):** Pass or minimal size
+- **0-39 (AVOID):** Counter-trend, do not trade
+
+**If signals file missing:**
+Stop and run research workflow Step 4:
+```bash
+python scripts/processing/calculate_signals.py 2025-10-17
+```
+
+### 6.3 AI Portfolio Advisor
+
+**Purpose:** Get real-time portfolio recommendations focused on actions and reasoning
+
+**How It Works:**
+
+The workflow automatically runs the AI Portfolio Advisor (Phase 5), which:
+1. Reads your current account holdings from `Journal/account_state.json`
+2. Analyzes today's signal, market sentiment, X trends, and recent journal entries
+3. Generates specific buy/sell/hedge recommendations
+4. Provides dollar amounts and reasoning
+
+**Output Format:**
+```
+RECOMMENDATION:
+Example focus: actions and rationale
+
+ACTIONS:
+- Sell $2,500 SPLG (reduce equities)
+- Sell $5,000 BTC (reduce crypto)
+- Buy $2,500 VIX calls (add hedges)
+
+REASONING:
+Signal is WEAK (41.2/100) with poor breadth (4.17/25).
+VIX elevated, market fragile. Defensive posture warranted.
+
+KEY RISKS:
+Miss upside if rally sustains. Hedge decay if VIX drops.
+```
+
+**What To Do:**
+1. **Review the recommendation** - Does it make sense given the signal and market context?
+2. **Compare to your judgment** - Do you agree with the AI's reasoning?
+3. **Execute trades if appropriate** - Only execute what you're comfortable with
+4. **Update account_state.json** - After executing trades, update your positions
+
+**Account State File:** `Journal/account_state.json`
+- Update this file manually after you execute trades
+- The AI reads this to understand current holdings
+- Includes safety constraints (max equities %, min cash %, etc.)
+
+**Note:** The AI provides recommendations, YOU make the final decision. Never blindly execute - always apply your judgment.
+
+==========================================
+STEP 7: REVIEW MASTER PLAN UPDATES
+==========================================
+
+**Purpose:** Ensure master plan fully reflects current date and analysis
+
+**Time:** 10-45 minutes (depending on number of stale sections)
+
+**Note:** Automation (Step 6) already updated most sections. This step verifies completeness and updates stale sections.
+
+**🤖 NEW: AI-Powered Stale Section Detection (Oct 21, 2025)**
+
+The workflow now outputs a machine-readable task list for AI to consume:
+- **File:** Research/.cache/stale_sections_YYYY-MM-DD.json
+- **Created by:** Phase 4.5 (verify_timestamps.py --json)
+- **Contains:** Structured list of which sections need updates
+
+**When "wingman dash" command is used, AI MUST:**
+1. Read the JSON file
+2. Update each stale section with fresh analysis
+3. Re-verify all sections are current before declaring success
+
+See Journal_Trading_Partner_Protocol.txt "WINGMAN DASH" section for detailed execution protocol.
+
+### 7.1 Verify Automated Updates
+
+The automation updated:
+- ✅ pageTitle and dateBadge to current date
+- ✅ All tab timestamps (7 tabs)
+- ✅ Signal data in dailyPlanner and endOfDay
+- ✅ **X Sentiment Tab (Phase 3.75) - FULLY AUTOMATED** ⭐ MOST IMPORTANT TAB
+  * Sentiment scores (crypto, macro, combined)
+  * Sentiment breakdown (extreme bullish → extreme bearish %)
+  * Top narratives from X Crypto & Macro summaries
+  * Trending words (crypto tickers, equity tickers, tech themes, macro themes)
+  * Hype cycle indicators (emoji density, caps lock usage)
+  * Contrarian signals
+  * Influencer consensus
+  * **Data Sources Required:**
+    - `Research/X/Crypto/YYYY-MM-DD_X_Crypto_Summary.md`
+    - `Research/X/Macro/YYYY-MM-DD_X_Macro_Summary.md`
+    - `Research/X/Trends/YYYY-MM-DD_trending_words.json`
+  * **Fallback:** If data missing, uses default values (check output for warnings)
+- ✅ Sentiment history (added current date entry)
+- ✅ HTML dashboard title
+- ✅ Processing log
+
+**🤖 AI-Powered Sections (Manual Curation Required):**
+- 🎬 **Media & Catalysts Tab** - Requires intelligent AI curation (not static scripts)
+- 📊 **Dashboard sentimentCards, metrics, quickActions** - Need manual updates based on current market context
+
+### 7.2 Review Master Plan Sections
+
+**Open:** `master-plan/master-plan.md`
+
+**Check these sections are current:**
+
+**Dashboard Section (CRITICAL - MANUALLY UPDATE THESE):**
+
+**⚠️ IMPORTANT:** The automation does NOT update these qualitative sections. You MUST review and update them based on the current market context.
+
+**⚠️ MOST CRITICAL:** `quickActions` MUST match the signal tier or you'll get wrong trading guidance! If signal dropped from MODERATE to WEAK, actions must change from "SELECTIVE RISK REENTRY" to "REDUCE EXPOSURE".
+
+**💡 TIP:** The dashboard now displays the `quickActionsUpdated` timestamp next to "⚡ Immediate Actions" - you can visually check if it's current at a glance!
+
+**🎬 Media & Catalysts Tab (AI CURATION REQUIRED):**
+- **AI reads all today's data sources** (YouTube, RSS, X/Twitter, Technicals)
+- **AI intelligently selects** the most important content for each category:
+  - 🚀 **Upcoming Catalysts:** Most critical economic events and data releases
+  - 💡 **Research Highlights:** Most impactful YouTube videos and analysis
+  - 📊 **Data Anomalies:** Unusual market movements and institutional flows
+  - ⚠️ **Exhaustion Signals:** Critical warnings and contrarian indicators
+- **AI synthesizes** cross-provider insights into actionable intelligence
+- **AI updates** the tab with current, relevant content (not stale data)
+
+- **`sentimentCards`** (lines 7-11) - Update to reflect current signal tier and market tone:
+  * For MODERATE/STRONG signals: Show "RECOVERY", "RESILIENT", "STABILIZING"
+  * For WEAK/AVOID signals: Show "RISK-OFF", "FEAR", "TURMOIL"
+  * Use current price action details (BTC %, ETH %, VIX change)
+  * Colors: Green (#10b981) for bullish, Blue (#3b82f6) for neutral, Red (#ef4444) for bearish
+
+- **`metrics`** (lines 21-30) - Update with current signal and market data:
+  * Composite Score: Use exact signal from dailyPlanner (e.g., 69.89/100 MODERATE)
+  * Fear & Greed: From market_data.json
+  * Crypto prices: From market_data.json (BTC, ETH, SOL with 24h change)
+  * Stock prices: From market_data.json (SPY, QQQ, VIX, GLD)
+
+- **`quickActions`** - **CRITICAL: Must match current signal tier!**
+  * Location: Around line 722 in YAML front matter
+  * **Check timestamp:** `quickActionsUpdated` - if older than today, UPDATE CONTENT FIRST
+  * **EXTREME (85-100):** "MAXIMUM CONVICTION", "FULL SIZE", "RARE SETUP"
+  * **STRONG (70-84):** "ADD RISK", "REDUCE HEDGES", "CHASE MOMENTUM"
+  * **MODERATE (55-69):** "SELECTIVE RISK REENTRY", "MAINTAIN PRUDENT HEDGES", "MONITOR KEY LEVELS"
+  * **WEAK (40-54):** "REDUCE EXPOSURE", "ADD HEDGES", "WAIT FOR SETUP"
+  * **AVOID (<40):** "EXTREME RISK-OFF", "MAXIMUM HEDGES", "CAPITAL PRESERVATION"
+  * Update all 4 action items (type, title, value, description, urgency)
+  * Use current signal score in value field (e.g., "Signal Score: 38.32 (WEAK)")
+  * Base descriptions on Market Sentiment Overview key risks/themes
+  * THEN update timestamp to today's date
+
+- **`providerConsensus`** (lines 545-569) - Update with current themes from summaries:
+  * Read Market Sentiment Overview "Cross-Provider Consensus" section
+  * Extract 3-4 consensus themes with agreement % estimates
+  * Examples: "De-escalation Driving Recovery", "Crypto Relative Strength", "Quality Over Speculation"
+
+- **`riskItems`** (lines 77-88) - Update with current risks from Market Sentiment Overview:
+  * Balance risks and opportunities based on signal tier
+  * For recovery signals: Focus on resistance, re-escalation risk, volatility
+  * For weak signals: Focus on breadth, liquidation, macro surprises
+  * Always include 1-2 technical risks (VIX, breadth, resistance levels)
+
+**📱 Social Tab (X Sentiment) - ✅ NOW FULLY AUTOMATED! ✅**
+
+**🎉 NEW: Phase 3.8 automation handles ALL Social tab updates!**
+
+**Location:** Lines 215-436 in master-plan.md
+
+**What Phase 3.8 automatically updates:**
+1. ✅ **sentimentScore** (line 224): Automatically synced from signals X sentiment
+2. ✅ **sentimentTier** (line 225): Auto-calculated (VERY BEARISH/BEARISH/NEUTRAL/BULLISH/VERY BULLISH)
+3. ✅ **sentimentTrend** (line 226): Auto-calculated (capitulating/declining/stable/rising/euphoric)
+4. ✅ **aiInterpretation.updatedAt** (line 218): Timestamp when automation last ran - **FRESHNESS INDICATOR**
+5. ✅ **sentiment_breakdown** (lines 228-233): Percentages auto-calculated from sentiment score
+6. ✅ **hype_cycle** (lines 234-238): Position, emoji density, caps lock usage auto-set
+7. ✅ **crypto_trending event_risk** (lines 291-303): High-velocity crypto events (liquidations, technical breaks, ETF flows) auto-generated based on sentiment and market conditions
+8. ✅ **sentiment_velocity** (lines 417-426): Current/previous scores, change %, velocity rating
+9. ✅ **contrarian_detector** (lines 427-436): Setup status, thresholds, actions auto-updated
+10. ⚠️ **crypto_trending top_tickers, top_narratives, market_structure** (complex YAML): Needs enhancement
+
+**Dashboard Status Indicator:**
+- **Location:** X Sentiment tab shows colored dot indicator next to "X/Twitter Sentiment Analysis" title
+- **GREEN dot (●):** Data updated within last 12 hours - FRESH
+- **YELLOW dot (⚠):** Data updated 12-24 hours ago - AGING
+- **RED dot (✕):** Data updated more than 24 hours ago - STALE
+- **How it works:** Indicator reads `aiInterpretation.updatedAt` timestamp and calculates freshness in real-time
+- **No manual action needed:** Dot updates automatically when page loads
+
+**How it works:**
+- Script: `scripts/utilities/sync_social_tab.py`
+- Reads: `Research/.cache/signals_YYYY-MM-DD.json` for X sentiment data
+- Updates: All sentiment-related fields in Social tab to match signal
+- Adds/updates: `aiInterpretation.updatedAt` timestamp for freshness tracking (also used by indicator)
+- Runs: Automatically during Phase 3.8 of workflow
+- Verified: Phase 4.5 timestamp verification confirms sync ran today
+- **Freshness Check:** Dashboard indicator shows status at a glance
+
+**Verification (automated in Phase 4.5):**
+- `scripts/utilities/verify_timestamps.py` checks `aiInterpretation.updatedAt` field in xsentiment tab
+- Ensures X Sentiment tab sync ran today
+- Reports if timestamp is stale (>1 day old)
+- Dashboard indicator also visually confirms freshness (red dot = needs update)
+- Part of standard workflow verification (no manual checks needed!)
+
+**Visual Verification (on Dashboard):**
+1. Open dashboard: `master-plan/research-dashboard.html`
+2. Click "🐦 X Sentiment" tab
+3. Look at section title: "X/Twitter Sentiment Analysis" with colored dot indicator
+4. **GREEN dot:** Data is fresh (updated today) ✅
+5. **YELLOW dot:** Data is aging (check if refresh needed) ⚠️
+6. **RED dot:** Data is stale (MUST refresh) ❌
+
+**Manual verification (if needed):**
+1. Check signals JSON: `type Research\.cache\signals_2025-10-17.json`
+2. Check X Sentiment tab's `aiInterpretation.updatedAt` in master-plan.md (should be today's date)
+3. Check dashboard indicator shows GREEN dot - confirms timestamp is current
+4. If RED or YELLOW dot: Sync script didn't run today or needs re-running
+
+**Manual updates only needed for:**
+- Complex nested YAML sections (crypto_trending, macro_trending, top_narratives)
+- These will be enhanced in future automation phases
+- **Note:** Always update `aiInterpretation.updatedAt` timestamp AFTER updating content (don't backdate!)
+
+**To manually run Social tab sync:**
+```bash
+python scripts/utilities/sync_social_tab.py 2025-10-17
+```
+
+**To manually update X Sentiment content:**
+1. Edit `master-plan/master-plan.md` - X Sentiment tab section (lines 215-436)
+2. Update `aiInterpretation` fields with current analysis
+3. **CRITICAL:** Update `aiInterpretation.updatedAt` timestamp to today's date AFTER editing
+4. Open dashboard to verify GREEN dot appears next to tab title
+5. If RED/YELLOW dot persists: Refresh browser cache or check timestamp format
+
+**Portfolio Tab Signal References:**
+- Lines 64-65: `signalTier` and `signalScore` - Must match dailyPlanner signal
+- Line 95: `reasoning` - Update to reflect current signal context and market narrative
+
+**Tab aiInterpretations (CRITICAL - SEE AI NARRATIVE UPDATE INSTRUCTIONS):**
+
+**⚠️ AI NARRATIVE FRESHNESS VERIFICATION:**
+
+The workflow includes **Phase 4.5: Timestamp Verification** and **Step 6.1: Consistency Check** which identify stale sections.
+
+**Understanding Timestamp Freshness:**
+- Timestamps like `updatedAt: "2025-10-15T15:45:00Z"` are **FRESHNESS INDICATORS**
+- If timestamp is OLDER than today's date → Content is STALE → Needs update
+- If timestamp EQUALS today's date → Content is FRESH → No update needed
+- Think of timestamps as "last reviewed date" stamps
+
+**When verification reports "Outdated timestamps: X found":**
+1. **This is NORMAL** - It's telling you which sections need fresh analysis
+2. **DO NOT just change the date** - That defeats the purpose!
+3. **Correct process:**
+   - Read the section's current content
+   - Analyze today's market data and summaries
+   - Write FRESH AI narrative reflecting TODAY's reality
+   - ONLY THEN update timestamp to today's date
+
+**Sections to check when timestamps are stale:**
+   - `sentimentCards` - Does market tone match signal tier? (RISK-OFF vs RECOVERY)
+   - `metrics` - Are prices and signal score current?
+   - **`quickActions`** - **MUST match signal tier** (WEAK vs MODERATE vs STRONG)
+   - `riskItems` - Current top risks from Market Sentiment Overview?
+   - `providerConsensus` - Current themes from summaries?
+   - `macro.aiInterpretation` - Updated with current macro themes?
+   - `crypto.aiInterpretation` - Updated with current crypto prices, ETH/BTC ratio?
+   - `tech.aiInterpretation` - Updated with QQQ performance, AI trends?
+   - `news.aiInterpretation` - Updated with current headlines?
+   - `xsentiment.aiInterpretation` - X sentiment (automation handles this)
+   - `technicals.aiInterpretation` - Updated with current signal tier, VIX?
+   - `media.aiInterpretation` - High-signal items curated?
+   - `optionsAIInterpretation` - Updated with gamma positioning, IV?
+
+**CRITICAL RULE:** NEVER update timestamps without updating content first. Timestamps VERIFY freshness - they're not just date fields to change!
+
+**Quick Update Process:**
+1. Read current market data: `Research/.cache/YYYY-MM-DD_market_data.json`
+2. Read current signals: `Research/.cache/signals_YYYY-MM-DD.json`
+3. Read X trends: `Research/X/Trends/YYYY-MM-DD_trending_words.json`
+4. Write fresh AI narrative reflecting TODAY's market reality
+5. Update timestamp ONLY after content is fresh
+6. Re-run `verify_timestamps.py` to confirm
+
+**Detailed Instructions:** See `scripts/AI_NARRATIVE_UPDATE_INSTRUCTIONS.md` for step-by-step guidance on writing fresh narratives.
+
+**Daily Planner:**
+- `signalData` - Matches calculated signal?
+- `priorities` - Actionable tasks for today?
+- `aiInterpretation` - Summary reflects signal tier?
+
+**End of Day:**
+- `date` - Current date?
+- `ranAt` - Current timestamp?
+- `signals` - Matches calculated signal?
+
+### 7.3 Manual Adjustments (if needed)
+
+**If automation missed anything:**
+- Update qualitative sections (sentiment cards, risk items)
+- Refine aiInterpretations for clarity
+- Add any critical market context
+
+**But usually:** Automation handles 90%+ of updates, just verify.
+
+==========================================
+STEP 8: VERIFY CONSISTENCY
+==========================================
+
+**Purpose:** Ensure all dates and signals are synchronized
+
+**Time:** 2-3 minutes
+
+### 8.1 Run Consistency Check & Freshness Verification
+
+**Phase 4.5: Data Freshness Verification (NEW - Oct 18, 2025)**
+
+**Command:**
+```bash
+python scripts/utilities/verify_consistency.py 2025-10-18
+python scripts/utilities/verify_data_freshness.py 2025-10-18
+```
+
+**Expected from consistency check: 6-8 checks PASSED**
+
+**Expected from freshness verification:**
+- Dashboard Health percentage (should be > 80% if workflow ran correctly)
+- List of FRESH sections (GREEN - no action needed)
+- List of AGING sections (YELLOW - optional refresh)
+- List of STALE sections (RED - MUST update before trading)
+- JSON report saved to: `Research/.cache/freshness_report_YYYY-MM-DD.json`
+
+**What is freshness verification?**
+This new Phase 4.5 script automatically checks which dashboard sections have current data (updated within last 12 hours) and which have stale data (older than 24 hours). This answers the question: **"Which sections need manual updates?"**
+
+**Color Coding:**
+- 🟢 GREEN [OK]: Fresh data (< 12h old) - No action needed
+- 🟡 YELLOW [AGE]: Aging data (12-24h old) - Optional refresh
+- 🔴 RED [!!!]: Stale data (> 24h old) - MUST update
+
+**Example output:**
+```
+SUMMARY:
+  [OK]   FRESH (< 12h):  24 sections
+  [AGE]  AGING (12-24h): 3 sections
+  [!!!]  STALE (> 24h):  4 sections
+
+Dashboard Health: 85.7%
+```
+
+**Action based on results:**
+- If Dashboard Health ≥ 80%: Mostly current, proceed to trading
+- If Dashboard Health 50-80%: Some aging sections, optional refresh before EOD
+- If Dashboard Health < 50%: Multiple stale sections, update before trading
+
+**Header Indicator (NEW - Oct 18):**
+The dashboard shows a verification indicator dot in the top-right corner:
+- 🟢 **GREEN dot (solid):** All sections verified - Dashboard ready for trading
+- 🔴 **RED dot (pulsing):** Stale sections detected - Run verification script for details
+
+This indicator automatically runs when the dashboard loads and provides instant visual feedback.
+
+**Automatic YAML Validation (NEW - Oct 18):**
+The workflow now automatically validates YAML after sync operations:
+- ✅ After Social Tab sync (Phase 3.8)
+- ✅ After Technicals Tab sync (Phase 3.9)
+- Validates using proper YAML library (not string manipulation)
+- If corruption detected, alerts user immediately with recovery steps
+- Creates automatic backups before each write
+- **You will see:** "[VALIDATING YAML AFTER ...]" messages during workflow
+
+**Immediate Actions Monitoring (NEW - Oct 18):**
+The dashboard "Immediate Actions" section (top-right) is automatically monitored:
+- ✅ RISK section updated with latest signal score & market context
+- ✅ HEDGE section updated with specific exit/entry triggers (VIX levels, breadth targets)
+- ✅ WATCH section updated with real-time price levels (SPY/SPX/BTC supports & resistance)
+- ✅ PLAN section updated with current earnings timeline & guidance watch
+- Timestamp: `quickActionsUpdated` - Phase 4.5 verifies if this is fresh or stale
+- If `quickActionsUpdated` > 24h old: RED dot appears in dashboard header
+- Update process: Refresh all 4 sections with latest market data, then update timestamp to NOW
+- **Critical:** Immediate Actions reflect market conditions as of last workflow run
+- If market moves significantly (>5% intraday move), manually refresh Immediate Actions before trading
+
+**What Consistency Check Verifies:**
+1. ✅ YAML syntax is valid (critical for dashboard)
+2. ✅ pageTitle matches current date
+3. ✅ dateBadge matches current date
+4. ✅ EAGLE EYE header has current date
+5. ✅ Footer dates current
+6. ✅ HTML dashboard title matches
+7. ✅ YAML automatically validated after sync operations (NEW)
+
+**Timestamp Freshness Check:**
+- Script reports how many `updatedAt` timestamps are OLDER than target date
+- **This is NORMAL and EXPECTED** - it tells you which sections need manual updates
+- Example: "Outdated timestamps: 10 found (expected 2025-10-16)"
+  - This means 10 sections have dates older than 2025-10-16
+  - Those 10 sections need fresh AI analysis
+  - After updating content, set timestamp to 2025-10-16
+  - Re-run verification to confirm all current
+
+### 8.2 If Checks Fail
+
+**Windows manual verification commands:**
+
+```cmd
+# Find all dates in master plan
+findstr /N "2025-10-[0-9][0-9]" master-plan\master-plan.md
+
+# Should show ONLY current date
+```
+
+**Common issues:**
+- Mixed dates (old date left in one section)
+- Signal score mismatch (different in sentiment history vs dailyPlanner)
+- HTML dashboard not synced
+
+**Fix:** Re-run workflow or manually correct the inconsistent section.
+
+### 8.3 Verify Dashboard HTML
+
+**Check:** `master-plan/research-dashboard.html`
+
+**Command:**
+```bash
+grep "title>" master-plan/research-dashboard.html
+```
+
+**Should show:** Current date in page title
+
+==========================================
+⚠️ STEP 9.5: DEEP CONTENT VERIFICATION (MANDATORY - 30 MINUTES)
+==========================================
+
+**🚨 CRITICAL: DO NOT SKIP THIS STEP**
+
+This step has caught critical data staleness issues. It is MANDATORY and cannot be skipped.
+
+**Purpose:** Verify dashboard contains TODAY'S data, not just TODAY'S dates
+
+**Why this matters:** Previous failures occurred because:
+- ✅ Dates were updated to Oct 19
+- ❌ But signal scores were still from Oct 15 (68.62 instead of 43.5)
+- ❌ Portfolio recommendations were 4 days old
+- ❌ Risk items referenced expired catalysts
+- ❌ Crypto prices were 4 days stale
+
+**This makes the dashboard MISLEADING** (current dates + stale data = deceptive)
+
+**Time:** ~30 minutes (do NOT rush this)
+
+**How to do this:**
+
+### 9.5.1 Signal Score Verification (5 minutes)
+
+**Get TODAY'S signal:**
+```bash
+# Read the signals file
+cat "Research\.cache\signals_YYYY-MM-DD.json"
+
+# Find: "composite": XXX.XX
+# Write down this number (e.g., 43.5)
+```
+
+**Check master plan has SAME number:**
+```bash
+# Open master-plan.md
+# Search for: "signalScore:"
+# The value MUST match your note above
+```
+
+**If different (e.g., 68.62 vs 43.5):**
+- ❌ STOP workflow
+- ❌ DO NOT mark complete
+- ❌ Signal sync failed
+- ✅ Manually update signalScore to match research output
+
+### 9.5.2 Portfolio Recommendations Content Check (10 minutes)
+
+**Do NOT just check dates - READ the actual recommendations:**
+
+```bash
+# Open: master-plan/master-plan.md
+# Find section: "portfolioRecommendation:"
+# Read lines 97-111 (the actions and reasoning)
+
+# Check: Do these recommendations make sense for TODAY'S market?
+# Ask yourself:
+# - Are dollar amounts realistic for today's account balance?
+# - Do actions reflect TODAY'S signal (not yesterday's)?
+# - Do risk rationales reference TODAY'S environment?
+# - Would I act on this advice right now?
+
+# If any answer is NO:
+#   ❌ STOP - recommendations are stale
+#   ✅ Update portfolio section with today's data
+```
+
+**Specific checks:**
+- [ ] Recommendations match TODAY'S signal score
+- [ ] Dollar amounts reflect TODAY'S account balance (from journal)
+- [ ] No references to expired catalysts (e.g., "CPI data today" from Oct 15)
+- [ ] Risk descriptions are current for today's environment
+- [ ] Actions are specific to today's market conditions
+
+### 9.5.3 Macro Analysis Freshness Check (5 minutes)
+
+```bash
+# Open: master-plan/master-plan.md
+# Find: Macro tab section (around line 114)
+# Read: "summary" and "keyInsight" fields
+
+# Check:
+# - Does it reference TODAY'S catalysts? (Oct 28-29 FOMC, not Oct 15 CPI)
+# - Are event dates correct for TODAY?
+# - Does it reflect today's market state?
+```
+
+**Red flags (these mean data is STALE):**
+- "CPI data today" (if CPI already happened)
+- "NFP is Friday" (if that date has passed)
+- References to events 4+ days ago as if current
+
+### 9.5.4 Crypto Data Freshness Check (5 minutes)
+
+```bash
+# Get: TODAY'S prices from Research/.cache/YYYY-MM-DD_market_data.md
+# Find: BTC price, ETH price, SOL price
+
+# Check master-plan.md:
+# Find: Crypto tab section (around line 176)
+# Look for: Price levels and performance metrics
+
+# Verify: Do they match TODAY'S data?
+# If not matching → DATA IS STALE
+```
+
+### 9.5.5 Risk Items Current Event Check (5 minutes)
+
+```bash
+# Get: TODAY'S market environment from Market Sentiment Overview
+# Find: The "Risk Level Assessment" section
+# List the TOP 3 risks for TODAY
+
+# Check master-plan.md:
+# Find: "riskItems:" array (around line 77)
+# Read each risk description
+
+# Verify: Do they match today's environment?
+# Check: No expired references (like "CPI data today" from 4 days ago)?
+```
+
+**Example STALE risk:**
+```
+❌ "CPI data today could trigger volatility"
+   (This was Oct 15, we're now Oct 19 - CPI already happened!)
+```
+
+**Example CURRENT risk:**
+```
+✅ "Fed FOMC meeting Oct 28-29 could trigger repricing"
+   (This is future event relevant TODAY)
+```
+
+### 9.5.6 Economic Calendar Validation (3 minutes)
+
+```bash
+# Get: TODAY'S date
+# Open: master-plan.md
+# Find: Economic calendar section (around line 142)
+
+# Check:
+# [ ] No past events listed as "thisWeek"
+# [ ] All dates make sense from TODAY forward
+# [ ] Important upcoming events visible (FOMC Oct 28-29, etc.)
+```
+
+**RED FLAGS:**
+```
+❌ thisWeek contains Oct 15, Oct 16 (if today is Oct 19)
+❌ nextWeek shows events from 2 weeks ago
+❌ Calendar hasn't been updated in 4+ days
+```
+
+**CORRECT:**
+```
+✅ thisWeek shows Oct 24+ (if today is Oct 19)
+✅ nextWeek shows Oct 28+ (if today is Oct 19)
+✅ FOMC Oct 28-29 is prominent
+```
+
+### 9.5.7 Final Status Decision
+
+After checking all 6 sections above:
+
+**If ALL checks pass:**
+```
+✅ CONTENT IS FRESH
+✅ Proceed to Step 9 (Final Completion Checklist)
+✅ Mark workflow COMPLETE
+```
+
+**If ANY checks fail:**
+```
+❌ STOP WORKFLOW
+❌ DO NOT mark complete
+❌ Content needs updating before dashboard is safe
+
+Next action: Update the stale sections manually, then re-verify
+```
+
+### 9.5.8 Spot-Check Example (What I should have done)
+
+```
+[EXAMPLE FROM OCT 19 FAILURE]
+
+I should have:
+1. Read: signals_2025-10-19.json
+   Found: "composite": 43.5
+
+2. Checked master-plan.md
+   Found: "signalScore": 68.62
+
+3. FLAGGED MISMATCH: ❌ 68.62 ≠ 43.5
+
+4. STOPPED workflow
+   Did NOT mark complete
+
+5. Reported: "Signal score mismatch - content is stale"
+
+BUT I DIDN'T. I just checked dates. This is why Step 9.5 is now mandatory.
+```
+
+---
+
+**SEVERITY: CRITICAL**
+**DO NOT SKIP THIS STEP**
+**This is where data staleness gets caught**
+
+---
+
+==========================================
+STEP 9: FINAL COMPLETION CHECKLIST
+==========================================
+
+**Purpose:** Verify workflow complete and ready for trading decisions
+
+**Time:** 2-3 minutes
+
+### 9.1 Final Verification
+
+**Windows commands to run these checks:**
+
+```cmd
+# 1. Verify current date throughout master plan
+findstr /N "updatedAt\|date.*2025-10" master-plan\master-plan.md
+
+# Should show ONLY current date
+
+# 2. Verify HTML dashboard
+findstr "title>" master-plan\research-dashboard.html
+
+# Should show current date
+
+# 3. Verify signal files exist
+dir "Research\.cache\signals_YYYY-MM-DD.json"
+dir "Research\.cache\YYYY-MM-DD_market_data.json"
+```
+
+### 9.2 Quality Checklist
+
+Before marking complete, verify:
+
+**Data Quality:**
+- [ ] Signal score matches market context
+- [ ] All provider summaries read and incorporated
+- [ ] X sentiment contrarian adjustment applied
+- [ ] Key levels identified and tracked
+
+**Master Plan Quality:**
+- [ ] All dates are current (no mixed dates)
+- [ ] Signal appears in all required sections with same value
+- [ ] aiInterpretations are actionable and current
+- [ ] Dashboard HTML synced with master plan
+
+**Status Indicator Verification (NEW - Oct 18):**
+- [ ] **Header indicator (top-right) shows GREEN dot** - All sections verified ✓
+  * If RED dot appears: Run `python scripts/utilities/verify_data_freshness.py` for details
+  * Green dot = Dashboard ready for trading, proceed to Step 9
+  * Red dot = Stale sections found, update them and re-verify
+- [ ] Dashboard shows GREEN dots next to all section titles (data is fresh)
+- [ ] X Sentiment tab shows GREEN dot indicator (data updated today)
+- [ ] If any section shows YELLOW/RED dot: Check `updatedAt` timestamp is current
+- [ ] Sentiment Cards section shows GREEN dot
+- [ ] Market Metrics section shows GREEN dot
+- [ ] Quick Actions section shows GREEN dot
+- [ ] Sentiment Timeline section shows GREEN dot
+- [ ] All AI Interpretation sections show GREEN dots (in each tab)
+
+**System State:**
+- [ ] All 8 consistency checks passing
+- [ ] Backup created (master-plan.md.backup)
+- [ ] Processing log updated
+- [ ] No error messages in workflow output
+
+### 9.3 YAML Validation (CRITICAL)
+
+**⚠️ ALWAYS validate the master plan YAML before finishing!**
+
+The master plan uses YAML front matter that MUST be valid or the HTML dashboard will fail to load.
+
+**Quick validation command:**
+```bash
+python -c "import yaml, re; content = open('master-plan/master-plan.md', 'r', encoding='utf-8').read(); match = re.search(r'^---\s*(.*?)\s*---', content, re.DOTALL); yaml.safe_load(match.group(1)); print('✅ YAML is valid')"
+```
+
+**Common JSON errors to avoid:**
+
+1. **Trailing commas in arrays/objects:**
+   ```json
+   ❌ WRONG: {"date": "2025-10-12", "score": 41},
+   ✅ RIGHT: {"date": "2025-10-12", "score": 41}
+   ```
+
+2. **Comma on separate line:**
+   ```json
+   ❌ WRONG:
+   {"date": "2025-10-11"}
+   ,
+   {"date": "2025-10-12"}
+
+   ✅ RIGHT:
+   {"date": "2025-10-11"},
+   {"date": "2025-10-12"}
+   ```
+
+3. **Extra closing braces:**
+   ```json
+   ❌ WRONG:
+   "dataSource": "master-plan.md"
+   }
+   }
+
+   ✅ RIGHT:
+   "dataSource": "master-plan.md"
+   }
+   ```
+
+4. **Missing commas between array items:**
+   ```json
+   ❌ WRONG: [{"a": 1} {"b": 2}]
+   ✅ RIGHT: [{"a": 1}, {"b": 2}]
+   ```
+
+**If validation fails:**
+1. Note the line number and character position in the error
+2. Open master-plan.md and go to that line
+3. Look for the common errors above
+4. Fix the syntax error
+5. Re-run validation
+6. Repeat until JSON is valid
+
+**Never finish Step 9 without confirming YAML is valid!**
+
+### 9.4 Output Files Confirmed
+
+**Verify these files exist and are current:**
+
+- `master-plan/master-plan.md` (updated)
+- `master-plan/master-plan.md.backup` (backup with today's timestamp)
+- `master-plan/research-dashboard.html` (synced)
+- `Research/.cache/signals_YYYY-MM-DD.json` (signal data)
+- `Research/.cache/YYYY-MM-DD_market_data.json` (market data)
+- `Research/.processing_log.json` (updated)
+
+### 9.5 Completion Message
+
+**Report to user with this structure (IMPORTANT for clarity):**
+
+```
+🎯 DASHBOARD WORKFLOW COMPLETE FOR YYYY-MM-DD (Steps 6-9)
+
+═══════════════════════════════════════════════════════════
+
+📊 SIGNAL & MARKET STATUS:
+Signal: XX.X/100 (TIER: WEAK/MODERATE/STRONG/EXTREME)
+Market Tone: [BULLISH/BEARISH/MIXED]
+Key Theme: [Top cross-provider theme from research]
+Critical Levels: SPX [LEVEL], BTC [LEVEL], QQQ [LEVEL]
+
+═══════════════════════════════════════════════════════════
+
+✅ WORKFLOW UPDATES APPLIED:
+  ✓ Phase 0: Journal parsed (account balance/P&L)
+  ✓ Phase 3: Master plan synced with signals
+  ✓ Phase 3.75: X Sentiment Tab automated
+  ✓ Phase 3.8: Social tab fully synced
+  ✓ Phase 4: Consistency verified (8/8 checks passed)
+  ✓ Phase 4.5: Freshness verification completed (NEW - Oct 18)
+  ✓ Phase 5: AI Portfolio Advisor recommendations generated
+  ✓ YAML validation: ✅ Dashboard will load correctly
+  ✓ Backup: Created (master-plan.md.backup)
+
+═══════════════════════════════════════════════════════════
+
+📁 FILES UPDATED:
+- master-plan/master-plan.md (14 sections synced)
+- master-plan/research-dashboard.html (dashboard synced)
+- Research/.cache/signals_YYYY-MM-DD.json (referenced)
+- Research/.processing_log.json (updated)
+- master-plan/master-plan.md.backup (backup created)
+
+═══════════════════════════════════════════════════════════
+
+⚠️  MANUAL REVIEW REQUIRED:
+If any sections show stale timestamps (from Phase 4.5 report):
+1. Read current market data/research summaries
+2. Write fresh AI analysis for that section
+3. Update timestamp to today's date
+4. Re-run verification
+
+═══════════════════════════════════════════════════════════
+
+🚀 STATUS: DASHBOARD UPDATED & READY FOR TRADING
+Next: Review dashboard, execute portfolio recommendations, trade accordingly
+```
+
+==========================================
+TROUBLESHOOTING & ERROR HANDLING
+==========================================
+
+### CRITICAL: Workflow fails to start
+
+**Error:** Phase 0 crashes or workflow won't run
+
+**Likely Cause:** Missing prerequisite files from Research workflow
+
+**Solution:**
+1. **STOP immediately** - do not attempt to continue
+2. **Verify all research files exist:**
+   ```cmd
+   dir "Research\.cache\signals_YYYY-MM-DD.json"
+   dir "Research\.cache\YYYY-MM-DD_Market_Sentiment_Overview.md"
+   ```
+3. **If files missing:** Tell user to complete Research workflow first
+4. **If files exist but workflow still fails:** Check for Python errors
+   ```bash
+   python scripts/automation/run_workflow.py YYYY-MM-DD --skip-fetch --skip-signals 2>&1 | head -50
+   ```
+5. **Report error to user with full error message**
+
+### Issue: Workflow automation fails mid-run
+
+**Error:** Script crashes or returns error during Phase 3-5
+
+**Solution:**
+1. Check data prep files exist (see prerequisites)
+2. Verify date format is YYYY-MM-DD (must match today's date)
+3. Check for syntax errors in existing files
+4. Run individual scripts to isolate which phase failed:
+   ```bash
+   python scripts/automation/update_master_plan.py YYYY-MM-DD
+   python scripts/utilities/verify_consistency.py YYYY-MM-DD
+   ```
+5. If Phase 3.75 fails: Likely missing X sentiment data
+   - Check: `Research/X/YYYY-MM-DD_X_Crypto_Summary.md` exists
+   - If missing: Tell user to complete X sentiment summaries first
+
+### Issue: Signal score seems wrong
+
+**Symptom:** Signal doesn't match market context
+
+**Solution:**
+1. Read Market Sentiment Overview - what's the tone?
+2. Check component scores in signals JSON
+3. Review technical summaries - VIX, breadth, trend
+4. Verify X sentiment applied correctly
+5. Manually adjust if needed (edit signals JSON)
+6. Re-run with: `python scripts/automation/run_workflow.py YYYY-MM-DD --skip-fetch --skip-signals`
+
+### Issue: Consistency checks fail
+
+**Symptom:** verify_consistency.py shows failures
+
+**Solution:**
+1. Note which check failed
+2. Manually inspect that section in master-plan.md
+3. Fix the inconsistency (update old date, fix signal score)
+4. Re-run verification
+5. If still failing, re-run full workflow
+
+### CRITICAL: Missing data files (signals, market sentiment, etc)
+
+**Symptom:** Prerequisites checklist fails, critical files don't exist
+
+**This is a BLOCKING issue - workflow CANNOT proceed**
+
+**Solution:**
+1. **STOP immediately** - Do not attempt to run workflow
+2. **Inform user:** "Research workflow not complete. Please finish Research workflow before running dashboard update."
+3. **Direct user to:** `Research/How_to_use_Research.txt`
+4. **Specific guidance:** Tell user which files are missing:
+   ```
+   Missing critical files:
+   - Research/.cache/signals_YYYY-MM-DD.json
+   - Research/.cache/YYYY-MM-DD_Market_Sentiment_Overview.md
+
+   Action: Complete Research workflow first, then come back here
+   ```
+5. **Do NOT attempt workarounds** - incomplete data = bad dashboard
+
+### Issue: X Sentiment Tab Update Failed (Phase 3.75)
+
+**Symptom:** Phase 3.75 shows warnings about missing X data files
+
+**What Phase 3.75 needs:**
+- `Research/X/Crypto/YYYY-MM-DD_X_Crypto_Summary.md`
+- `Research/X/Macro/YYYY-MM-DD_X_Macro_Summary.md`
+- `Research/X/Trends/YYYY-MM-DD_trending_words.json`
+
+**Solution:**
+1. Check if X scrapers ran successfully for today
+2. Check if X summaries were generated:
+   ```cmd
+   dir "Research\X\Crypto\YYYY-MM-DD_X_Crypto_Summary.md"
+   dir "Research\X\Macro\YYYY-MM-DD_X_Macro_Summary.md"
+   dir "Research\X\Trends\YYYY-MM-DD_trending_words.json"
+   ```
+3. If files missing, run data prep workflow (Steps 0-3) to generate them
+4. Once files exist, re-run workflow:
+   ```cmd
+   python scripts/automation/run_workflow.py YYYY-MM-DD --skip-fetch --skip-signals
+   ```
+5. Verify Phase 3.75 completes successfully
+
+**Note:** X Sentiment Tab is the MOST IMPORTANT tab - ensure data sources are available!
+
+### ⚠️ YAML CORRUPTION FIX - PERMANENTLY RESOLVED (OCT 18)
+
+**Previous Issue:** HTML dashboard showed YAML parsing errors
+
+**Root Cause:** Sync scripts used string manipulation with broken indentation logic
+
+**Status:** ✅ **PERMANENTLY FIXED** (Oct 18, 2025)
+
+**What Was Done:**
+1. ✅ Created proper YAML handler utility (`scripts/utilities/yaml_handler.py`)
+2. ✅ Integrated automatic YAML validation after sync operations
+3. ✅ Validation uses proper PyYAML library (not string manipulation)
+4. ✅ Automatic backups created before every write
+5. ✅ Added validation messages to workflow output
+
+**How It Works Now:**
+The workflow automatically validates YAML after sync operations:
+```
+Sync runs → [If successful] → Automatic YAML validation
+         → [If valid] → Continue workflow ✅
+         → [If invalid] → Alert user + recovery steps ⚠️
+```
+
+**What You'll See:**
+During workflow execution, you'll see:
+```
+[VALIDATING YAML AFTER SOCIAL TAB SYNC]
+✅ Valid YAML front matter in master-plan/master-plan.md
+```
+
+**If Issues Still Occur (Rare):**
+1. You'll see: `❌ YAML CORRUPTION DETECTED!`
+2. Workflow provides recovery steps automatically
+3. Restore from auto-created backup: `master-plan/master-plan.backup`
+4. Re-run with: `python scripts/automation/run_workflow.py YYYY-MM-DD --skip-fetch --skip-signals`
+
+**Permanent Fix Details:** See `Toolbox/YAML_CORRUPTION_FIX_2025-10-18.md`
+
+The fix includes:
+- YAML handler utility for safe YAML operations
+- Automatic validation after sync operations
+- Proper error reporting and recovery guidance
+- Automatic backups before every write
+
+**Status:** ✅ The YAML corruption issue is PERMANENTLY FIXED. No further action needed.
+
+### Issue: Missing Python dependencies
+
+**Symptom:** Market data fetch fails with "No module named 'yfinance'" or missing stock data
+
+**Solution:**
+1. Install yfinance: `pip install yfinance`
+2. Re-fetch market data: `python scripts/processing/fetch_market_data.py YYYY-MM-DD`
+3. Verify stock data now appears (SPY, QQQ, VIX, GLD)
+
+**Symptom:** Economic data skipped with "FRED_API_KEY not found"
+
+**Solution:**
+1. This is OPTIONAL - system works without it
+2. To add: Get free API key from https://fred.stlouisfed.org/
+3. Create `.env` file from `.env.template`
+4. Add FRED_API_KEY=your_key_here
+5. Re-fetch market data
+
+==========================================
+REFERENCE FILES
+==========================================
+
+**Signal Calculation:**
+- `Trading/signal-system/How to use_Signals.txt` - Signal formula details
+
+**Scripts:**
+- `scripts/automation/run_workflow.py` - Main orchestrator
+- `scripts/processing/calculate_signals.py` - Signal calculation
+- `scripts/automation/update_master_plan.py` - Master plan updater
+- `scripts/utilities/verify_consistency.py` - Consistency checker (YAML, dates, signals)
+- `scripts/utilities/verify_data_freshness.py` - Timestamp freshness analyzer (NEW Oct 18)
+
+**Data Files:**
+- `Research/.cache/signals_YYYY-MM-DD.json` - Calculated signals
+- `Research/.cache/YYYY-MM-DD_market_data.json` - Market data
+- `Research/.processing_log.json` - Processing audit trail
+
+**Related Workflows:**
+- `Research/How to use_Research.txt` - Research workflow (Steps 0-5) - RUN THIS FIRST
+- `master-plan/How to use_MP.txt` - Full combined workflow (Steps 0-9)
+- `master-plan/How to use_Intraday_Update.txt` - Quick intraday refresh
+
+**NEW - Phase 4.5 Verification System (Oct 18, 2025):**
+
+**Scripts:**
+- `scripts/utilities/verify_data_freshness.py` - Timestamp freshness checker (CLI tool)
+- Dashboard HTML: `master-plan/research-dashboard.html` - Header indicator + verification function
+
+**Documentation:**
+- `Toolbox/DATA_FRESHNESS_VERIFICATION_GUIDE_2025-10-18.md` - Complete usage guide
+- `Toolbox/VERIFICATION_SCRIPT_IMPLEMENTATION_2025-10-18.md` - Technical details
+- `Toolbox/TOP_LEVEL_VERIFICATION_INDICATOR_2025-10-18.md` - How header indicator works
+- `Toolbox/QUICK_REFERENCE_VERIFICATION_SYSTEM_2025-10-18.md` - One-page reference
+
+**How It Works:**
+1. **On Dashboard Load:** Header indicator automatically checks all section timestamps
+2. **Visual Feedback:** Shows GREEN (all verified) or RED (stale sections detected)
+3. **On Demand:** Run CLI script for detailed freshness report with health percentage
+4. **Action:** If RED, run script to identify which sections need update
+
+**Three-Layer Verification:**
+- Layer 1: Section-level dots (GREEN/YELLOW/RED)
+- Layer 2: Header-level indicator (GREEN/RED) - ← NEW
+- Layer 3: CLI script report (detailed analysis) - ← NEW
+
+==========================================
+TIME ESTIMATES
+==========================================
+
+**Total time for Steps 6-9:** 20-30 minutes
+
+**Breakdown:**
+- Step 6 (Update dashboard): 15-20 min
+- Step 7 (Review master plan): 10-15 min (overlap with Step 6)
+- Step 8 (Verify consistency): 2-3 min
+- Step 9 (Final checks): 2-3 min
+
+**Faster if:** Automation runs smoothly, master plan needs minimal manual updates
+
+**Slower if:** Need manual adjustments to sentiment cards/quick actions, consistency issues found
+
+**Note:** Steps 0-5 (Research workflow) take an additional 30-40 minutes and should be completed BEFORE this workflow.
+
+==========================================
+NOTES
+==========================================
+
+**Workflow Split:**
+- Research workflow (Steps 0-5): Data collection + analysis + signals
+- Dashboard workflow (Steps 6-9): Visualization + verification only
+- Total time: ~60-75 minutes for complete end-to-end process
+
+**Automation Coverage:**
+- Steps 6-8 are ~90% automated
+- Manual verification ensures quality
+- AI judgment adds qualitative context
+
+**Quality vs Speed:**
+- Can rush through in 15 minutes
+- But 20-30 minutes ensures accuracy
+- Better to be thorough than fast
+
+**When to Rerun:**
+- Intraday: Use `How to use_Intraday_Update.txt` instead
+- Major market event: May need to refresh research workflow (Steps 0-5)
+- Dashboard looks wrong: Re-run with --skip-fetch --skip-signals
+
+**Maintenance:**
+- Workflow automation improves over time
+- Report bugs/issues to improve scripts
+- Update this file if process changes
+
+==========================================
+END OF WORKFLOW
+==========================================
+
+**Last Updated:** 2025-10-18
+**Version:** 2.2
+**For:** Claude (Dashboard AI and other AI Agents)
+**Prerequisites:** Research workflow MUST complete first (Research/How_to_use_Research.txt)
+**Complements:** Full combined workflow in How to use_MP.txt (Steps 0-9 combined)
+**Enhanced For:** Better error handling, clearer AI agent instructions, improved troubleshooting
+
+**Key Improvements in v2.2:**
+- Added "Quick Start for AI Agents" section with TodoWrite guidance
+- Enhanced prerequisites checklist with CRITICAL/IMPORTANT/OPTIONAL tiers
+- Added phase execution table for clarity
+- Improved error handling with CRITICAL/BLOCKING issue guidance
+- Enhanced completion message format with clear sections
+- Better troubleshooting with specific file checks
+- Clear distinction between files that BLOCK workflow vs optional files
+- **NEW:** Added YAML validation warnings and workarounds (Oct 18 debugging)
+- **NEW:** Documented sync script indentation issues and fixes
+- **NEW:** Reference to changelog for tracking repairs
+
+**CRITICAL FIX (Oct 18):**
+- Fixed script path references in run_workflow.py (was looking in wrong directories)
+- Identified and documented YAML sync script indentation bugs
+- Provided workaround: Restore from backup if YAML corrupts
+- Validated Oct 16 backup as reference for good YAML structure
