@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cat:*)",
+      "Bash(findstr:*)",
+      "Bash(find:*)",
+      "Bash(python scripts/utilities/verify_scraper_data.py:*)",
+      "Bash(python:*)",
+      "Bash(dir:*)",
+      "Bash(mkdir:*)",
+      "Bash(start cmd /k \"python -u scripts\\automation\\run_all_scrapers.py\")",
+      "Bash(copy:*)",
+      "Bash(test:*)",
+      "Bash(nul)",
+      "Bash(\"C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe\" --version)",
+      "Bash(netstat:*)",
+      "Bash(tasklist:*)",
+      "Bash(powershell \"(Get-Item ''C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'').VersionInfo.FileVersion\")",
+      "Bash(curl:*)",
+      "Bash(move \"Toolbox\\MasterFlow\\00_COMPLETE_WORKFLOW.md\" \"Toolbox\\ARCHIVES\\legacy_masterflow_2025-11-12\"\" && move \"ToolboxMasterFlow01_SYSTEM_OUTPUTS.md\" \"ToolboxARCHIVESlegacy_masterflow_2025-11-12\"\")",
+      "Bash(move \"Toolbox\\MasterFlow\\02_STEP_1_CLEANUP.md\" \"Toolbox\\ARCHIVES\\legacy_masterflow_2025-11-12\"\" && move \"ToolboxMasterFlow04_MASTER_PLAN_CLEANUP_LOG.md\" \"ToolboxARCHIVESlegacy_masterflow_2025-11-12\"\")",
+      "Bash(powershell -Command:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

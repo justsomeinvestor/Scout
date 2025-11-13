@@ -1,0 +1,5 @@
+﻿youtube-transcript-api
+yt-dlp
+feedparser
+requests
+selenium>=4.0.0
