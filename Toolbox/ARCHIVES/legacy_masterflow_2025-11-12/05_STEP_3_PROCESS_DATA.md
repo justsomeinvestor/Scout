@@ -1,3 +1,11 @@
+# ⚠️ DEPRECATED - Archived 2025-11-12
+
+**This document is archived for reference only.**
+
+**Current workflow:** See `Toolbox/MasterFlow/SCOUT_AI_WORKFLOW.md` (active AI processing workflow)
+
+---
+
 # STEP 3: PROCESS DATA - Create Analysis & Update Dashboard
 
 **Date:** 2025-11-12 (Updated with X Ollama integration)

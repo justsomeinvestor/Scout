@@ -1,3 +1,11 @@
+# ⚠️ DEPRECATED - Archived 2025-11-12
+
+**This document is archived for reference only.**
+
+**Current workflow:** See `Toolbox/MasterFlow/SCOUT_AI_WORKFLOW.md` (active AI processing workflow)
+
+---
+
 # STEP 1: CLEANUP - Remove Old Data
 
 **Date:** 2025-11-01

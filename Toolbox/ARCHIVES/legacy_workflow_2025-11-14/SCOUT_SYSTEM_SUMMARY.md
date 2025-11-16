@@ -1,8 +1,16 @@
+# ⚠️ DEPRECATED - Archived 2025-11-14
+
+**This document is archived for reference only.**
+
+**Current workflow:** See `Toolbox/MasterFlow/SCOUT_AI_WORKFLOW.md` (active AI processing workflow)
+
+---
+
 # Scout System - Complete Summary
 
 **Date:** 2025-11-11
 **Version:** 1.0
-**Status:** Production Ready
+**Status:** Production Ready (Archived)
 
 ---
 

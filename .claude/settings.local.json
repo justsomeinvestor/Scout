@@ -19,7 +19,9 @@
       "Bash(curl:*)",
       "Bash(move \"Toolbox\\MasterFlow\\00_COMPLETE_WORKFLOW.md\" \"Toolbox\\ARCHIVES\\legacy_masterflow_2025-11-12\"\" && move \"ToolboxMasterFlow01_SYSTEM_OUTPUTS.md\" \"ToolboxARCHIVESlegacy_masterflow_2025-11-12\"\")",
       "Bash(move \"Toolbox\\MasterFlow\\02_STEP_1_CLEANUP.md\" \"Toolbox\\ARCHIVES\\legacy_masterflow_2025-11-12\"\" && move \"ToolboxMasterFlow04_MASTER_PLAN_CLEANUP_LOG.md\" \"ToolboxARCHIVESlegacy_masterflow_2025-11-12\"\")",
-      "Bash(powershell -Command:*)"
+      "Bash(powershell -Command:*)",
+      "Bash(git push:*)",
+      "Bash(cd:*)"
     ],
     "deny": [],
     "ask": []

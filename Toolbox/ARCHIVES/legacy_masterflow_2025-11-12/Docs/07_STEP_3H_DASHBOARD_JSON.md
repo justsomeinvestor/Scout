@@ -1,3 +1,13 @@
+# ⚠️ DEPRECATED - Archived 2025-11-12
+
+**This document is archived for reference only.**
+
+**NOTE:** dashboard.json was removed in Session 6. This file documents obsolete functionality.
+
+**Current workflow:** See `Toolbox/MasterFlow/SCOUT_AI_WORKFLOW.md` (active AI processing workflow)
+
+---
+
 # STEP 3H: UPDATE DASHBOARD JSON - Field Mapping Reference
 
 **Date:** 2025-11-01

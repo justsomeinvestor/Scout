@@ -1,36 +1,97 @@
 # System Context - Scout Market Intelligence
 
-**Current System:** Scout (production ready as of 2025-11-11)
-**Status:** ✅ Data collection working | ⏸️ AI processing (manual)
-**Entry Point:** `python scout/scout.py` (single command)
+**Status:** ✅ Production | Data collection automated | AI processing manual
+**Last Updated:** 2025-11-14 (workflow docs reorganized)
 
 ## Quick Grounding
 
-Scout is a market intelligence system that collects data from 4 sources:
-- X/Twitter posts (local Selenium scraper - 12 min)
-- YouTube videos (API server at 192.168.10.56:3000)
-- RSS news feeds (API server)
-- Market data (API server - ETFs, max pain, options)
+Scout = Market intelligence system collecting from 4 sources (X/Twitter, YouTube, RSS, Market data)
 
-**Workflow:**
-1. Run `python scout/scout.py` → collects all data (~13 min)
-2. Manual AI processing → analyze collected data
-3. Generate `scout/dash.md` → market intelligence output
-4. View `scout/dash.html` → interactive dashboard
+**Standard workflow:**
+1. User runs `python scout/scout.py` (~13 min) → data collected & sent to API server
+2. **YOU START HERE** → Process with AI (~40-55 min)
+3. Output: Updated `scout/dash.md` with market signal score
 
-**Recent Changes (Session 6 - 2025-11-11):**
-- Fixed X scraper timeout with real-time output streaming
-- Cleaned root directory per project rules
-- All documentation in `Toolbox/CHANGELOGS/SESSION_6_*.md`
+**When user says ANY of these phrases:**
+- "run prep"
+- "run the workflow"
+- "let's run the workflow"
+- "start the workflow"
+- "I just ran the scraper"
+- "scraper is done"
+- "let's work through Scout workflow"
 
-**Key Docs:**
-- Complete workflow: `Toolbox/MasterFlow/00_SCOUT_WORKFLOW.md`
-- Session history: `Toolbox/CHANGELOGS/`
-- Quick summary: `Toolbox/SESSION_6_SUMMARY.md`
+**Your immediate action (NO QUESTIONS):**
+1. ✅ Fetch data from API server (192.168.10.56:3000)
+2. ✅ Start Phase 1 immediately (create prep file, run Steps 3A-3F)
+3. ✅ Complete Phase 2 (update dashboard)
+4. ❌ Do NOT ask "did you run the scraper?"
+5. ❌ Do NOT check for local files
+6. ❌ Do NOT run `python scout/scout.py` yourself
 
-**Next Steps:**
-- Option 1: Complete AI processing workflow (Step 3)
-- Option 2: Build Trading Command Center (bigger project, see `Toolbox/Docs/PROJECT_PLAN.md`)
+**If user says "create a changelog":**
+→ `Toolbox/CHANGELOGS/SESSION_X_YYYY-MM-DD.md`
+→ Include: what changed, why, files touched, next steps
+
+## Multi-Claude Coordination (CRITICAL)
+
+**Architecture:** Windows Claude (frontend) ↔️ Server Claude (backend) via REST API
+
+**Coordination API:** http://192.168.10.56:3000/api/coord
+**Documentation:** `Toolbox/Claude-Colab.md`
+
+**Quick Commands:**
+```bash
+# Check pending tasks
+npx tsx src/coordinationDemo.ts pending
+
+# See all messages
+npx tsx src/coordinationDemo.ts all
+
+# Send task to other Claude
+npx tsx src/coordinationDemo.ts send "task description" "context" <to_claude> <from_claude>
+
+# Get stats
+npx tsx src/coordinationDemo.ts stats
+```
+
+**Message Types:**
+- 💬 **chat** - Direct communication between Claude instances (read & acknowledge)
+- 📋 **task** - Work requests requiring execution (claim → execute → complete)
+
+**From TypeScript/Node:**
+```typescript
+import { sendTask, getPendingTasks, completeTask, claimTask } from './coordinationClient';
+
+// Send task (Windows Claude)
+await sendTask('Run scraper for SPY', 'Need latest data', 'server_backend', 'windows_frontend', 'task');
+
+// Send chat message
+await sendTask('Status update: workflow complete', 'Dashboard updated', 'server_backend', 'windows_frontend', 'chat');
+
+// Process tasks (Server Claude)
+const tasks = await getPendingTasks('server_backend');
+await claimTask(task.id);
+// ... do work ...
+await completeTask(task.id, 'Result here');
+```
+
+**Environment Setup:**
+- Windows Claude: `CLAUDE_ID=windows_frontend`
+- Server Claude: `CLAUDE_ID=server_backend`, `COORDINATION_API_URL=http://192.168.10.56:3000/api/coord`
+
+## Key Files
+
+**Workflows:**
+- `Toolbox/MasterFlow/SCOUT_AI_WORKFLOW.md` - AI processing (main workflow)
+- `Toolbox/MasterFlow/COMMAND_REFERENCE.md` - Quick commands
+
+**Data locations:**
+- Output: `scout/dash.md`, `scout/dash.html`
+- Checkpoints: `Research/.cache/YYYY-MM-DD_dash-prep.md`
+- **Data sources:** See `Toolbox/MasterFlow/SCOUT_AI_WORKFLOW.md` for where to fetch each data type
+
+**Session history:** `Toolbox/CHANGELOGS/`
 
 ---
 
@@ -75,10 +136,31 @@ Scout is a market intelligence system that collects data from 4 sources:
 - Prefer additive changes over destructive refactors unless asked.
 
 ## Planning Protocol (follow every task)
-1. **Plan**: Outline steps, files to touch, and tests you’ll add/adjust.
+1. **Plan**: Outline steps, files to touch, and tests you'll add/adjust.
 2. **Implement**: Make small, reviewable changes. Explain each change briefly.
 3. **Verify**: Run or simulate tests and lint; report results concisely.
 4. **Review**: Summarize risks, trade-offs, and follow-ups as TODOs.
+
+## Autonomous Operation
+
+**Task Tracking:**
+- Use TodoWrite for multi-step tasks (create at start, update in real-time)
+- Document work in `Toolbox/CHANGELOGS/SESSION_X_YYYY-MM-DD.md` for:
+  - New features, architectural changes, bug fixes
+  - Multi-session work (so other Claude instances can continue)
+
+**Decision Making:**
+- Be decisive: If user says "build X", start building with todos
+- Document assumptions in todos/changelogs instead of asking
+- Only ask when genuinely unclear or risky
+
+**Progress Communication:**
+- Keep todos current
+- Proactively report: "✅ Done: X, Y, Z. Next: A"
+
+**Multi-Claude Handoffs:**
+- Update changelog with: status, next steps, blockers, files modified
+- Commit when logical stopping point reached
 
 ## Guardrails
 - Never fabricate test results or execution logs.
